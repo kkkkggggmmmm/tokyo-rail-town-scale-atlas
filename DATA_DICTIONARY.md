@@ -177,7 +177,7 @@
 | `lifestyle_leisure_establishments` | establishments | same | Scale/Type | 分類定義をversion固定 |
 | `lifestyle_leisure_employees` | persons | same | Scale/Type | 分類定義をversion固定 |
 | `all_industry_employees` | persons | same | Type/context | 業務性補助。商業量へ無条件加算しない |
-| `resident_population` | persons | 2020 Census mesh | Type/context | 商業量ではない |
+| `resident_population` | persons | 2020 Census mesh, e-Stat `T001141` (JGD2011 500m) | Type/context | 商業量ではない。`T001192` age-class table is not this input |
 | `daily_ridership` | persons/day | S12 | Access | CoreScaleへ混入禁止 |
 | `commercial_land_price` | yen/m² | L01 | Validation | point sample。CoreScaleへ混入禁止 |
 

@@ -1,16 +1,21 @@
-manifest_version: "0.1.1"
+manifest_version: "0.2.0"
 project_id: tokyo-rail-town-scale-atlas
 audited_at: "2026-08-30"
-manifest_scope: phase_0_availability_and_terms_audit
+manifest_scope: phase_0_audit_plus_phase_1_g0_g1_source_lock
 official_recheck:
   checked_at: "2026-08-30"
   scope: >-
-    公式カタログ、訂正情報、e-Stat更新情報、および利用規約の再確認。原データの
-    ダウンロード、アーカイブ内容、ハッシュの検証はPhase 1 G1まで実施しない。
+    公式カタログ、訂正情報、e-Stat更新情報、および利用規約の再確認。Phase 0では
+    原データのダウンロード、アーカイブ内容、ハッシュの検証を実施せず、Phase 1 G1
+    では取得日ページのHTTPメタデータ・ハッシュと原本アーカイブを別ロックに記録する。
   raw_archives_verified: false
   recheck_report: docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md
+  phase1_page_metadata_manifest: data/manifests/official_recheck.phase1.yml
 artifact_policy:
   phase_0_downloads_performed: false
+  phase_1_downloads_performed: true
+  phase_1_source_lock: data/manifests/source_lock.phase1.yml
+  phase_1_official_page_hashes: data/manifests/official_recheck.phase1.yml
   note: >-
     Phase 0は取得可能性と利用条件の監査に限定する。Phase 1で取得した実体には、
     download_url、retrieved_at、byte_size、sha256、archive_member、変換履歴を追記する。
@@ -264,7 +269,8 @@ sources:
     publisher: 総務省統計局
     official_catalog_url: https://www.e-stat.go.jp/gis/statmap-search?page=1&toukeiCode=00200521&type=1
     official_publication_url: https://www.stat.go.jp/data/mesh/r2_w.html
-    definition_population_500m_url: https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001192.pdf
+    definition_population_500m_url: https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001141.pdf
+    definition_population_500m_table_id: T001141
     definition_labor_500m_url: https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001193.pdf
     definition_housing_500m_url: https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001194.pdf
     release_id: estat-00200521-2020-mesh-jgd2011
@@ -402,3 +408,21 @@ phase_1_acquisition_gate:
     - Reconfirm terms and correction log at retrieval time.
     - Fail on unrecognized missing-value tokens.
     - Keep original archives immutable outside Git; commit only manifests and permitted small fixtures.
+
+phase_1_acquisition:
+  status: G1_LOCKED
+  scope_manifest: data/reference/PHASE1_ACQUISITION_SCOPE.yml
+  source_lock: data/manifests/source_lock.phase1.yml
+  official_recheck_manifest: data/manifests/official_recheck.phase1.yml
+  raw_root: data/raw/phase1
+  raw_archives_in_git: false
+  archive_count: 24
+  archive_member_count: 91
+  archive_bytes: 38883077
+  locked_at: "2026-08-30T10:20:22Z"
+  source_encoding_note: >-
+    e-Stat T001163/T001141 prefectural tables are delivered as CP932 text inside ZIPs;
+    N02/S12/L01 retain their official UTF-8/Shift-JIS variants and per-member detection.
+  note: >-
+    Phase 1 G1で取得した原本はdata/raw/phase1以下に保持し、Gitには取得範囲と
+    ハッシュ・アーカイブメンバーを記録したロックファイルだけを登録する。

@@ -64,3 +64,11 @@
 - Decision: Catalog-level correction/distribution checks are versioned in `SOURCES.yml` and `docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md`; actual archive bytes are accepted only after an acquisition-day recheck and source lock.
 - Rationale: official pages can change after Phase 0 and a catalog check cannot prove the byte identity of a later download. The L01-26 Tokyo archive has an explicit 2026-04-24 address correction.
 - Consequence: Phase 1 may not transform L01-26_13 without post-correction SHA-256 evidence. N02/S12 and e-Stat inputs must also record the current official revision/definition state at retrieval; distribution events never replace survey reference dates.
+
+## DEC-0010 — 500m Census table pin
+
+- Date: 2026-08-30
+- Status: accepted
+- Decision: Phase 1 uses e-Stat table `T001141` for 2020 Census JGD2011 500m population/household observations. Table `T001192` is the 500m JGD2011 age-class table and is not the population-total input.
+- Rationale: the official e-Stat table registry distinguishes the population/household table from the age-class table; selecting by resolution alone would silently bind the wrong variables.
+- Consequence: definitions, acquisition URLs, and source locks must record `T001141`; any T001192 artifact is outside the Phase 1 population input and must not be transformed into `resident_population`.

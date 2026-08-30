@@ -1,0 +1,170 @@
+scope_version: "0.1.0"
+project_id: tokyo-rail-town-scale-atlas
+phase: 1
+gate: G1
+fixed_at: "2026-08-30"
+official_recheck:
+  checked_at: "2026-08-30"
+  correction_log_url: https://nlftp.mlit.go.jp/ksj_error.html
+  estat_update_url: https://www.e-stat.go.jp/help/data-definition-information/update-information
+  terms_urls:
+    - https://nlftp.mlit.go.jp/ksj/other/agreement_01.html
+    - https://www.e-stat.go.jp/terms-of-use
+analysis_extent:
+  display_prefectures:
+    - {code: "11", name_ja: 埼玉県}
+    - {code: "12", name_ja: 千葉県}
+    - {code: "13", name_ja: 東京都}
+    - {code: "14", name_ja: 神奈川県}
+  default_boundary_buffer_m: 10000
+  pilot_tx_exception:
+    prefecture: {code: "08", name_ja: 茨城県}
+    rule: full_station_sequence_plus_5000m_corridor
+    display_in_initial_domain: false
+  estat_prefecture_partitions:
+    - {code: "08", name_ja: 茨城県, scope_reason: tx_pilot_and_adjacent_buffer}
+    - {code: "09", name_ja: 栃木県, scope_reason: adjacent_10km_buffer}
+    - {code: "10", name_ja: 群馬県, scope_reason: adjacent_10km_buffer}
+    - {code: "11", name_ja: 埼玉県, scope_reason: display_domain}
+    - {code: "12", name_ja: 千葉県, scope_reason: display_domain}
+    - {code: "13", name_ja: 東京都, scope_reason: display_domain}
+    - {code: "14", name_ja: 神奈川県, scope_reason: display_domain}
+    - {code: "19", name_ja: 山梨県, scope_reason: adjacent_10km_buffer}
+    - {code: "22", name_ja: 静岡県, scope_reason: adjacent_10km_buffer}
+  partition_note: >-
+    e-Statの公開単位が都道府県zipのため、隣接県は10km edge bufferを完全に覆う
+    保守的な取得範囲である。G3で公式mesh geometryにより10km境界へtrimし、
+    県全域を表示集計へ混入させない。
+
+artifacts:
+  - artifact_id: n02-25-gml
+    source_id: ksj_n02_2025
+    source_release_id: N02-25
+    kind: ksj_archive
+    url: https://nlftp.mlit.go.jp/ksj/gml/data/N02/N02-25/N02-25_GML.zip
+    local_path: data/raw/phase1/archives/N02-25_GML.zip
+    headers_path: data/raw/phase1/http/N02-25.headers
+    expected_format: zip
+    expected_encoding: [shift_jis, utf-8]
+    geographic_scope: nationwide
+    reference_date_or_period: "2025-12-31"
+    publication_date_or_period: "2026-04"
+    correction_log_url: https://nlftp.mlit.go.jp/ksj_error.html
+
+  - artifact_id: s12-25-gml
+    source_id: ksj_s12_2024
+    source_release_id: S12-25
+    kind: ksj_archive
+    url: https://nlftp.mlit.go.jp/ksj/gml/data/S12/S12-25/S12-25_GML.zip
+    local_path: data/raw/phase1/archives/S12-25_GML.zip
+    headers_path: data/raw/phase1/http/S12-25.headers
+    expected_format: zip
+    expected_encoding: [shift_jis, utf-8]
+    geographic_scope: nationwide
+    reference_date_or_period: FY2024
+    publication_date_or_period: "2026-04"
+    correction_log_url: https://nlftp.mlit.go.jp/ksj_error.html
+
+  - artifact_id: l01-26-11-gml
+    source_id: ksj_l01_2026
+    source_release_id: L01-26-post-2026-04-24-correction
+    kind: ksj_archive
+    url: https://nlftp.mlit.go.jp/ksj/gml/data/L01/L01-26/L01-26_11_GML.zip
+    local_path: data/raw/phase1/archives/L01-26_11_GML.zip
+    headers_path: data/raw/phase1/http/L01-26_11.headers
+    expected_format: zip
+    expected_encoding: shift_jis
+    geographic_scope: saitama
+    reference_date_or_period: "2026-01-01"
+    publication_date_or_period: "2026-03-18"
+    correction_date_floor: "2026-04-24"
+    correction_log_url: https://nlftp.mlit.go.jp/ksj_error.html
+
+  - artifact_id: l01-26-12-gml
+    source_id: ksj_l01_2026
+    source_release_id: L01-26-post-2026-04-24-correction
+    kind: ksj_archive
+    url: https://nlftp.mlit.go.jp/ksj/gml/data/L01/L01-26/L01-26_12_GML.zip
+    local_path: data/raw/phase1/archives/L01-26_12_GML.zip
+    headers_path: data/raw/phase1/http/L01-26_12.headers
+    expected_format: zip
+    expected_encoding: shift_jis
+    geographic_scope: chiba
+    reference_date_or_period: "2026-01-01"
+    publication_date_or_period: "2026-03-18"
+    correction_date_floor: "2026-04-24"
+    correction_log_url: https://nlftp.mlit.go.jp/ksj_error.html
+
+  - artifact_id: l01-26-13-gml
+    source_id: ksj_l01_2026
+    source_release_id: L01-26-post-2026-04-24-correction
+    kind: ksj_archive
+    url: https://nlftp.mlit.go.jp/ksj/gml/data/L01/L01-26/L01-26_13_GML.zip
+    local_path: data/raw/phase1/archives/L01-26_13_GML.zip
+    headers_path: data/raw/phase1/http/L01-26_13.headers
+    expected_format: zip
+    expected_encoding: shift_jis
+    geographic_scope: tokyo
+    reference_date_or_period: "2026-01-01"
+    publication_date_or_period: "2026-03-18"
+    correction_date_floor: "2026-04-24"
+    correction_log_url: https://nlftp.mlit.go.jp/ksj_error.html
+
+  - artifact_id: l01-26-14-gml
+    source_id: ksj_l01_2026
+    source_release_id: L01-26-post-2026-04-24-correction
+    kind: ksj_archive
+    url: https://nlftp.mlit.go.jp/ksj/gml/data/L01/L01-26/L01-26_14_GML.zip
+    local_path: data/raw/phase1/archives/L01-26_14_GML.zip
+    headers_path: data/raw/phase1/http/L01-26_14.headers
+    expected_format: zip
+    expected_encoding: shift_jis
+    geographic_scope: kanagawa
+    reference_date_or_period: "2026-01-01"
+    publication_date_or_period: "2026-03-18"
+    correction_date_floor: "2026-04-24"
+    correction_log_url: https://nlftp.mlit.go.jp/ksj_error.html
+
+  - artifact_id: estat-economic-2021-middle-500m-jgd2011
+    source_id: estat_economic_census_mesh_2021
+    source_release_id: estat-00200553-2021-mesh-jgd2011
+    kind: estat_prefecture_zip
+    expected_format: zip
+    table_id: T001163
+    aggregate_unit: H
+    mesh_level: 4
+    nominal_resolution_m: 500
+    datum: JGD2011
+    distribution_date: "2025-10-09"
+    filename_pattern: tblT001163H{prefecture_code}.zip
+    url_template: https://www.e-stat.go.jp/gis/statmap-search/data?statsId=T001163&code={prefecture_code}&downloadType=2
+    local_path_template: data/raw/phase1/archives/estat/econ-2021-T001163-H-{prefecture_code}.zip
+    headers_path_template: data/raw/phase1/http/estat/econ-2021-T001163-H-{prefecture_code}.headers
+    prefecture_codes: ["08", "09", "10", "11", "12", "13", "14", "19", "22"]
+    reference_date_or_period: "2021-06-01"
+    publication_date_or_period: "2024-09-25"
+    terms_url: https://www.e-stat.go.jp/terms-of-use
+    expected_encoding: cp932
+    missingness_contract: raw_token_preserved
+
+  - artifact_id: estat-census-2020-population-500m-jgd2011
+    source_id: estat_population_census_mesh_2020
+    source_release_id: estat-00200521-2020-mesh-jgd2011
+    kind: estat_prefecture_zip
+    expected_format: zip
+    table_id: T001141
+    aggregate_unit: H
+    mesh_level: 4
+    nominal_resolution_m: 500
+    datum: JGD2011
+    distribution_date: "2025-10-09"
+    filename_pattern: tblT001141H{prefecture_code}.zip
+    url_template: https://www.e-stat.go.jp/gis/statmap-search/data?statsId=T001141&code={prefecture_code}&downloadType=2
+    local_path_template: data/raw/phase1/archives/estat/census-2020-T001141-H-{prefecture_code}.zip
+    headers_path_template: data/raw/phase1/http/estat/census-2020-T001141-H-{prefecture_code}.headers
+    prefecture_codes: ["08", "09", "10", "11", "12", "13", "14", "19", "22"]
+    reference_date_or_period: "2020-10-01"
+    publication_date_or_period: "2022-07-27"
+    terms_url: https://www.e-stat.go.jp/terms-of-use
+    expected_encoding: cp932
+    missingness_contract: HTKSYORI_HTKSAKI_GASSAN_preserved

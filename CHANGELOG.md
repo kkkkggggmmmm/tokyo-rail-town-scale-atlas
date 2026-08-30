@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0 — 2026-08-30
+
+- Started Phase 1 G0/G1 after the Phase 0 baseline.
+- Rechecked and hashed official catalog, correction, terms, update, and definition pages.
+- Corrected the 2020 Census 500m JGD2011 population table pin to e-Stat `T001141`; `T001192` remains the excluded age-class table.
+- Acquired 24 official ZIP archives across N02, S12, L01, 2021 Economic Census, and 2020 Census; verified 91 members and locked SHA-256/HTTP/encoding metadata.
+- Added reproducible acquisition, source-lock, official-recheck, and validation scripts. No station crosswalk, scoring, final polygons, ranking, or UI was produced.
+
 ## 0.1.1 — 2026-08-30
 
 - Created and synchronized the public GitHub canonical repository.

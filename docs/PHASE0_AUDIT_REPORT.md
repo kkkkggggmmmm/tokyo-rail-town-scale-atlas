@@ -149,12 +149,13 @@ imputed; sensitivity scenarios must expose their impact.
 ## 4. 2020 Census regional mesh
 
 Official result page: [2020 Census mesh publication](https://www.stat.go.jp/data/mesh/r2_w.html)
-Definition: [500m population/age table](https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001192.pdf)
+Definition: [500m population/household table](https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001141.pdf)
 
 ### Availability and grain
 
-The 2020-10-01 population census is available at 500m fourth-level mesh. Original mesh
-publication was 2022-07-27; JGD2011 download distribution began 2024-03-14 and
+The 2020-10-01 population census is available at 500m fourth-level mesh. The selected
+population/household table is e-Stat `T001141` (JGD2011). Original mesh publication was
+2022-07-27; JGD2011 download distribution began 2024-03-14 and
 JGD2000/JGD2011 prefectural downloads were added on 2025-10-09. Those are separate
 provenance events. The 2025-12-16 125m reference-table addition is not a Phase 1 input.
 

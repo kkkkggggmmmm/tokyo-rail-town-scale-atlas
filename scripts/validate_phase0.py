@@ -50,6 +50,16 @@ def validate_required_files() -> None:
         "docs/PHASE0_AUDIT_REPORT.md",
         "docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md",
         "docs/PHASE1_EXECUTION_PLAN.md",
+        "docs/PHASE1_G0_G1_REPORT.md",
+        "data/reference/PHASE1_ACQUISITION_SCOPE.yml",
+        "data/manifests/source_lock.phase1.yml",
+        "data/manifests/archive_members.phase1.parquet",
+        "data/manifests/acquisition_log.phase1.jsonl",
+        "data/manifests/official_recheck.phase1.yml",
+        "scripts/build_source_lock.py",
+        "scripts/acquire_phase1_sources.py",
+        "scripts/record_official_recheck.py",
+        "scripts/validate_phase1_lock.py",
     ]
     missing = [item for item in required if not (ROOT / item).is_file()]
     require(not missing, f"Missing required files: {missing}")
@@ -60,6 +70,8 @@ def validate_sources() -> None:
     recheck = manifest["official_recheck"]
     require(recheck["checked_at"] == "2026-08-30", "Official recheck date missing")
     require(recheck["raw_archives_verified"] is False, "Phase 0 must not claim raw archive verification")
+    require(manifest["artifact_policy"]["phase_1_downloads_performed"] is True, "Phase 1 acquisition status missing")
+    require(manifest["phase_1_acquisition"]["status"] == "G1_LOCKED", "Phase 1 source lock status missing")
     sources = manifest["sources"]
     require(len(sources) == 5, "Source manifest must contain exactly five audited families")
     expected_families = {

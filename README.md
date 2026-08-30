@@ -2,9 +2,9 @@
 
 東京圏の駅を入口に、駅へ接続する **commercial center（商業中心地）** の規模・タイプ・交通力・推定信頼度を分離して推定するプロジェクトです。
 
-## Phase 0 status
+## Current status: Phase 1 G1 locked
 
-Phase 0（正本定義・取得可能性監査）を完了し、正本リポジトリは [GitHub](https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas) の `main` です。現時点では最終ランキング、中心地の確定ポリゴン、公開UIを作成していません。
+Phase 0（正本定義・取得可能性監査）を完了し、Phase 1 G0/G1として公式ページの再確認と24アーカイブの原本ロックまで進めました。正本リポジトリは [GitHub](https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas) の `main` です。現時点では駅ID crosswalk、最終ランキング、中心地の確定ポリゴン、公開UIを作成していません。
 
 - [Phase 0 audit report](docs/PHASE0_AUDIT_REPORT.md)
 - [Source manifest](SOURCES.yml)
@@ -15,6 +15,10 @@ Phase 0（正本定義・取得可能性監査）を完了し、正本リポジ�
 - [Pilot scope](docs/PILOT_SCOPE.md)
 - [Golden Eval registry](data/reference/GOLDEN_EVALS.yml)
 - [Phase 1 execution plan](docs/PHASE1_EXECUTION_PLAN.md)
+- [Phase 1 G0/G1 report](docs/PHASE1_G0_G1_REPORT.md)
+- [Phase 1 acquisition scope](data/reference/PHASE1_ACQUISITION_SCOPE.yml)
+- [Phase 1 source lock](data/manifests/source_lock.phase1.yml)
+- [Official page hash recheck](data/manifests/official_recheck.phase1.yml)
 - [Official correction/distribution recheck — 2026-08-30](docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md)
 
 ## Canonical principles
@@ -48,6 +52,7 @@ Phase 0（正本定義・取得可能性監査）を完了し、正本リポジ�
 
 ```bash
 python scripts/validate_phase0.py
+python scripts/validate_phase1_lock.py
 ```
 
-The validator checks the required files, 8 pilot lines, 60 Golden Eval candidates, source-year separation, null semantics, and canonical table declarations.
+The validators check the required files, 8 pilot lines, 60 Golden Eval candidates, source-year separation, null semantics, canonical table declarations, and the local G1 byte/member lock. Raw archives are intentionally not committed to Git.

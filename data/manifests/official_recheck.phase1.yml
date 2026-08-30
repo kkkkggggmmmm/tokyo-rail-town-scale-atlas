@@ -1,0 +1,149 @@
+recheck_version: 0.1.0
+project_id: tokyo-rail-town-scale-atlas
+checked_at: '2026-08-30T10:13:35Z'
+status: PASS
+approved_hosts:
+- nlftp.mlit.go.jp
+- www.e-stat.go.jp
+- www.mlit.go.jp
+- www.stat.go.jp
+pages:
+- url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N02-2025.html
+  final_url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N02-2025.html
+  status: 200
+  content_type: text/html; charset=UTF-8
+  content_length_header: null
+  etag: null
+  last_modified: null
+  bytes_read: 54969
+  sha256: e38d78d7d22a6e826c23fdf69824d50a1ecdbfe5fff012b6de036cfc2e837e3e
+  page_id: n02_catalog
+  checked_at: '2026-08-30T10:13:35Z'
+- url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-S12-2024.html
+  final_url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-S12-2024.html
+  status: 200
+  content_type: text/html; charset=UTF-8
+  content_length_header: null
+  etag: null
+  last_modified: null
+  bytes_read: 88762
+  sha256: 4ff019cbb3e558c878ac6b8facfa6d70de2abc7cf1fcb5de491db11ac3a5f535
+  page_id: s12_catalog
+  checked_at: '2026-08-30T10:13:35Z'
+- url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-L01-2026.html
+  final_url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-L01-2026.html
+  status: 200
+  content_type: text/html; charset=UTF-8
+  content_length_header: null
+  etag: null
+  last_modified: null
+  bytes_read: 3238065
+  sha256: 3f5be994e96b514232caa31609c862765da84b9cb3550a435f153cc69c1d43e9
+  page_id: l01_catalog
+  checked_at: '2026-08-30T10:13:35Z'
+- url: https://nlftp.mlit.go.jp/ksj_error.html
+  final_url: https://nlftp.mlit.go.jp/ksj_error.html
+  status: 200
+  content_type: text/html; charset=UTF-8
+  content_length_header: null
+  etag: null
+  last_modified: null
+  bytes_read: 226057
+  sha256: 5875d88d4b44903bce59e5c8722c92fb535f3c47b6a839164ecaf7f36796575f
+  page_id: ksj_correction_log
+  checked_at: '2026-08-30T10:13:35Z'
+- url: https://nlftp.mlit.go.jp/ksj/other/agreement_01.html
+  final_url: https://nlftp.mlit.go.jp/ksj/other/agreement_01.html
+  status: 200
+  content_type: text/html; charset=UTF-8
+  content_length_header: null
+  etag: null
+  last_modified: null
+  bytes_read: 62475
+  sha256: 3d7de2b69ab01fcc184bf207bf5744ff1d43c582ef2dad359e7448416dc13d67
+  page_id: ksj_terms
+  checked_at: '2026-08-30T10:13:35Z'
+- url: https://www.e-stat.go.jp/help/data-definition-information/update-information
+  final_url: https://www.e-stat.go.jp/help/data-definition-information/update-information
+  status: 200
+  content_type: text/html; charset=UTF-8
+  content_length_header: null
+  etag: null
+  last_modified: null
+  bytes_read: 87884
+  sha256: 656d9b005136c0004b32e3ccdd034f5ad4753b7d929f4dd666d5a01eb78beccb
+  page_id: econ_update_information
+  checked_at: '2026-08-30T10:13:35Z'
+- url: https://www.e-stat.go.jp/terms-of-use
+  final_url: https://www.e-stat.go.jp/terms-of-use
+  status: 200
+  content_type: text/html; charset=UTF-8
+  content_length_header: null
+  etag: null
+  last_modified: null
+  bytes_read: 132027
+  sha256: b20b14e1740943d1269c3b09e230468ae738dfc058a311c44212eb6828fe799a
+  page_id: estat_terms
+  checked_at: '2026-08-30T10:13:35Z'
+- url: https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001163.pdf
+  final_url: https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001163.pdf
+  status: 200
+  content_type: application/pdf
+  content_length_header: '377035'
+  etag: null
+  last_modified: Wed, 15 Jan 2025 04:45:10 GMT
+  bytes_read: 377035
+  sha256: 4a29ff99c4b0c1b2bcd8ba98bb462c3c560705ff9a46327e466400ff10e858ad
+  page_id: econ_definition_T001163
+  checked_at: '2026-08-30T10:13:35Z'
+- url: https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001141.pdf
+  final_url: https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001141.pdf
+  status: 200
+  content_type: application/pdf
+  content_length_header: '151037'
+  etag: null
+  last_modified: Mon, 07 Jul 2025 01:29:48 GMT
+  bytes_read: 151037
+  sha256: f9f0ee00aa0dc820a7e8345809b21d5f7044eeb009d3a5e97694f098166db80e
+  page_id: census_definition_T001141
+  checked_at: '2026-08-30T10:13:35Z'
+- url: https://www.stat.go.jp/data/mesh/r3_w.html
+  final_url: https://www.stat.go.jp/data/mesh/r3_w.html
+  status: 200
+  content_type: text/html
+  content_length_header: '13780'
+  etag: '"6fbb2d0628a435542304912715046e48"'
+  last_modified: Mon, 14 Jul 2025 21:46:46 GMT
+  bytes_read: 13780
+  sha256: a8d7c180e88dc8156aa564ab9e2b9013e246a5ab7cb4b3d0162b0966812c58d5
+  page_id: econ_result_page
+  checked_at: '2026-08-30T10:13:35Z'
+- url: https://www.stat.go.jp/data/mesh/r2_w.html
+  final_url: https://www.stat.go.jp/data/mesh/r2_w.html
+  status: 200
+  content_type: text/html
+  content_length_header: '13871'
+  etag: '"4f53a098458d7e956a7c077a1d63654c"'
+  last_modified: Mon, 14 Jul 2025 21:40:27 GMT
+  bytes_read: 13871
+  sha256: d18c292b4dbaca052044b91ae4289619bad9e453d59e79ea7fec820538d3e945
+  page_id: census_result_page
+  checked_at: '2026-08-30T10:13:35Z'
+- url: https://www.mlit.go.jp/report/press/tochi_fudousan_kensetsugyo17_hh_000001_00078.html
+  final_url: https://www.mlit.go.jp/report/press/tochi_fudousan_kensetsugyo17_hh_000001_00078.html
+  status: 200
+  content_type: text/html
+  content_length_header: '12750'
+  etag: '"4b50f627f79cab10a5061c5c88230105"'
+  last_modified: Wed, 18 Mar 2026 05:05:04 GMT
+  bytes_read: 12750
+  sha256: 4086948b25f91d88c22f1189fa50fc1712428b6609755026735adfaaf8624c0e
+  page_id: l01_announcement
+  checked_at: '2026-08-30T10:13:35Z'
+assertions:
+  n02_release: N02-25
+  s12_release: S12-25
+  economic_census_table: T001163
+  population_census_table: T001141
+  population_census_excluded_lookalike_table: T001192
+  l01_correction_date_floor: '2026-04-24'
