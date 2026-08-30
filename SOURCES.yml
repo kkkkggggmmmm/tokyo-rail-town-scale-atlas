@@ -1,0 +1,333 @@
+manifest_version: "0.1.0"
+project_id: tokyo-rail-town-scale-atlas
+audited_at: "2026-08-30"
+manifest_scope: phase_0_availability_and_terms_audit
+artifact_policy:
+  phase_0_downloads_performed: false
+  note: >-
+    Phase 0は取得可能性と利用条件の監査に限定する。Phase 1で取得した実体には、
+    download_url、retrieved_at、byte_size、sha256、archive_member、変換履歴を追記する。
+date_contract:
+  required_fields:
+    - reference_date_or_period
+    - publication_date_or_period
+    - retrieved_at
+    - release_id
+  rule: >-
+    調査・基準時点、収録対象年度、公表時点、取得時点を別々に保存し、
+    複数ソースを一つの「2026年値」へ丸めない。
+license_contract:
+  unresolved_source_is_stop: true
+  third_party_rights_review_required: true
+missingness_contract:
+  null_is_never_zero: true
+  raw_token_must_be_preserved: true
+  normalized_statuses:
+    - observed
+    - observed_zero
+    - imputed
+    - suppressed
+    - aggregation_destination
+    - not_public
+    - not_surveyed
+    - not_applicable
+    - source_absent
+    - duplicate_on_other_record
+    - station_absent
+    - outside_scope
+    - invalid
+
+sources:
+  - source_id: ksj_n02_2025
+    family: N02
+    title_ja: 国土数値情報 鉄道データ 令和7年度
+    publisher: 国土交通省
+    official_catalog_url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N02-2025.html
+    product_spec_url: https://nlftp.mlit.go.jp/ksj/gml/product_spec/KS-PS-N02-v3_1.pdf
+    candidate_download_url: https://nlftp.mlit.go.jp/ksj/gml/data/N02/N02-25/N02-25_GML.zip
+    release_id: N02-25
+    artifact_status: not_acquired_phase0
+    geographic_coverage: nationwide
+    spatial_unit: railway_and_station_line_features
+    geometry: line
+    crs: JGD2011
+    temporal:
+      reference_date_or_period: "2025-12-31"
+      publication_date_or_period: "2026-04"
+      publication_precision: month
+      retrieved_at: null
+    expected_fields:
+      - operator_class
+      - operator_name
+      - railway_name
+      - service_status
+      - station_name
+      - station_code
+      - station_group_code
+    identity_use:
+      station_code: source_alias_only
+      station_group_code: source_alias_seed_only
+      caveat: >-
+        station_codeは緯度順の採番、station_group_codeは同名かつ300m以内という
+        出典固有ルールであるため、いずれも内部canonical IDにはしない。
+    grain_and_limitations:
+      - 駅も線状地物で、出入口や駅舎点を直接表すものではない。
+      - 同名300mルールは異名乗換を結合せず、同名でも実体の異なる駅を誤結合し得る。
+      - 路線・駅の改廃や再採番を跨ぐ恒久IDは別途必要。
+    missingness:
+      source_specific_codes: []
+      rule: 欠落属性や未収録地物はsource_absentとし、観測0へ変換しない。
+    license:
+      resolved: true
+      name: Creative Commons Attribution 4.0 International
+      url: https://creativecommons.org/licenses/by/4.0/
+      terms_url: https://nlftp.mlit.go.jp/ksj/other/agreement_01.html
+      attribution_required: true
+      modification_notice_required: true
+      third_party_rights_caveat: true
+    model_role:
+      layer: core_reference
+      permitted_domains: [rail_network, station_alias_seed, line_geometry]
+      core_scale_eligible: false
+      rationale: 鉄道正本であり、商業活動量ではない。
+    audit_status: usable_with_controls
+
+  - source_id: ksj_s12_2024
+    family: S12
+    title_ja: 国土数値情報 駅別乗降客数データ 令和6年度
+    publisher: 国土交通省
+    official_catalog_url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-S12-2024.html
+    product_spec_url: https://nlftp.mlit.go.jp/ksj/gml/product_spec/KS-PS-S12-v3_3.pdf
+    candidate_download_url: https://nlftp.mlit.go.jp/ksj/gml/data/S12/S12-25/S12-25_GML.zip
+    code_lists:
+      duplicate_code: https://nlftp.mlit.go.jp/ksj/gml/codelist/RailwayDuplicateCd.html
+      existence_code: https://nlftp.mlit.go.jp/ksj/gml/codelist/RailwayExistenceCd.html
+    release_id: S12-25
+    artifact_status: not_acquired_phase0
+    geographic_coverage: nationwide
+    spatial_unit: station_by_operator_route_record
+    geometry: line
+    crs: JGD2011
+    temporal:
+      reference_date_or_period: "FY2024"
+      maintenance_lag_note: 収録統計は整備年度に対して原則1年度遅れる。
+      publication_date_or_period: "2026-04"
+      publication_precision: month
+      retrieved_at: null
+    expected_fields:
+      - station_name
+      - operator_name
+      - route_name
+      - yearly_boarding_alighting
+      - duplicate_code
+      - existence_code
+    grain_and_limitations:
+      - 事業者間で算出基準が統一されていない。
+      - 非公表駅、データなし駅、当該年に駅なしを区別する必要がある。
+      - 複数事業者・複数路線の値を単純加算すると重複し得る。
+      - 乗換流動を含むため商業中心地規模の直接代理にはしない。
+    missingness:
+      duplicate_code_mapping:
+        "1": observed_on_current_record
+        "2": duplicate_on_other_record
+        "3": station_absent
+      existence_code_mapping:
+        "1": observed
+        "2": source_absent
+        "3": not_public
+        "4": station_absent
+      rule: 値の空欄よりcode listを優先し、raw codeを保存する。
+    license:
+      resolved: true
+      name: Creative Commons Attribution 4.0 International
+      url: https://creativecommons.org/licenses/by/4.0/
+      terms_url: https://nlftp.mlit.go.jp/ksj/other/agreement_01.html
+      attribution_required: true
+      modification_notice_required: true
+      third_party_rights_caveat: true
+    model_role:
+      layer: core_reference
+      permitted_domains: [access_power, transport_town_gap, validation]
+      core_scale_eligible: false
+      rationale: 交通力と街の規模を分離するcanonical decisionによる。
+    audit_status: usable_with_controls
+
+  - source_id: estat_economic_census_mesh_2021
+    family: ECONOMIC_CENSUS_MESH
+    title_ja: 令和3年経済センサス－活動調査 地域メッシュ統計
+    publisher: 総務省統計局・経済産業省
+    official_catalog_url: https://www.e-stat.go.jp/gis/statmap-search?toukeiCode=00200553&toukeiYear=2021
+    official_publication_url: https://www.stat.go.jp/data/mesh/r3_w.html
+    definition_broad_500m_url: https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001162.pdf
+    definition_middle_500m_url: https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001163.pdf
+    usage_notes_url: https://www.stat.go.jp/data/e-census/2021/kekka/pdf/k_riyou.pdf
+    release_id: estat-00200553-2021-mesh-jgd2011
+    artifact_status: not_acquired_phase0
+    geographic_coverage: nationwide_downloadable_by_prefecture_or_primary_mesh
+    spatial_unit: half_grid_square
+    nominal_resolution_m: 500
+    mesh_level: fourth_level
+    geometry: grid
+    crs: JGD2011
+    temporal:
+      reference_date_or_period: "2021-06-01"
+      accounting_period_caveat: 一部会計項目は2020年暦年だが、本プロジェクトは事業所・従業者を主に使う。
+      publication_date_or_period: "2024-09-25"
+      retrieved_at: null
+    preferred_table: middle_industry_500m
+    fallback_table: broad_industry_500m
+    expected_fields:
+      - establishments_total
+      - employees_total
+      - retail_establishments
+      - retail_employees
+      - accommodation_food_establishments
+      - accommodation_food_employees
+      - lifestyle_leisure_establishments
+      - lifestyle_leisure_employees
+    grain_and_limitations:
+      - 約500mメッシュで、店舗や建物単位の境界は表現しない。
+      - 法人番号等の活用で2016年との単純時系列比較に断絶があり得る。
+      - 個人経営の一部産業等は調査対象外である。
+      - 産業分類不能等により内訳合計が総数と一致しない場合がある。
+      - 秘匿値を補完推計してCore値として扱わない。
+    missingness:
+      raw_token_mapping:
+        "X": suppressed
+        "...": not_surveyed
+        "-": not_applicable
+        blank: source_absent
+        numeric_zero: observed_zero
+      imputation_note: 公表値自体に過去調査・行政情報等からの補足が含まれ得るため、原表注記を保存する。
+      rule: raw token、status、numeric_valueを分離し、X等を0にしない。
+    license:
+      resolved: true
+      name: 政府標準利用規約準拠（CC BY 4.0互換）
+      terms_url: https://www.e-stat.go.jp/terms-of-use
+      attribution_required: true
+      modification_notice_required: true
+      third_party_rights_caveat: true
+    model_role:
+      layer: core
+      permitted_domains: [activity_mass, spatial_extent, intensity, type_features]
+      core_scale_eligible: true
+      rationale: 全域同一仕様の公的メッシュ統計である。
+    audit_status: usable_with_controls
+
+  - source_id: estat_population_census_mesh_2020
+    family: POPULATION_CENSUS_MESH
+    title_ja: 令和2年国勢調査 地域メッシュ統計
+    publisher: 総務省統計局
+    official_catalog_url: https://www.e-stat.go.jp/gis/statmap-search?page=1&toukeiCode=00200521&type=1
+    official_publication_url: https://www.stat.go.jp/data/mesh/r2_w.html
+    definition_population_500m_url: https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001192.pdf
+    definition_labor_500m_url: https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001193.pdf
+    definition_housing_500m_url: https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001194.pdf
+    release_id: estat-00200521-2020-mesh-jgd2011
+    artifact_status: not_acquired_phase0
+    geographic_coverage: nationwide_downloadable_by_prefecture_or_primary_mesh
+    spatial_unit: half_grid_square
+    nominal_resolution_m: 500
+    mesh_level: fourth_level
+    geometry: grid
+    crs: JGD2011
+    temporal:
+      reference_date_or_period: "2020-10-01"
+      publication_date_or_period: "2022-07-27"
+      original_publication_date_or_period: "2022-07-27"
+      jgd2011_distribution_start: "2024-03-14"
+      retrieved_at: null
+    expected_fields:
+      - population_total
+      - households_total
+      - suppression_processing_code
+      - aggregation_destination_mesh_code
+      - aggregated_source_mesh_codes
+    grain_and_limitations:
+      - 約500mメッシュで居住人口を捉え、商業活動量の直接値ではない。
+      - 一部項目は秘匿メッシュから他メッシュへ合算される。
+      - 合算後の内訳値が当該メッシュ総数を上回る場合がある。
+      - 総人口等の非秘匿項目と、秘匿対象の詳細項目を同じ処理にしない。
+    missingness:
+      suppression_processing_code_mapping:
+        "0": observed
+        "1": aggregation_destination
+        "2": suppressed
+      destination_field: HTKSAKI
+      source_meshes_field: GASSAN
+      rule: 秘匿元と合算先の関係を保持し、秘匿元を0にしない。
+    license:
+      resolved: true
+      name: 政府標準利用規約準拠（CC BY 4.0互換）
+      terms_url: https://www.e-stat.go.jp/terms-of-use
+      attribution_required: true
+      modification_notice_required: true
+      third_party_rights_caveat: true
+    model_role:
+      layer: core_auxiliary
+      permitted_domains: [resident_context, type_features, residential_adjustment]
+      core_scale_eligible: false
+      rationale: 商業規模と居住者基盤を混同しない。
+    audit_status: usable_with_controls
+
+  - source_id: ksj_l01_2026
+    family: L01
+    title_ja: 国土数値情報 地価公示データ 令和8年
+    publisher: 国土交通省
+    official_catalog_url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-L01-2026.html
+    official_announcement_url: https://www.mlit.go.jp/report/press/tochi_fudousan_kensetsugyo17_hh_000001_00078.html
+    correction_log_url: https://nlftp.mlit.go.jp/ksj_error.html
+    release_id: L01-26-post-2026-04-24-correction
+    artifact_status: not_acquired_phase0
+    geographic_coverage: nationwide_and_prefecture_archives
+    target_archives:
+      saitama: https://nlftp.mlit.go.jp/ksj/gml/data/L01/L01-26/L01-26_11_GML.zip
+      chiba: https://nlftp.mlit.go.jp/ksj/gml/data/L01/L01-26/L01-26_12_GML.zip
+      tokyo: https://nlftp.mlit.go.jp/ksj/gml/data/L01/L01-26/L01-26_13_GML.zip
+      kanagawa: https://nlftp.mlit.go.jp/ksj/gml/data/L01/L01-26/L01-26_14_GML.zip
+    spatial_unit: standard_land_point
+    geometry: point
+    crs: JGD2011
+    temporal:
+      reference_date_or_period: "2026-01-01"
+      publication_date_or_period: "2026-03-18"
+      original_publication_date_or_period: "2026-03-18"
+      latest_known_correction_date: "2026-04-24"
+      retrieved_at: null
+    expected_fields:
+      - standard_land_number
+      - price_yen_per_square_meter
+      - previous_price
+      - current_land_use
+      - zoning
+      - address
+    grain_and_limitations:
+      - 標準地の標本点であり、中心地全域を面として被覆しない。
+      - 地価は希少性、容積率、期待、住宅需要等も反映し、街の大きさではない。
+      - 標準地のない中心地は欠損であり、地価0ではない。
+      - 東京分を含む2026年データに訂正履歴があるため訂正後アーカイブを取得する。
+    missingness:
+      rule: 標準地非存在はsource_absent。属性空欄はraw valueを保持し、0へ変換しない。
+    license:
+      resolved: true
+      name: Creative Commons Attribution 4.0 International
+      url: https://creativecommons.org/licenses/by/4.0/
+      terms_url: https://nlftp.mlit.go.jp/ksj/other/agreement_01.html
+      attribution_required: true
+      modification_notice_required: true
+      third_party_rights_caveat: true
+    model_role:
+      layer: core_comparable_auxiliary
+      permitted_domains: [validation, market_context, confidence]
+      core_scale_eligible: false
+      rationale: 市場強度の検証点であり、Activity Massではない。
+    audit_status: usable_with_controls
+
+phase_1_acquisition_gate:
+  required_before_transform:
+    - Download only from the recorded official host.
+    - Record final resolved URL, HTTP metadata, byte size, and sha256.
+    - Capture archive member names and source encoding.
+    - Reconfirm terms and correction log at retrieval time.
+    - Fail on unrecognized missing-value tokens.
+    - Keep original archives immutable outside Git; commit only manifests and permitted small fixtures.

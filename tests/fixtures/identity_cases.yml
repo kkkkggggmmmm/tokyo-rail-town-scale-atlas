@@ -1,0 +1,49 @@
+fixture_version: "0.1.0"
+note: Synthetic policy cases; not real N02 records and not canonical station data.
+cases:
+  - case_id: IDF01
+    scenario: same_name_nearby_source_seed
+    source_records:
+      - {source_key: n02_a, name: テスト中央, operator: operator_a, x_m: 0, y_m: 0}
+      - {source_key: n02_b, name: テスト中央, operator: operator_b, x_m: 120, y_m: 0}
+    expected_action: create_candidate_station_group
+    forbidden_action: auto_confirm_station_group
+    rationale: N02の同名300mは候補生成には使えるが実体確認を置換しない。
+
+  - case_id: IDF02
+    scenario: different_name_official_transfer
+    source_records:
+      - {source_key: n02_c, name: テスト朝霞台, operator: operator_a, x_m: 0, y_m: 0}
+      - {source_key: n02_d, name: テスト北朝霞, operator: operator_b, x_m: 80, y_m: 0}
+    official_transfer_evidence: true
+    expected_action: separate_station_groups_same_hub
+    forbidden_action: force_same_station_group
+    rationale: 異名乗換はhubで表し、駅群identityを潰さない。
+
+  - case_id: IDF03
+    scenario: rename_across_releases
+    source_records:
+      - {source_release: old, source_key: n02_e_old, name: テスト旧名, x_m: 0, y_m: 0}
+      - {source_release: new, source_key: n02_e_new, name: テスト新名, x_m: 2, y_m: 1}
+    documented_rename: true
+    expected_action: one_station_id_two_dated_aliases
+    forbidden_action: mint_new_id_from_name
+    rationale: 改称はidentity変更ではなくalias履歴である。
+
+  - case_id: IDF04
+    scenario: ambiguous_proximity
+    source_records:
+      - {source_key: n02_f, name: テスト東口, operator: operator_a, x_m: 0, y_m: 0}
+      - {source_key: n02_g, name: テスト中央, operator: operator_b, x_m: 180, y_m: 0}
+    official_transfer_evidence: null
+    expected_action: identity_review_queue
+    forbidden_action: nearest_neighbor_auto_merge
+    rationale: 近接だけで駅群・hubを確定しない。
+
+  - case_id: IDF05
+    scenario: center_split_across_model_runs
+    prior_center: {center_id: ctr_synthetic_prior, peak_count: 1}
+    new_candidate: {peak_count: 2, adjudicated_split: true}
+    expected_action: mint_successor_ids_and_center_lineage
+    forbidden_action: overwrite_prior_center_geometry
+    rationale: 分割統合は履歴を消さない。

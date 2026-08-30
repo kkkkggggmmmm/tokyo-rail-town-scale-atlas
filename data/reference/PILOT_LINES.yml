@@ -1,0 +1,164 @@
+registry_version: "0.1.0"
+project_id: tokyo-rail-town-scale-atlas
+status: fixed_for_phase_1
+fixed_at: "2026-08-30"
+display_scope:
+  prefectures:
+    - {code: "13", name_ja: 東京都}
+    - {code: "11", name_ja: 埼玉県}
+    - {code: "12", name_ja: 千葉県}
+    - {code: "14", name_ja: 神奈川県}
+analysis_extent:
+  default_boundary_buffer_m: 10000
+  rule: >-
+    1都3県境界から10kmをCore surfaceのedge bufferとする。表示集計には含めず、
+    中心地が県境で切れることを防ぐ目的に限定する。
+  pilot_corridor_exception:
+    corridor_id: pilot_tx_full_corridor
+    geometry_rule: full_station_sequence_plus_5000m_corridor
+    display_rule: 茨城県内はPhase 1検証専用で、初期1都3県公開集計には含めない。
+    rationale: TXの新都市・大型施設型を終点側まで検証するため。
+scope_id_note: >-
+  pilot_corridor_idは人間可読なscope識別子であり、canonical line_idではない。
+  Phase 1でN02 aliasを解決後、opaqueなline_idへcrosswalkする。
+
+pilot_corridors:
+  - pilot_corridor_id: pc_jr_chuo_rapid
+    display_name_ja: JR中央線快速
+    operator: 東日本旅客鉄道
+    endpoint_a: 東京
+    endpoint_b: 高尾
+    service_scope_rule: 中央線快速系統の東京—高尾間。緩行線は駅link検証の補助に限定。
+    prefectures: ["13"]
+    primary_tests:
+      - 都心の連続市街地と副中心の分割
+      - 線状に連続する近隣中心
+      - 大規模ターミナルと郊外地域核
+    anchor_cases: [東京・丸の内—八重洲, 新宿, 中野, 高円寺, 吉祥寺, 立川, 八王子]
+    known_risks:
+      - 東京—新宿側の密度面が一体化する
+      - 中野—荻窪側の連続市街地を過分割する
+
+  - pilot_corridor_id: pc_jr_sobu_local
+    display_name_ja: JR総武線各駅停車
+    operator: 東日本旅客鉄道
+    endpoint_a: 御茶ノ水
+    endpoint_b: 千葉
+    service_scope_rule: 御茶ノ水—千葉間の各駅停車。中央・総武緩行系統の西側は対象外。
+    prefectures: ["13", "12"]
+    primary_tests:
+      - 東京東部から千葉側への中心地間隔
+      - 複数路線結節と中心地規模の分離
+      - 県境を跨ぐ連続処理
+    anchor_cases: [秋葉原, 錦糸町, 新小岩, 本八幡, 西船橋, 船橋, 津田沼, 千葉]
+    known_risks:
+      - 秋葉原を上野・神田側と誤結合する
+      - 西船橋を乗降客数で過大評価する
+
+  - pilot_corridor_id: pc_jr_keihin_tohoku_negishi
+    display_name_ja: JR京浜東北・根岸線
+    operator: 東日本旅客鉄道
+    endpoint_a: 大宮
+    endpoint_b: 大船
+    service_scope_rule: 大宮—横浜—大船の京浜東北・根岸系統。
+    prefectures: ["11", "13", "14"]
+    primary_tests:
+      - 3都県を縦断する中心地系列
+      - 業務中心・港湾都市・地域中心の分離
+      - 複数駅が一つの都心中心を構成する例
+    anchor_cases: [大宮, さいたま新都心, 浦和, 赤羽, 上野—御徒町, 東京・丸の内—八重洲, 蒲田, 川崎, 横浜, 関内—桜木町]
+    known_risks:
+      - 東京中心部を単一中心地にする
+      - 横浜—関内の親子階層を誤る
+
+  - pilot_corridor_id: pc_tokyu_toyoko
+    display_name_ja: 東急東横線
+    operator: 東急電鉄
+    endpoint_a: 渋谷
+    endpoint_b: 横浜
+    service_scope_rule: 東急東横線の全線。相互直通先はnetwork contextのみ。
+    prefectures: ["13", "14"]
+    primary_tests:
+      - 私鉄沿線の短間隔な生活中心
+      - 大規模終端中心と中規模駅前の比較
+      - 再開発型結節点
+    anchor_cases: [渋谷, 中目黒, 自由が丘, 武蔵小杉, 日吉, 横浜]
+    known_risks:
+      - 自由が丘の線状商業軸を小さく切る
+      - 武蔵小杉の居住密度を商業量と誤認する
+
+  - pilot_corridor_id: pc_odakyu_odawara
+    display_name_ja: 小田急小田原線
+    operator: 小田急電鉄
+    endpoint_a: 新宿
+    endpoint_b: 小田原
+    service_scope_rule: 小田急小田原線全線。江ノ島線・多摩線はhub contextのみ。
+    prefectures: ["13", "14"]
+    primary_tests:
+      - 都心から郊外への中心地残存
+      - 生活中心・地域核・観光入口の類型
+      - 急行結節と街の規模の分離
+    anchor_cases: [新宿, 下北沢, 成城学園前, 町田, 本厚木, 小田原]
+    known_risks:
+      - 下北沢の細街路集積を500m meshで平滑化する
+      - 小田原の観光機能と地域生活機能を混同する
+
+  - pilot_corridor_id: pc_tobu_tojo
+    display_name_ja: 東武東上線
+    operator: 東武鉄道
+    endpoint_a: 池袋
+    endpoint_b: 寄居
+    service_scope_rule: 池袋—寄居の全線。越生線はhub contextのみ。
+    prefectures: ["13", "11"]
+    primary_tests:
+      - 大ターミナル依存から地方小中心までの勾配
+      - 乗換主体駅と歴史的地域中心
+      - 小規模駅前のL0/L1境界候補
+    anchor_cases: [池袋, 和光市, 朝霞台—北朝霞, 川越, 東松山]
+    known_risks:
+      - 和光市を交通量で過大評価する
+      - 郊外の欠損を中心地なしと誤認する
+
+  - pilot_corridor_id: pc_tokyo_metro_ginza
+    display_name_ja: 東京メトロ銀座線
+    operator: 東京地下鉄
+    endpoint_a: 渋谷
+    endpoint_b: 浅草
+    service_scope_rule: 銀座線全線。地下駅地物は地上の商業中心地への入口としてlinkする。
+    prefectures: ["13"]
+    primary_tests:
+      - 高密度都心の複数駅・複数中心地階層
+      - 地下駅と地上中心地のlink
+      - 観光・業務・買物類型の近接
+    anchor_cases: [渋谷, 銀座—有楽町, 上野—御徒町, 浅草]
+    known_risks:
+      - 銀座—日本橋—東京を一体化する
+      - 浅草の銀座線・TX駅を単純な同駅群にする
+
+  - pilot_corridor_id: pc_tsukuba_express
+    display_name_ja: つくばエクスプレス
+    operator: 首都圏新都市鉄道
+    endpoint_a: 秋葉原
+    endpoint_b: つくば
+    service_scope_rule: 全線。茨城県内はpilot-only analysis corridorで公開1都3県集計外。
+    prefectures: ["13", "11", "12", "08"]
+    primary_tests:
+      - 新都市・大型商業施設主体の中心
+      - 低密度区間に現れる計画的地域核
+      - Core display boundaryを越える解析buffer
+    anchor_cases: [秋葉原, 北千住, 流山おおたかの森, 柏の葉キャンパス, つくば]
+    known_risks:
+      - モール床面積をCore meshだけで過小評価する
+      - 茨城県内を初期公開集計へ混入する
+
+acceptance:
+  exact_corridor_count: 8
+  no_substitution_without_decision_record: true
+  required_crosswalk_fields:
+    - pilot_corridor_id
+    - canonical_line_id
+    - n02_source_release_id
+    - n02_operator_key
+    - n02_route_key
+    - segment_inclusion_rule
+    - resolution_status

@@ -1,0 +1,27 @@
+schema_version: "0.1.0"
+artifact: data/derived/station_line_crosswalk.parquet
+production_phase: phase_1_gate_2
+phase_0_status: schema_only_no_rows
+grain: one canonical station by canonical analysis line membership
+primary_key: [station_id, line_id, membership_valid_from]
+fields:
+  - {name: station_id, type: string, nullable: false, description: opaque canonical station ID}
+  - {name: station_group_id, type: string, nullable: false, description: reviewed canonical station group ID}
+  - {name: hub_id, type: string, nullable: true, description: reviewed transfer hub; proximity alone is insufficient}
+  - {name: line_id, type: string, nullable: false, description: opaque canonical line/corridor ID}
+  - {name: sequence_index, type: int32, nullable: true, description: order inside the exact analysis segment}
+  - {name: distance_from_origin_km, type: float64, nullable: true, description: cumulative distance with method provenance}
+  - {name: membership_valid_from, type: date32, nullable: true, description: beginning of membership validity}
+  - {name: membership_valid_to, type: date32, nullable: true, description: end of membership validity}
+  - {name: n02_source_release_id, type: string, nullable: false, description: immutable N02 release reference}
+  - {name: n02_station_key, type: string, nullable: false, description: source alias; never canonical ID}
+  - {name: n02_station_group_key, type: string, nullable: true, description: same-name 300m source seed only}
+  - {name: n02_operator_key, type: string, nullable: false, description: source operator alias}
+  - {name: n02_route_key, type: string, nullable: false, description: source route alias}
+  - {name: identity_resolution_status, type: string, nullable: false, description: confirmed or reason-coded unresolved}
+  - {name: identity_review_id, type: string, nullable: true, description: open/resolved review queue key}
+constraints:
+  - source keys must not match the canonical ID columns by construction
+  - each source station membership resolves once or appears in identity_review_queue
+  - ambiguous hub membership remains nullable and reason-coded
+  - no row may be emitted without source release provenance

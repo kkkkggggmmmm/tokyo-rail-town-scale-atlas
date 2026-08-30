@@ -1,0 +1,807 @@
+registry_version: "0.1.0"
+project_id: tokyo-rail-town-scale-atlas
+status: candidate_registry_fixed_for_phase_1_adjudication
+fixed_at: "2026-08-30"
+case_count: 60
+split_policy:
+  calibration_count: 45
+  holdout_count: 15
+  rule: >-
+    holdoutはparameter、threshold、cluster命名の調整に使わない。
+    Phase 1開始時にregistry hashを固定し、候補境界出力後に評価器だけが参照する。
+interpretation:
+  note: >-
+    これは最終ランキングでも確定類型でもない。中心地のidentity、境界、相対制約、
+    誤りやすい構造を人間が監査するための候補registryである。
+  boundary_reference_required_in_phase_1: true
+  minimum_adjudicators_per_high_priority_case: 2
+coverage_targets:
+  - major_urban_composite
+  - metropolitan_subcenter
+  - suburban_regional_center
+  - transfer_dominant
+  - mall_led
+  - office_district
+  - food_night
+  - tourism_leisure
+  - linear_shopping_street
+  - small_station_front
+  - multi_station_one_center
+  - one_station_multi_center
+
+cases:
+  - golden_eval_id: GE001
+    display_name_ja: 東京・丸の内—八重洲
+    prefectures: [東京都]
+    anchor_station_names: [東京, 大手町, 二重橋前, 日本橋, 京橋]
+    pilot_corridors: [pc_jr_chuo_rapid, pc_jr_keihin_tohoku_negishi]
+    split: calibration
+    structural_tags: [major_urban_composite, office_district, multi_station_one_center, one_station_multi_center]
+    boundary_priority: high
+    expected_constraints:
+      - 丸の内側と八重洲側のsubareaを表現できること。
+      - 銀座・日本橋との連続面を無条件に単一centerへしないこと。
+      - 東京駅の交通力をCoreScaleへ混入しないこと。
+
+  - golden_eval_id: GE002
+    display_name_ja: 新宿
+    prefectures: [東京都]
+    anchor_station_names: [新宿, 新宿三丁目, 西武新宿, 都庁前, 新宿西口]
+    pilot_corridors: [pc_jr_chuo_rapid, pc_odakyu_odawara]
+    split: calibration
+    structural_tags: [major_urban_composite, food_night, office_district, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 東口・西口・歌舞伎町を階層化できること。
+      - 異名駅を単純な同名駅群ではなくhub/center linkで扱うこと。
+      - 500m mesh境界のわずかな変化で中心identityが消えないこと。
+
+  - golden_eval_id: GE003
+    display_name_ja: 中野
+    prefectures: [東京都]
+    anchor_station_names: [中野]
+    pilot_corridors: [pc_jr_chuo_rapid]
+    split: calibration
+    structural_tags: [suburban_regional_center, linear_shopping_street, office_district]
+    boundary_priority: normal
+    expected_constraints:
+      - 駅北側の商業軸と再開発業務地を一つの円で置換しないこと。
+      - 高円寺側との連続面に鞍部が残ること。
+
+  - golden_eval_id: GE004
+    display_name_ja: 高円寺
+    prefectures: [東京都]
+    anchor_station_names: [高円寺, 新高円寺]
+    pilot_corridors: [pc_jr_chuo_rapid]
+    split: calibration
+    structural_tags: [linear_shopping_street, food_night, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 南北の線状商店街を孤立meshとして落とさないこと。
+      - 中野・阿佐ヶ谷と一つの巨大componentにしないこと。
+
+  - golden_eval_id: GE005
+    display_name_ja: 吉祥寺
+    prefectures: [東京都]
+    anchor_station_names: [吉祥寺]
+    pilot_corridors: [pc_jr_chuo_rapid]
+    split: calibration
+    structural_tags: [suburban_regional_center, shopping, food_night, tourism_leisure]
+    boundary_priority: high
+    expected_constraints:
+      - 駅前面的集積と公園方向の余暇軸を区別できること。
+      - 居住人口の多さだけで規模を増やさないこと。
+
+  - golden_eval_id: GE006
+    display_name_ja: 立川
+    prefectures: [東京都]
+    anchor_station_names: [立川, 立川北, 立川南]
+    pilot_corridors: [pc_jr_chuo_rapid]
+    split: calibration
+    structural_tags: [suburban_regional_center, shopping, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - モノレール駅を含む実質hubを表現すること。
+      - 駅南北の商業集積を過分割しないこと。
+
+  - golden_eval_id: GE007
+    display_name_ja: 八王子
+    prefectures: [東京都]
+    anchor_station_names: [八王子, 京王八王子]
+    pilot_corridors: [pc_jr_chuo_rapid]
+    split: calibration
+    structural_tags: [suburban_regional_center, multi_station_one_center, food_night]
+    boundary_priority: high
+    expected_constraints:
+      - JRと京王の異名駅間の商業軸を評価すること。
+      - 近接だけで同一station_groupにせずhubとして根拠を持つこと。
+
+  - golden_eval_id: GE008
+    display_name_ja: 秋葉原
+    prefectures: [東京都]
+    anchor_station_names: [秋葉原, 岩本町, 末広町]
+    pilot_corridors: [pc_jr_sobu_local, pc_tsukuba_express]
+    split: calibration
+    structural_tags: [shopping, tourism_leisure, multi_station_one_center, one_station_multi_center]
+    boundary_priority: high
+    expected_constraints:
+      - 電気街側と昭和通り側のsubarea候補を監査できること。
+      - 上野・神田方向へ密度面が無制限に連結しないこと。
+
+  - golden_eval_id: GE009
+    display_name_ja: 錦糸町
+    prefectures: [東京都]
+    anchor_station_names: [錦糸町]
+    pilot_corridors: [pc_jr_sobu_local]
+    split: calibration
+    structural_tags: [suburban_regional_center, shopping, food_night]
+    boundary_priority: normal
+    expected_constraints:
+      - 大型施設と街路型商業の両方を捉えること。
+      - 亀戸側との鞍部を検証すること。
+
+  - golden_eval_id: GE010
+    display_name_ja: 新小岩
+    prefectures: [東京都]
+    anchor_station_names: [新小岩]
+    pilot_corridors: [pc_jr_sobu_local]
+    split: calibration
+    structural_tags: [local_life, linear_shopping_street]
+    boundary_priority: normal
+    expected_constraints:
+      - ルミエール商店街方向の線状性を残すこと。
+      - 駅の乗降客だけで地域中心へ昇格させないこと。
+
+  - golden_eval_id: GE011
+    display_name_ja: 本八幡
+    prefectures: [千葉県]
+    anchor_station_names: [本八幡, 京成八幡]
+    pilot_corridors: [pc_jr_sobu_local]
+    split: calibration
+    structural_tags: [local_life, transfer_dominant, multi_station_one_center]
+    boundary_priority: normal
+    expected_constraints:
+      - JR・都営・京成の駅関係をstation groupとhubで分けること。
+      - 交通結節性と商業集積を別出力にすること。
+
+  - golden_eval_id: GE012
+    display_name_ja: 西船橋
+    prefectures: [千葉県]
+    anchor_station_names: [西船橋, 京成西船]
+    pilot_corridors: [pc_jr_sobu_local]
+    split: calibration
+    structural_tags: [transfer_dominant, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 多路線乗換をCoreScaleの活動量へ直接加算しないこと。
+      - 京成西船との関係を距離だけで自動確定しないこと。
+
+  - golden_eval_id: GE013
+    display_name_ja: 船橋
+    prefectures: [千葉県]
+    anchor_station_names: [船橋, 京成船橋]
+    pilot_corridors: [pc_jr_sobu_local]
+    split: calibration
+    structural_tags: [suburban_regional_center, shopping, multi_station_one_center]
+    boundary_priority: normal
+    expected_constraints:
+      - JR・東武・京成を一つのcenter入口として関連付けること。
+      - 南船橋のモール中心と混同しないこと。
+
+  - golden_eval_id: GE014
+    display_name_ja: 津田沼
+    prefectures: [千葉県]
+    anchor_station_names: [津田沼, 新津田沼]
+    pilot_corridors: [pc_jr_sobu_local]
+    split: calibration
+    structural_tags: [suburban_regional_center, shopping, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - JRと新京成の間の商業面を中心地として扱うこと。
+      - 大型施設の変動に対するboundary stabilityを記録すること。
+
+  - golden_eval_id: GE015
+    display_name_ja: 千葉
+    prefectures: [千葉県]
+    anchor_station_names: [千葉, 京成千葉, 栄町, 葭川公園, 千葉中央]
+    pilot_corridors: [pc_jr_sobu_local]
+    split: calibration
+    structural_tags: [suburban_regional_center, office_district, food_night, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 千葉駅前と栄町・中央側を階層として監査できること。
+      - 複数モノレール駅を重複中心として数えないこと。
+
+  - golden_eval_id: GE016
+    display_name_ja: 大宮
+    prefectures: [埼玉県]
+    anchor_station_names: [大宮]
+    pilot_corridors: [pc_jr_keihin_tohoku_negishi]
+    split: calibration
+    structural_tags: [suburban_regional_center, major_urban_composite, food_night]
+    boundary_priority: high
+    expected_constraints:
+      - 東西の商業集積をsubareaとして監査できること。
+      - 多路線の交通力と街の規模を分離すること。
+
+  - golden_eval_id: GE017
+    display_name_ja: さいたま新都心
+    prefectures: [埼玉県]
+    anchor_station_names: [さいたま新都心, 北与野]
+    pilot_corridors: [pc_jr_keihin_tohoku_negishi]
+    split: calibration
+    structural_tags: [office_district, mall_led, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 業務・アリーナ・大型施設の構成を規模と分けること。
+      - 北与野とのlinkを行政的名称ではなく実体で監査すること。
+
+  - golden_eval_id: GE018
+    display_name_ja: 浦和
+    prefectures: [埼玉県]
+    anchor_station_names: [浦和]
+    pilot_corridors: [pc_jr_keihin_tohoku_negishi]
+    split: calibration
+    structural_tags: [suburban_regional_center, office_district, local_life]
+    boundary_priority: normal
+    expected_constraints:
+      - 行政・業務機能と生活商業を類型特徴として保持すること。
+      - 大宮との相対差を乗降客だけで決めないこと。
+
+  - golden_eval_id: GE019
+    display_name_ja: 赤羽
+    prefectures: [東京都]
+    anchor_station_names: [赤羽, 赤羽岩淵]
+    pilot_corridors: [pc_jr_keihin_tohoku_negishi]
+    split: calibration
+    structural_tags: [suburban_regional_center, food_night, linear_shopping_street]
+    boundary_priority: normal
+    expected_constraints:
+      - 東口商店街・飲食集積の線状性を落とさないこと。
+      - 赤羽岩淵を距離だけで同一station_groupにしないこと。
+
+  - golden_eval_id: GE020
+    display_name_ja: 上野—御徒町
+    prefectures: [東京都]
+    anchor_station_names: [上野, 京成上野, 御徒町, 上野広小路, 上野御徒町, 仲御徒町]
+    pilot_corridors: [pc_jr_keihin_tohoku_negishi, pc_tokyo_metro_ginza]
+    split: calibration
+    structural_tags: [major_urban_composite, shopping, food_night, tourism_leisure, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 上野駅・アメ横・御徒町を親子または連続centerとして監査できること。
+      - 浅草・秋葉原へ一つの巨大centerとして連結しないこと。
+
+  - golden_eval_id: GE021
+    display_name_ja: 蒲田
+    prefectures: [東京都]
+    anchor_station_names: [蒲田, 京急蒲田]
+    pilot_corridors: [pc_jr_keihin_tohoku_negishi]
+    split: calibration
+    structural_tags: [suburban_regional_center, food_night, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - JR蒲田と京急蒲田の間の連続性を検証すること。
+      - 二駅を同一station_groupにせずcenter/hub関係で表現すること。
+
+  - golden_eval_id: GE022
+    display_name_ja: 川崎
+    prefectures: [神奈川県]
+    anchor_station_names: [川崎, 京急川崎]
+    pilot_corridors: [pc_jr_keihin_tohoku_negishi]
+    split: calibration
+    structural_tags: [suburban_regional_center, shopping, food_night, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 東西の大型施設・飲食域を一つの固定円で切らないこと。
+      - JRと京急を駅群ではなくhub/center linkとして監査すること。
+
+  - golden_eval_id: GE023
+    display_name_ja: 横浜
+    prefectures: [神奈川県]
+    anchor_station_names: [横浜, 新高島, 平沼橋, 高島町]
+    pilot_corridors: [pc_jr_keihin_tohoku_negishi, pc_tokyu_toyoko]
+    split: calibration
+    structural_tags: [major_urban_composite, shopping, office_district, multi_station_one_center, one_station_multi_center]
+    boundary_priority: high
+    expected_constraints:
+      - 西口・東口・みなとみらい方向の階層を監査できること。
+      - 関内—桜木町と無条件に単一centerへしないこと。
+
+  - golden_eval_id: GE024
+    display_name_ja: 関内—桜木町
+    prefectures: [神奈川県]
+    anchor_station_names: [関内, 桜木町, 馬車道, 日本大通り, 伊勢佐木長者町]
+    pilot_corridors: [pc_jr_keihin_tohoku_negishi]
+    split: calibration
+    structural_tags: [tourism_leisure, food_night, office_district, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 関内・野毛・馬車道のsubarea候補を表現すること。
+      - 横浜駅中心との親子・別中心の判定を保存すること。
+
+  - golden_eval_id: GE025
+    display_name_ja: 渋谷
+    prefectures: [東京都]
+    anchor_station_names: [渋谷, 神泉]
+    pilot_corridors: [pc_tokyu_toyoko, pc_tokyo_metro_ginza]
+    split: calibration
+    structural_tags: [major_urban_composite, shopping, food_night, one_station_multi_center]
+    boundary_priority: high
+    expected_constraints:
+      - 駅周辺・道玄坂・公園通りの階層を監査できること。
+      - 原宿—表参道・恵比寿側へ連続面を無制限に広げないこと。
+
+  - golden_eval_id: GE026
+    display_name_ja: 中目黒
+    prefectures: [東京都]
+    anchor_station_names: [中目黒]
+    pilot_corridors: [pc_tokyu_toyoko]
+    split: calibration
+    structural_tags: [food_night, linear_shopping_street, tourism_leisure]
+    boundary_priority: normal
+    expected_constraints:
+      - 目黒川沿いの線状集積を扱うこと。
+      - 渋谷・代官山側の連続性を過大評価しないこと。
+
+  - golden_eval_id: GE027
+    display_name_ja: 自由が丘
+    prefectures: [東京都]
+    anchor_station_names: [自由が丘, 九品仏, 奥沢]
+    pilot_corridors: [pc_tokyu_toyoko]
+    split: calibration
+    structural_tags: [shopping, food_night, linear_shopping_street, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 放射状・線状の商業街路を連結componentとして評価すること。
+      - 周辺住宅人口を商業量へ直接加算しないこと。
+
+  - golden_eval_id: GE028
+    display_name_ja: 武蔵小杉
+    prefectures: [神奈川県]
+    anchor_station_names: [武蔵小杉, 新丸子]
+    pilot_corridors: [pc_tokyu_toyoko]
+    split: calibration
+    structural_tags: [transfer_dominant, mall_led, local_life, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - タワー住宅人口と商業活動量を分けること。
+      - JR駅間の物理的離隔をstation/group/hubで正規化すること。
+
+  - golden_eval_id: GE029
+    display_name_ja: 日吉
+    prefectures: [神奈川県]
+    anchor_station_names: [日吉]
+    pilot_corridors: [pc_tokyu_toyoko]
+    split: calibration
+    structural_tags: [local_life, transfer_dominant, linear_shopping_street]
+    boundary_priority: normal
+    expected_constraints:
+      - 学生街・駅前生活商業の構成を保持すること。
+      - 新路線の交通力増加を街の規模増加と同一視しないこと。
+
+  - golden_eval_id: GE030
+    display_name_ja: 下北沢
+    prefectures: [東京都]
+    anchor_station_names: [下北沢, 東北沢, 世田谷代田]
+    pilot_corridors: [pc_odakyu_odawara]
+    split: calibration
+    structural_tags: [food_night, tourism_leisure, linear_shopping_street, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 細街路の小規模店舗集積を500m meshの弱点として明示すること。
+      - 駅移設・再開発後もsource aliasとcenter identityを混同しないこと。
+
+  - golden_eval_id: GE031
+    display_name_ja: 成城学園前
+    prefectures: [東京都]
+    anchor_station_names: [成城学園前]
+    pilot_corridors: [pc_odakyu_odawara]
+    split: calibration
+    structural_tags: [small_station_front, local_life]
+    boundary_priority: normal
+    expected_constraints:
+      - 周辺所得・地価・人口だけで規模を過大評価しないこと。
+      - 公表0と商業meshの欠損を区別すること。
+
+  - golden_eval_id: GE032
+    display_name_ja: 町田
+    prefectures: [東京都]
+    anchor_station_names: [町田]
+    pilot_corridors: [pc_odakyu_odawara]
+    split: calibration
+    structural_tags: [suburban_regional_center, shopping, food_night, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - JR・小田急駅間の面的商業集積を捉えること。
+      - 東京都・神奈川県境界で中心地を切らないこと。
+
+  - golden_eval_id: GE033
+    display_name_ja: 本厚木
+    prefectures: [神奈川県]
+    anchor_station_names: [本厚木]
+    pilot_corridors: [pc_odakyu_odawara]
+    split: calibration
+    structural_tags: [suburban_regional_center, food_night, local_life]
+    boundary_priority: normal
+    expected_constraints:
+      - 厚木駅の名称と本厚木中心地を誤結合しないこと。
+      - 郊外業務・生活・夜間構成を規模と別に評価すること。
+
+  - golden_eval_id: GE034
+    display_name_ja: 小田原
+    prefectures: [神奈川県]
+    anchor_station_names: [小田原, 緑町]
+    pilot_corridors: [pc_odakyu_odawara]
+    split: calibration
+    structural_tags: [suburban_regional_center, tourism_leisure, local_life, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 観光入口と地域生活中心の二面性を保持すること。
+      - 城址等の非商業観光空間を活動面へ無条件に含めないこと。
+
+  - golden_eval_id: GE035
+    display_name_ja: 池袋
+    prefectures: [東京都]
+    anchor_station_names: [池袋, 東池袋, 都電雑司ヶ谷]
+    pilot_corridors: [pc_tobu_tojo]
+    split: calibration
+    structural_tags: [major_urban_composite, shopping, food_night, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 東西の商業核と南北の延長を階層として監査すること。
+      - 乗入路線数をCoreScaleへ混ぜないこと。
+
+  - golden_eval_id: GE036
+    display_name_ja: 和光市
+    prefectures: [埼玉県]
+    anchor_station_names: [和光市]
+    pilot_corridors: [pc_tobu_tojo]
+    split: calibration
+    structural_tags: [transfer_dominant, local_life, small_station_front]
+    boundary_priority: high
+    expected_constraints:
+      - 相互直通・始発機能によるAccess優位を分離すること。
+      - source_absentな商業属性を0としないこと。
+
+  - golden_eval_id: GE037
+    display_name_ja: 朝霞台—北朝霞
+    prefectures: [埼玉県]
+    anchor_station_names: [朝霞台, 北朝霞]
+    pilot_corridors: [pc_tobu_tojo]
+    split: calibration
+    structural_tags: [transfer_dominant, multi_station_one_center, small_station_front]
+    boundary_priority: high
+    expected_constraints:
+      - 異名駅をhubとして結び、同名駅群ルールに依存しないこと。
+      - 乗換流動が中心地規模を支配しないこと。
+
+  - golden_eval_id: GE038
+    display_name_ja: 川越
+    prefectures: [埼玉県]
+    anchor_station_names: [川越, 本川越, 川越市]
+    pilot_corridors: [pc_tobu_tojo]
+    split: calibration
+    structural_tags: [suburban_regional_center, tourism_leisure, shopping, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 三駅の現代中心と旧市街観光軸の関係を階層化すること。
+      - 駅中心の固定円で蔵造り地区を切り捨てないこと。
+
+  - golden_eval_id: GE039
+    display_name_ja: 東松山
+    prefectures: [埼玉県]
+    anchor_station_names: [東松山]
+    pilot_corridors: [pc_tobu_tojo]
+    split: calibration
+    structural_tags: [small_station_front, local_life]
+    boundary_priority: normal
+    expected_constraints:
+      - 小規模駅前と明確な中心なしの境界候補として扱うこと。
+      - 欠損の多さを真の小ささへ変換しないこと。
+
+  - golden_eval_id: GE040
+    display_name_ja: 銀座—有楽町
+    prefectures: [東京都]
+    anchor_station_names: [銀座, 有楽町, 銀座一丁目, 東銀座, 日比谷]
+    pilot_corridors: [pc_tokyo_metro_ginza]
+    split: calibration
+    structural_tags: [shopping, office_district, food_night, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 複数駅を一つの商業中心地として重複除去すること。
+      - 東京・新橋との鞍部と親子関係を監査すること。
+
+  - golden_eval_id: GE041
+    display_name_ja: 浅草
+    prefectures: [東京都]
+    anchor_station_names: [浅草, 田原町, 浅草橋]
+    pilot_corridors: [pc_tokyo_metro_ginza]
+    split: calibration
+    structural_tags: [tourism_leisure, food_night, shopping, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 銀座線側とTX側の同名駅をsource group codeだけで統合しないこと。
+      - 浅草寺・商店街・飲食域の非円形構造を監査すること。
+
+  - golden_eval_id: GE042
+    display_name_ja: 北千住
+    prefectures: [東京都]
+    anchor_station_names: [北千住, 千住大橋, 牛田, 京成関屋]
+    pilot_corridors: [pc_tsukuba_express]
+    split: calibration
+    structural_tags: [suburban_regional_center, transfer_dominant, food_night, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 多路線hubと宿場町由来の商業軸を分けて測ること。
+      - 牛田—京成関屋を別の駅群/同一hub候補として保持すること。
+
+  - golden_eval_id: GE043
+    display_name_ja: 流山おおたかの森
+    prefectures: [千葉県]
+    anchor_station_names: [流山おおたかの森]
+    pilot_corridors: [pc_tsukuba_express]
+    split: calibration
+    structural_tags: [mall_led, suburban_regional_center, transfer_dominant]
+    boundary_priority: high
+    expected_constraints:
+      - モールanchor有無によるboundary差をEnhanced依存として記録すること。
+      - 新規住宅人口を商業量へ直接加算しないこと。
+
+  - golden_eval_id: GE044
+    display_name_ja: 柏の葉キャンパス
+    prefectures: [千葉県]
+    anchor_station_names: [柏の葉キャンパス]
+    pilot_corridors: [pc_tsukuba_express]
+    split: calibration
+    structural_tags: [mall_led, office_district, planned_new_town]
+    boundary_priority: high
+    expected_constraints:
+      - 大型施設主体の中心を小さなmesh peakとして落とさないこと。
+      - Enhanced anchorなしのCore baselineも保存すること。
+
+  - golden_eval_id: GE045
+    display_name_ja: つくば
+    prefectures: [茨城県]
+    anchor_station_names: [つくば]
+    pilot_corridors: [pc_tsukuba_express]
+    split: calibration
+    structural_tags: [suburban_regional_center, office_district, planned_new_town, one_station_multi_center]
+    boundary_priority: high
+    expected_constraints:
+      - pilot-only領域として1都3県公開集計から除外すること。
+      - 研究学園都市の分散業務機能と駅前商業を一中心に過統合しないこと。
+
+  - golden_eval_id: GE046
+    display_name_ja: 六本木
+    prefectures: [東京都]
+    anchor_station_names: [六本木, 六本木一丁目, 乃木坂]
+    pilot_corridors: []
+    split: holdout
+    structural_tags: [food_night, office_district, tourism_leisure, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 業務・夜間・大型複合施設を規模と類型に分離すること。
+      - 複数peakを固定800m円で置換しないこと。
+
+  - golden_eval_id: GE047
+    display_name_ja: 原宿—表参道
+    prefectures: [東京都]
+    anchor_station_names: [原宿, 明治神宮前, 表参道]
+    pilot_corridors: []
+    split: holdout
+    structural_tags: [shopping, tourism_leisure, linear_shopping_street, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 表参道の線状軸と裏通りの面的集積を監査すること。
+      - 渋谷centerへ自動吸収しないこと。
+
+  - golden_eval_id: GE048
+    display_name_ja: 新橋—汐留
+    prefectures: [東京都]
+    anchor_station_names: [新橋, 汐留, 内幸町]
+    pilot_corridors: []
+    split: holdout
+    structural_tags: [office_district, food_night, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 新橋飲食域と汐留業務域をsubareaとして表現すること。
+      - 銀座との連続面を一体化し過ぎないこと。
+
+  - golden_eval_id: GE049
+    display_name_ja: 二子玉川
+    prefectures: [東京都]
+    anchor_station_names: [二子玉川]
+    pilot_corridors: []
+    split: holdout
+    structural_tags: [mall_led, office_district, local_life]
+    boundary_priority: normal
+    expected_constraints:
+      - 大型複合施設と周辺生活商業の偏りを扱うこと。
+      - 地価をCoreScaleへ加算しないこと。
+
+  - golden_eval_id: GE050
+    display_name_ja: 多摩センター
+    prefectures: [東京都]
+    anchor_station_names: [京王多摩センター, 小田急多摩センター, 多摩センター]
+    pilot_corridors: []
+    split: holdout
+    structural_tags: [planned_new_town, mall_led, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 三事業者駅を正規化し、中心地を重複計数しないこと。
+      - 歩行者デッキ型の非円形商業空間を監査すること。
+
+  - golden_eval_id: GE051
+    display_name_ja: 柏
+    prefectures: [千葉県]
+    anchor_station_names: [柏]
+    pilot_corridors: []
+    split: holdout
+    structural_tags: [suburban_regional_center, shopping, food_night]
+    boundary_priority: high
+    expected_constraints:
+      - 東西の商業集積を地域中心として捉えること。
+      - 柏の葉キャンパスと名称・近接で誤結合しないこと。
+
+  - golden_eval_id: GE052
+    display_name_ja: 松戸
+    prefectures: [千葉県]
+    anchor_station_names: [松戸]
+    pilot_corridors: []
+    split: holdout
+    structural_tags: [suburban_regional_center, food_night, local_life]
+    boundary_priority: normal
+    expected_constraints:
+      - 乗換結節性と地域中心規模を分離すること。
+      - 河川側edgeのboundary stabilityを確認すること。
+
+  - golden_eval_id: GE053
+    display_name_ja: 越谷レイクタウン
+    prefectures: [埼玉県]
+    anchor_station_names: [越谷レイクタウン]
+    pilot_corridors: []
+    split: holdout
+    structural_tags: [mall_led, planned_new_town, one_station_multi_center]
+    boundary_priority: high
+    expected_constraints:
+      - 巨大モールを従業者meshだけで系統的に過小評価しないか検出すること。
+      - 商業施設anchorの寄与をEnhancedとして分離表示すること。
+
+  - golden_eval_id: GE054
+    display_name_ja: 海浜幕張
+    prefectures: [千葉県]
+    anchor_station_names: [海浜幕張]
+    pilot_corridors: []
+    split: holdout
+    structural_tags: [office_district, mall_led, tourism_leisure, planned_new_town]
+    boundary_priority: high
+    expected_constraints:
+      - 幕張メッセ・業務・モールの構成を区別すること。
+      - イベント時人流を常時Core活動量としないこと。
+
+  - golden_eval_id: GE055
+    display_name_ja: 南船橋—ららぽーと
+    prefectures: [千葉県]
+    anchor_station_names: [南船橋, 船橋競馬場]
+    pilot_corridors: []
+    split: holdout
+    structural_tags: [mall_led, tourism_leisure, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 大型施設と二駅の入口関係を多対多linkで表現すること。
+      - 船橋駅centerへ名称類似で結合しないこと。
+
+  - golden_eval_id: GE056
+    display_name_ja: お台場
+    prefectures: [東京都]
+    anchor_station_names: [台場, 東京テレポート, お台場海浜公園, 青海]
+    pilot_corridors: []
+    split: holdout
+    structural_tags: [tourism_leisure, mall_led, office_district, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 複数駅・大型施設・空地を含む分散中心として階層化すること。
+      - 水域や欠損cellで不自然な穴を作らないこと。
+
+  - golden_eval_id: GE057
+    display_name_ja: 元町—中華街
+    prefectures: [神奈川県]
+    anchor_station_names: [元町・中華街, 石川町, 日本大通り]
+    pilot_corridors: []
+    split: holdout
+    structural_tags: [tourism_leisure, food_night, linear_shopping_street, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 中華街と元町商店街をsubarea候補として扱うこと。
+      - 関内centerとの境界・親子関係を監査すること。
+
+  - golden_eval_id: GE058
+    display_name_ja: 成田
+    prefectures: [千葉県]
+    anchor_station_names: [成田, 京成成田]
+    pilot_corridors: []
+    split: holdout
+    structural_tags: [tourism_leisure, local_life, linear_shopping_street, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 駅前と参道の長い商業軸を固定円で切らないこと。
+      - 空港centerとは別identityにすること。
+
+  - golden_eval_id: GE059
+    display_name_ja: 木更津
+    prefectures: [千葉県]
+    anchor_station_names: [木更津]
+    pilot_corridors: []
+    split: holdout
+    structural_tags: [small_station_front, local_life, suburban_regional_center]
+    boundary_priority: normal
+    expected_constraints:
+      - 歴史的中心と現在の活動低下を欠損だけで判定しないこと。
+      - 郊外モールを駅前centerへ無理に結合しないこと。
+
+  - golden_eval_id: GE060
+    display_name_ja: 武蔵小山—戸越銀座
+    prefectures: [東京都]
+    anchor_station_names: [武蔵小山, 戸越銀座, 戸越]
+    pilot_corridors: []
+    split: holdout
+    structural_tags: [linear_shopping_street, local_life, multi_station_one_center]
+    boundary_priority: high
+    expected_constraints:
+      - 長い商店街軸を複数の円や孤立meshに分断しないこと。
+      - 二つの商店街中心を親子・連続・別中心の三案で監査すること。
+
+hard_pairwise:
+  - {larger: GE002, smaller: GE031, relation: commercial_mass, rationale: 新宿と成城学園前の明白な規模差}
+  - {larger: GE001, smaller: GE004, relation: commercial_mass, rationale: 東京中心と高円寺の明白な規模差}
+  - {larger: GE023, smaller: GE029, relation: commercial_mass, rationale: 横浜と日吉の明白な規模差}
+  - {larger: GE015, smaller: GE011, relation: commercial_mass, rationale: 千葉と本八幡の地域階層差}
+  - {larger: GE016, smaller: GE036, relation: commercial_mass, rationale: 大宮と和光市の商業集積差}
+  - {larger: GE038, smaller: GE039, relation: commercial_mass, rationale: 川越と東松山の地域中心差}
+  - {larger: GE032, smaller: GE031, relation: commercial_mass, rationale: 町田と成城学園前の商業集積差}
+  - {larger: GE025, smaller: GE026, relation: commercial_mass, rationale: 渋谷と中目黒の面的集積差}
+  - {larger: GE035, smaller: GE036, relation: commercial_mass, rationale: 池袋と和光市の明白な規模差}
+  - {larger: GE005, smaller: GE004, relation: commercial_mass, rationale: 吉祥寺と高円寺の広域集客差}
+  - {larger: GE020, smaller: GE019, relation: commercial_mass, rationale: 上野—御徒町と赤羽の面的集積差}
+  - {larger: GE045, smaller: GE044, relation: commercial_mass, rationale: つくば中心と単一施設主導中心の総量差仮説}
+
+soft_pairwise:
+  - {larger: GE006, smaller: GE007, relation: commercial_mass, rationale: 立川の現行面的集積が優位という仮説}
+  - {larger: GE013, smaller: GE014, relation: commercial_mass, rationale: 船橋と津田沼の僅差検証}
+  - {larger: GE022, smaller: GE021, relation: commercial_mass, rationale: 川崎と蒲田の広がり差仮説}
+  - {larger: GE027, smaller: GE029, relation: commercial_mass, rationale: 自由が丘の商業軸優位仮説}
+  - {larger: GE033, smaller: GE031, relation: commercial_mass, rationale: 本厚木と成城学園前の地域中心差}
+  - {larger: GE043, smaller: GE044, relation: commercial_mass, rationale: 二つのTX新都市中心の比較}
+  - {larger: GE041, smaller: GE042, relation: consumer_facing_mass, rationale: 観光商業と乗換地域中心の比較}
+  - {larger: GE030, smaller: GE031, relation: consumer_facing_mass, rationale: 下北沢の小店舗集積仮説}
+  - {larger: GE024, smaller: GE021, relation: commercial_mass, rationale: 関内—桜木町と蒲田の面的集積比較}
+  - {larger: GE018, smaller: GE036, relation: commercial_mass, rationale: 浦和と和光市の中心性差}
+  - {larger: GE040, smaller: GE026, relation: commercial_mass, rationale: 銀座—有楽町と中目黒の明白に近い規模差}
+  - {larger: GE009, smaller: GE010, relation: commercial_mass, rationale: 錦糸町と新小岩の地域階層差}
+
+hard_structural_assertions:
+  - assertion_id: HSA01
+    cases: [GE012]
+    rule: 西船橋のS12値をCoreScaleに入力しない。
+  - assertion_id: HSA02
+    cases: [GE040]
+    rule: 銀座・有楽町の複数駅link後、沿線ごとのcenter計数は1件。
+  - assertion_id: HSA03
+    cases: [GE037]
+    rule: 朝霞台と北朝霞を異名のまま同一hub候補として解決可能。
+  - assertion_id: HSA04
+    cases: [GE041]
+    rule: 銀座線浅草とTX浅草をN02同名/近接だけで同一station_groupにしない。
+  - assertion_id: HSA05
+    cases: [GE001, GE040, GE048]
+    rule: 東京・銀座・新橋を常に一つのflat centerへ崩さず階層候補を残す。
+  - assertion_id: HSA06
+    cases: [GE043, GE044, GE053, GE055]
+    rule: 商業施設anchorを使ったgeometryはEnhanced依存と表示する。
+  - assertion_id: HSA07
+    cases: [GE004, GE010, GE027, GE058, GE060]
+    rule: 線状商店街を固定駅半径へ置換しない。
+  - assertion_id: HSA08
+    cases: [GE045]
+    rule: 茨城県内のcaseを初期1都3県summaryへ含めない。

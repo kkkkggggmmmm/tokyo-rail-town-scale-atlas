@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.venv/
+
+# Editors / OS
+.DS_Store
+*.swp
+*.swo
+
+# Source data and reproducible large derivatives
+data/raw/
+data/staging/
+data/derived/
+data/qa/
+public/tiles/
+*.pmtiles
+
+# Local database and logs
+*.duckdb
+*.duckdb.wal
+logs/
+
+# Keep reference registries and fixtures under version control.
+!data/reference/
+!data/reference/**

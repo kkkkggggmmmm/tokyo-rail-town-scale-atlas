@@ -1,0 +1,12 @@
+source,raw_value,code_a,code_b,expected_status,expected_numeric
+estat,0,,,observed_zero,0
+estat,15,,,observed,15
+estat,X,,,suppressed,
+estat,...,,,not_surveyed,
+estat,-,,,not_applicable,
+estat,,,,source_absent,
+s12,,3,1,not_public,
+s12,123,1,2,duplicate_on_other_record,
+s12,,4,1,station_absent,
+census,,2,,suppressed,
+census,42,1,,aggregation_destination,42
