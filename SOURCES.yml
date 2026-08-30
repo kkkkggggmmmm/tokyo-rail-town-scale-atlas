@@ -1,7 +1,14 @@
-manifest_version: "0.1.0"
+manifest_version: "0.1.1"
 project_id: tokyo-rail-town-scale-atlas
 audited_at: "2026-08-30"
 manifest_scope: phase_0_availability_and_terms_audit
+official_recheck:
+  checked_at: "2026-08-30"
+  scope: >-
+    公式カタログ、訂正情報、e-Stat更新情報、および利用規約の再確認。原データの
+    ダウンロード、アーカイブ内容、ハッシュの検証はPhase 1 G1まで実施しない。
+  raw_archives_verified: false
+  recheck_report: docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md
 artifact_policy:
   phase_0_downloads_performed: false
   note: >-
@@ -90,6 +97,17 @@ sources:
       permitted_domains: [rail_network, station_alias_seed, line_geometry]
       core_scale_eligible: false
       rationale: 鉄道正本であり、商業活動量ではない。
+    official_recheck:
+      checked_at: "2026-08-30"
+      evidence_urls:
+        - https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N02-2025.html
+        - https://nlftp.mlit.go.jp/ksj_error.html
+      result: >-
+        現行カタログは2025年度版（2025-12-31時点、2026-04更新）を掲載している。
+        現行の国土数値情報修正情報にN02-25の掲載は確認されなかった。
+      acquisition_guard: >-
+        取得日にも訂正情報を再確認し、最終URL、取得時刻、バイト数、SHA-256を
+        source lockへ記録する。掲載後の訂正またはアーカイブ差替えはSTOPして再監査する。
     audit_status: usable_with_controls
 
   - source_id: ksj_s12_2024
@@ -150,6 +168,18 @@ sources:
       permitted_domains: [access_power, transport_town_gap, validation]
       core_scale_eligible: false
       rationale: 交通力と街の規模を分離するcanonical decisionによる。
+    official_recheck:
+      checked_at: "2026-08-30"
+      evidence_urls:
+        - https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-S12-2024.html
+        - https://nlftp.mlit.go.jp/ksj_error.html
+      result: >-
+        現行カタログは2024年度版（2026-04更新）を掲載し、一部非公開駅を明記している。
+        現行の国土数値情報修正情報にS12-25の掲載は確認されなかった。過去版S12-24には
+        2026-01-16の属性訂正があるため、取得日再確認は必須とする。
+      acquisition_guard: >-
+        S12-25の最終アーカイブと付属仕様を取得日に再確認する。訂正掲載、未知の
+        existence/duplicate code、または基準年度の不一致があれば変換を停止する。
     audit_status: usable_with_controls
 
   - source_id: estat_economic_census_mesh_2021
@@ -173,6 +203,8 @@ sources:
       reference_date_or_period: "2021-06-01"
       accounting_period_caveat: 一部会計項目は2020年暦年だが、本プロジェクトは事業所・従業者を主に使う。
       publication_date_or_period: "2024-09-25"
+      detailed_mesh_distribution_start: "2025-01-23"
+      prefectural_download_distribution_start: "2025-10-09"
       retrieved_at: null
     preferred_table: middle_industry_500m
     fallback_table: broad_industry_500m
@@ -212,6 +244,18 @@ sources:
       permitted_domains: [activity_mass, spatial_extent, intensity, type_features]
       core_scale_eligible: true
       rationale: 全域同一仕様の公的メッシュ統計である。
+    official_recheck:
+      checked_at: "2026-08-30"
+      evidence_urls:
+        - https://www.e-stat.go.jp/help/data-definition-information/update-information
+        - https://www.e-stat.go.jp/terms-of-use
+      result: >-
+        2024-09-25の大分類公表に加え、2025-01-23にJGD2000/JGD2011の詳細メッシュ
+        ダウンロード、2025-10-09に都道府県別ダウンロードの提供開始が更新情報に掲載されている。
+        これらは配布可用性の履歴であり、2021-06-01の基準時点を変更しない。
+      acquisition_guard: >-
+        取得日には表定義、産業分類、座標系、欠損トークン、利用規約を再確認し、
+        選択テーブルと配布イベントをsource lockへ記録する。
     audit_status: usable_with_controls
 
   - source_id: estat_population_census_mesh_2020
@@ -236,6 +280,8 @@ sources:
       publication_date_or_period: "2022-07-27"
       original_publication_date_or_period: "2022-07-27"
       jgd2011_distribution_start: "2024-03-14"
+      prefectural_download_distribution_start: "2025-10-09"
+      reference_table_125m_distribution_start: "2025-12-16"
       retrieved_at: null
     expected_fields:
       - population_total
@@ -268,6 +314,18 @@ sources:
       permitted_domains: [resident_context, type_features, residential_adjustment]
       core_scale_eligible: false
       rationale: 商業規模と居住者基盤を混同しない。
+    official_recheck:
+      checked_at: "2026-08-30"
+      evidence_urls:
+        - https://www.e-stat.go.jp/help/data-definition-information/update-information
+        - https://www.e-stat.go.jp/terms-of-use
+      result: >-
+        2024-03-14にJGD2011メッシュのダウンロード開始、2025-10-09にJGD2000/JGD2011
+        の都道府県別ダウンロード開始、2025-12-16に125m参考表の追加提供が掲載されている。
+        本Phase 1の500m人口入力は前二者のみを対象とし、125m参考表は採用しない。
+      acquisition_guard: >-
+        取得日には採用する500m表の定義、秘匿・合算属性、座標系、利用規約を再確認する。
+        配布履歴を国勢調査の基準時点（2020-10-01）として表示してはならない。
     audit_status: usable_with_controls
 
   - source_id: ksj_l01_2026
@@ -321,6 +379,19 @@ sources:
       permitted_domains: [validation, market_context, confidence]
       core_scale_eligible: false
       rationale: 市場強度の検証点であり、Activity Massではない。
+    official_recheck:
+      checked_at: "2026-08-30"
+      requires_post_correction_archive: true
+      evidence_urls:
+        - https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-L01-2026.html
+        - https://nlftp.mlit.go.jp/ksj_error.html
+      result: >-
+        現行カタログは2026年版（2026-01-01時点）を掲載している。国土数値情報修正情報は
+        2026-04-24にL01-26_13_GML.zip、L01-26_53_GML.zip、L01-26_GML.zipの東京都住所を
+        訂正済みと明記しており、これより後のL01-26訂正掲載は今回の再確認時点で確認されなかった。
+      acquisition_guard: >-
+        L01-26_13_GML.zipは訂正後バイト列だけを取得し、SHA-256と取得時刻を固定する。
+        取得日後の訂正掲載またはハッシュ不一致はSTOPしてsource lockを更新する。
     audit_status: usable_with_controls
 
 phase_1_acquisition_gate:

@@ -3,15 +3,17 @@
 ```yaml
 project_id: tokyo-rail-town-scale-atlas
 repository_candidate: tokyo-rail-town-scale-atlas
-state_version: 0.1.0
+state_version: 0.1.1
 updated_at: 2026-08-30
 phase: 0
 phase_name: canonical-definition-and-availability-audit
-phase_status: COMPLETE_LOCAL_CANONICAL_CANDIDATE
+phase_status: COMPLETE_CANONICAL_BASELINE
 release_status: NOT_PUBLISHABLE
 ranking_status: PROHIBITED_IN_PHASE_0
 ui_status: PROHIBITED_IN_PHASE_0
-remote_repository_status: NOT_CREATED
+remote_repository_status: PUBLIC_MAIN_SYNCED
+remote_repository_url: https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas
+official_correction_recheck: PASS_2026-08-30
 ```
 
 ## Owner intent
@@ -35,7 +37,7 @@ remote_repository_status: NOT_CREATED
 
 | Requirement | State | Canonical artifact |
 |---|---|---|
-| Repository initialization | Local complete; remote pending | git repository / this file |
+| Repository initialization | Complete; public GitHub `main` synced | remote repository / this file |
 | Required governance files | Complete | root documents |
 | Five-source availability audit | Complete at metadata/specification level | `SOURCES.yml`, audit report |
 | Canonical schema | Complete candidate | `schema/canonical.sql` |
@@ -44,6 +46,7 @@ remote_repository_status: NOT_CREATED
 | 60 Golden Eval candidates | Frozen candidate registry | `data/reference/GOLDEN_EVALS.yml` |
 | Extraction algorithm comparison | Complete candidate decision | `CENTER_MODEL.md` |
 | Phase 1 execution plan | Complete | `docs/PHASE1_EXECUTION_PLAN.md` |
+| Official correction/distribution recheck | Complete; acquisition-day recheck remains mandatory | `docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md` |
 
 ## Phase 0 decision
 
@@ -51,14 +54,14 @@ remote_repository_status: NOT_CREATED
 
 ## Remaining gates before Phase 1 processing
 
-1. Create the remote GitHub repository and push the local canonical commit.
-2. Download source archives and record byte size, SHA-256, retrieval timestamp, and any correction notice.
-3. Prove station crosswalk behavior on a small fixture covering same-name, different-name transfer, rename, and ambiguous proximity cases.
-4. Record every unresolved match as `unresolved`; do not force it into a station group or hub.
+1. On acquisition day, recheck official terms, source catalog/revision notices, and the correction log; then download source archives and record byte size, SHA-256, retrieval timestamp, and any correction notice.
+2. Prove station crosswalk behavior on a small fixture covering same-name, different-name transfer, rename, and ambiguous proximity cases.
+3. Record every unresolved match as `unresolved`; do not force it into a station group or hub.
 
 ## Current blockers and non-blockers
 
-- **Non-blocker:** the GitHub connector can read/write an existing repository but cannot create the absent repository in this environment. Local git initialization is complete.
+- **Resolved external work:** public canonical repository is [kkkkggggmmmm/tokyo-rail-town-scale-atlas](https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas); `main` contains the Phase 0 artifact set.
+- **Resolved source audit:** official correction/distribution pages were rechecked on 2026-08-30. L01-26_13 requires the 2026-04-24 corrected bytes; no current correction-log entry was found for N02-25 or S12-25. This is a catalog-level result, not an archive hash verification.
 - **Non-blocker:** source archives were deliberately not ingested in Phase 0; metadata, schemas, filenames, direct endpoints, and usage terms were audited.
 - **Known risk:** 500 m Economic Census cells limit Core boundary precision. Enhanced layers may refine geometry later, but may not back-propagate into a supposedly nationwide Core score without a new decision.
 

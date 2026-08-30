@@ -56,3 +56,11 @@
 - Decision: Phase 0 fixes the crosswalk schema/view but does not emit a zero-row or fabricated `station_line_crosswalk.parquet`.
 - Rationale: a populated crosswalk requires gated N02 acquisition after the canonical ID contract is frozen; an empty Parquet could be mistaken for completed normalization.
 - Consequence: Phase 1 Gate 2 must create the first populated artifact and resolve or reason-code every pilot station.
+
+## DEC-0009 — Official correction recheck and acquisition lock
+
+- Date: 2026-08-30
+- Status: accepted
+- Decision: Catalog-level correction/distribution checks are versioned in `SOURCES.yml` and `docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md`; actual archive bytes are accepted only after an acquisition-day recheck and source lock.
+- Rationale: official pages can change after Phase 0 and a catalog check cannot prove the byte identity of a later download. The L01-26 Tokyo archive has an explicit 2026-04-24 address correction.
+- Consequence: Phase 1 may not transform L01-26_13 without post-correction SHA-256 evidence. N02/S12 and e-Stat inputs must also record the current official revision/definition state at retrieval; distribution events never replace survey reference dates.

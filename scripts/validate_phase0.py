@@ -48,6 +48,7 @@ def validate_required_files() -> None:
         "docs/PILOT_SCOPE.md",
         "docs/pilot_scope_map.svg",
         "docs/PHASE0_AUDIT_REPORT.md",
+        "docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md",
         "docs/PHASE1_EXECUTION_PLAN.md",
     ]
     missing = [item for item in required if not (ROOT / item).is_file()]
@@ -56,6 +57,9 @@ def validate_required_files() -> None:
 
 def validate_sources() -> None:
     manifest = load_yaml("SOURCES.yml")
+    recheck = manifest["official_recheck"]
+    require(recheck["checked_at"] == "2026-08-30", "Official recheck date missing")
+    require(recheck["raw_archives_verified"] is False, "Phase 0 must not claim raw archive verification")
     sources = manifest["sources"]
     require(len(sources) == 5, "Source manifest must contain exactly five audited families")
     expected_families = {
@@ -74,10 +78,21 @@ def validate_sources() -> None:
         require(temporal.get("publication_date_or_period"), f"Missing publication time: {source['source_id']}")
         require("retrieved_at" in temporal, f"Missing retrieval field: {source['source_id']}")
         require(source["artifact_status"] == "not_acquired_phase0", "Phase 0 must not claim data acquisition")
+        source_recheck = source["official_recheck"]
+        require(source_recheck["checked_at"] == "2026-08-30", f"Missing recheck date: {source['source_id']}")
+        require(source_recheck["evidence_urls"], f"Missing recheck evidence: {source['source_id']}")
+        require(source_recheck["acquisition_guard"], f"Missing acquisition guard: {source['source_id']}")
     scale_sources = {source["family"] for source in sources if source["model_role"]["core_scale_eligible"]}
     require(scale_sources == {"ECONOMIC_CENSUS_MESH"}, "Only Economic Census may enter CoreScale at Phase 0")
     s12 = next(source for source in sources if source["family"] == "S12")
     require(s12["model_role"]["core_scale_eligible"] is False, "S12 leaked into CoreScale")
+    l01 = next(source for source in sources if source["family"] == "L01")
+    require(l01["temporal"]["latest_known_correction_date"] == "2026-04-24", "L01 correction date changed")
+    require(l01["official_recheck"]["requires_post_correction_archive"] is True, "L01 correction lock missing")
+    economic = next(source for source in sources if source["family"] == "ECONOMIC_CENSUS_MESH")
+    require(economic["temporal"]["detailed_mesh_distribution_start"] == "2025-01-23", "Economic Census distribution event missing")
+    population = next(source for source in sources if source["family"] == "POPULATION_CENSUS_MESH")
+    require(population["temporal"]["prefectural_download_distribution_start"] == "2025-10-09", "Census distribution event missing")
 
 
 def validate_pilot() -> None:

@@ -36,14 +36,25 @@ the work-start instruction requires the identity system to be fixed before colle
 This phase fixes the crosswalk view and required fields; Phase 1 Gate 2 produces the first
 populated Parquet. An empty file would falsely imply that normalization had succeeded.
 
+## Official correction/distribution recheck
+
+The official pages were rechecked on 2026-08-30 before external Phase 1 acquisition starts.
+The full, date-bounded record is
+[`OFFICIAL_CORRECTION_RECHECK_2026-08-30.md`](OFFICIAL_CORRECTION_RECHECK_2026-08-30.md).
+The result is clear at catalog level: the current correction log lists no `N02-25` or
+`S12-25` entry, while it explicitly lists a 2026-04-24 correction to the Tokyo L01-26
+archive. The latter makes post-correction bytes a hard acquisition gate. e-Stat’s newer
+events are distribution additions; they are recorded separately and do not change either
+survey’s reference date. No raw archive was downloaded or hash-verified in Phase 0.
+
 ## Source audit summary
 
 | Source | Reference time | Publication/distribution | Grain | Terms | Missingness risk | Permitted role | Audit result |
 |---|---|---|---|---|---|---|---|
 | N02 railway, FY2025 | 2025-12-31 snapshot | catalog updated 2026-04 | station/rail line features; JGD2011 | CC BY 4.0 | absent feature/attribute; source codes unstable as identity | rail network and alias seed | usable with controls |
 | S12 ridership, FY2024 | FY2024 | catalog updated 2026-04 | station × operator/route record; line geometry | CC BY 4.0 | no data, nonpublic, station absent, duplicate record | Access only | usable with controls |
-| 2021 Economic Census mesh | 2021-06-01 | 2024-09-25 | 500m fourth-level mesh; JGD2011 | e-Stat terms, CC BY 4.0 compatible | `X`, `...`, `-`, blank; classification gaps | CoreScale/Type | usable with controls |
-| 2020 Census mesh | 2020-10-01 | 2022-07-27; JGD2011 distribution from 2024-03-14 | 500m fourth-level mesh | e-Stat terms, CC BY 4.0 compatible | suppressed source and aggregation destination | resident context/type | usable with controls |
+| 2021 Economic Census mesh | 2021-06-01 | 2024-09-25; detailed mesh 2025-01-23; prefectural download 2025-10-09 | 500m fourth-level mesh; JGD2011 | e-Stat terms, CC BY 4.0 compatible | `X`, `...`, `-`, blank; classification gaps | CoreScale/Type | usable with controls |
+| 2020 Census mesh | 2020-10-01 | 2022-07-27; JGD2011 download 2024-03-14; prefectural download 2025-10-09 | 500m fourth-level mesh | e-Stat terms, CC BY 4.0 compatible | suppressed source and aggregation destination | resident context/type | usable with controls |
 | L01 land price, 2026 | 2026-01-01 | 2026-03-18; known correction 2026-04-24 | standard-land point; JGD2011 | CC BY 4.0 | no nearby standard point; nullable attribute | validation/context only | usable after corrected bytes locked |
 
 ## 1. N02 railway data
@@ -114,8 +125,11 @@ Definitions: [500m broad industry](https://www.e-stat.go.jp/help/data-definition
 ### Availability and grain
 
 JGD2011 500m fourth-level mesh tables are available. The reference date is 2021-06-01 and
-the mesh result was published on 2024-09-25. Middle-industry detail is preferred because it
-can separate retail from wholesale more cleanly; broad-industry is a registered fallback.
+the broad-industry mesh result was published on 2024-09-25. e-Stat subsequently registered
+detailed JGD2000/JGD2011 download availability on 2025-01-23 and prefectural downloads on
+2025-10-09. These are distribution events, not new observations. Middle-industry detail is
+preferred because it can separate retail from wholesale more cleanly; broad-industry is a
+registered fallback.
 
 ### Coverage and gaps
 
@@ -140,8 +154,9 @@ Definition: [500m population/age table](https://www.e-stat.go.jp/help/data-defin
 ### Availability and grain
 
 The 2020-10-01 population census is available at 500m fourth-level mesh. Original mesh
-publication was 2022-07-27; JGD2011 download distribution began 2024-03-14. Those are
-separate provenance events.
+publication was 2022-07-27; JGD2011 download distribution began 2024-03-14 and
+JGD2000/JGD2011 prefectural downloads were added on 2025-10-09. Those are separate
+provenance events. The 2025-12-16 125m reference-table addition is not a Phase 1 input.
 
 ### Suppression handling
 

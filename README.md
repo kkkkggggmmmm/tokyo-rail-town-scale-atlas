@@ -4,7 +4,7 @@
 
 ## Phase 0 status
 
-Phase 0（正本定義・取得可能性監査）を完了しました。現時点では最終ランキング、中心地の確定ポリゴン、公開UIを作成していません。
+Phase 0（正本定義・取得可能性監査）を完了し、正本リポジトリは [GitHub](https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas) の `main` です。現時点では最終ランキング、中心地の確定ポリゴン、公開UIを作成していません。
 
 - [Phase 0 audit report](docs/PHASE0_AUDIT_REPORT.md)
 - [Source manifest](SOURCES.yml)
@@ -15,6 +15,7 @@ Phase 0（正本定義・取得可能性監査）を完了しました。現時�
 - [Pilot scope](docs/PILOT_SCOPE.md)
 - [Golden Eval registry](data/reference/GOLDEN_EVALS.yml)
 - [Phase 1 execution plan](docs/PHASE1_EXECUTION_PLAN.md)
+- [Official correction/distribution recheck — 2026-08-30](docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md)
 
 ## Canonical principles
 

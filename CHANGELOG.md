@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 — 2026-08-30
+
+- Created and synchronized the public GitHub canonical repository.
+- Rechecked official source catalog, correction, update, and terms pages before Phase 1 acquisition.
+- Recorded the L01-26 Tokyo-address correction of 2026-04-24 as a hard source-lock requirement.
+- Recorded e-Stat mesh distribution events separately from each survey reference date.
+
 ## 0.1.0 — 2026-08-30
 
 - Initialized Phase 0 canonical repository.
