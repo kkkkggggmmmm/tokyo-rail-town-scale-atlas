@@ -72,3 +72,11 @@
 - Decision: Phase 1 uses e-Stat table `T001141` for 2020 Census JGD2011 500m population/household observations. Table `T001192` is the 500m JGD2011 age-class table and is not the population-total input.
 - Rationale: the official e-Stat table registry distinguishes the population/household table from the age-class table; selecting by resolution alone would silently bind the wrong variables.
 - Consequence: definitions, acquisition URLs, and source locks must record `T001141`; any T001192 artifact is outside the Phase 1 population input and must not be transformed into `resident_population`.
+
+## DEC-0011 — G2 identity candidate and review boundary
+
+- Date: 2026-08-30
+- Status: accepted for candidate generation; adjudication pending
+- Decision: Phase 1 G2 mints persisted opaque IDs for the eight pilot corridors and keeps N02 station/route/group keys only as dated aliases. N02 same-name/300m groups create `station_group` candidates; they do not confirm a hub.
+- Rationale: N02 source codes are release-bound, and proximity alone cannot establish an operational transfer relationship. Service corridors such as JR京浜東北・根岸線 also span multiple physical N02 route aliases.
+- Consequence: unresolved station matches, service-scope choices, same-name collisions, and hub candidates remain in `data/qa/identity_review_queue.parquet`. G3 may not consume an unreviewed crosswalk as a confirmed identity layer.

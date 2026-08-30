@@ -3,11 +3,11 @@
 ```yaml
 project_id: tokyo-rail-town-scale-atlas
 repository_candidate: tokyo-rail-town-scale-atlas
-state_version: 0.2.0
+state_version: 0.3.0
 updated_at: 2026-08-30
 phase: 1
-phase_name: immutable-source-acquisition-and-audit
-phase_status: G1_LOCKED
+phase_name: pilot-identity-candidate-review
+phase_status: G2_CANDIDATE_REVIEW
 release_status: NOT_PUBLISHABLE
 ranking_status: PROHIBITED_IN_PHASE_1
 ui_status: PROHIBITED_IN_PHASE_1
@@ -48,6 +48,7 @@ official_correction_recheck: PASS_2026-08-30
 | Phase 1 execution plan | Complete | `docs/PHASE1_EXECUTION_PLAN.md` |
 | Official correction/distribution recheck | Complete; acquisition-day recheck remains mandatory | `docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md` |
 | Phase 1 G0/G1 source acquisition | Complete; 24 archives, 91 members, SHA-256 locked | `docs/PHASE1_G0_G1_REPORT.md`, `data/manifests/source_lock.phase1.yml` |
+| Phase 1 G2 identity candidates | Candidate review; 242 stations, 229 crosswalk rows, 12 open reviews | `docs/PHASE1_G2_IDENTITY_REPORT.md`, `data/manifests/identity.phase1.yml` |
 
 ## Phase 0 decision
 
@@ -55,16 +56,16 @@ official_correction_recheck: PASS_2026-08-30
 
 ## Phase 1 gates remaining after G1
 
-1. G2: parse N02 and resolve pilot station/line aliases into opaque IDs; queue ambiguous identity cases.
+1. G2: adjudicate the 8 open identity/hub cases and confirm exact service segments.
 2. G3: normalize mesh tables, official mesh geometry, S12 codes, and L01 points while preserving missingness.
 3. G4–G6: compare center challengers, adjudicate Golden Evals, and record a method-selection decision.
 
 ## Current blockers and non-blockers
 
-- **Resolved external work:** public canonical repository is [kkkkggggmmmm/tokyo-rail-town-scale-atlas](https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas); `main` contains the Phase 0 artifact set.
+- **Resolved external work:** public canonical repository is [kkkkggggmmmm/tokyo-rail-town-scale-atlas](https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas); `main` contains the Phase 1 G2 candidate artifact set.
 - **Resolved source audit:** official catalog, correction, terms, update, and definition pages were rechecked and hashed on 2026-08-30. The 500m JGD2011 population input is pinned to e-Stat `T001141`; `T001192` is explicitly excluded because it is the age-class table.
 - **Resolved acquisition:** 24 official ZIP archives (38,883,077 bytes) passed byte-size/CRC/path checks and are recorded in `data/manifests/source_lock.phase1.yml`; originals are read-only outside Git.
-- **Non-blocker:** no station/center transformation, ranking, final polygon, or public UI has been produced. G2 is the next execution gate.
+- **Non-blocker:** no center transformation, ranking, final polygon, or public UI has been produced. G2 review is the next execution gate; G3 must not consume an unreviewed service crosswalk.
 - **Known risk:** 500 m Economic Census cells limit Core boundary precision. Enhanced layers may refine geometry later, but may not back-propagate into a supposedly nationwide Core score without a new decision.
 
 ## STOP conditions carried forward

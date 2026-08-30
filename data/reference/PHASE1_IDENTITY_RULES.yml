@@ -1,0 +1,168 @@
+rules_version: "0.1.0"
+project_id: tokyo-rail-town-scale-atlas
+phase: 1
+gate: G2
+status: candidate_review
+fixed_at: "2026-08-30"
+source_release_id: N02-25
+source_namespace: N02_2025
+notes:
+  - >-
+    このファイルはN02-25の物理路線・駅地物を、Phase 1の8つの分析回廊へ
+    候補として切り出す規則である。canonical IDは別のidentity registryで発行する。
+  - >-
+    同名300mのN02_005gはstation_groupの候補seedにのみ使う。異名乗換を近接だけで
+    hubへ確定しない。
+  - >-
+    distance_from_origin_kmは駅中心点間の測地線累積値であり、営業キロではない。
+    路線形状からの営業距離は後続ゲートで置換または検証する。
+
+corridors:
+  pc_jr_chuo_rapid:
+    display_name_ja: JR中央線快速
+    operator: 東日本旅客鉄道
+    source_routes: [中央線]
+    endpoint_start: 東京
+    endpoint_end: 高尾
+    inclusion_status: >-
+      rapid_primary only; 中央・総武緩行の駅は補助contextとして別レビューに残す。
+    primary_station_order: [東京, 神田, 御茶ノ水, 四ツ谷, 新宿, 中野, 吉祥寺, 三鷹, 武蔵境, 東小金井, 武蔵小金井, 国分寺, 西国分寺, 国立, 立川, 日野, 豊田, 八王子, 西八王子, 高尾]
+    source_route_overrides:
+      東京: {operator: 東日本旅客鉄道, route: 東北線, reason: 中央線source row absent; shared N02 group seed with JR Tokyo}
+    auxiliary_station_names: [水道橋, 飯田橋, 市ヶ谷, 信濃町, 千駄ヶ谷, 代々木, 大久保, 東中野, 高円寺, 阿佐ヶ谷, 荻窪, 西荻窪]
+
+  pc_jr_sobu_local:
+    display_name_ja: JR総武線各駅停車
+    operator: 東日本旅客鉄道
+    source_routes: [総武線]
+    endpoint_start: 御茶ノ水
+    endpoint_end: 千葉
+    inclusion_status: local_primary
+    primary_station_order: [御茶ノ水, 秋葉原, 浅草橋, 両国, 錦糸町, 亀戸, 平井, 新小岩, 市川, 本八幡, 下総中山, 西船橋, 船橋, 東船橋, 津田沼, 幕張本郷, 幕張, 新検見川, 稲毛, 西千葉, 千葉]
+
+  pc_jr_keihin_tohoku_negishi:
+    display_name_ja: JR京浜東北・根岸線
+    operator: 東日本旅客鉄道
+    source_routes: [東北線, 東海道線, 根岸線]
+    endpoint_start: 大宮
+    endpoint_end: 大船
+    inclusion_status: service_corridor_candidate
+    primary_station_order: [大宮, さいたま新都心, 浦和, 南浦和, 蕨, 西川口, 川口, 赤羽, 東十条, 王子, 上中里, 田端, 上野, 御徒町, 秋葉原, 神田, 東京, 有楽町, 新橋, 浜松町, 田町, 高輪ゲートウェイ, 品川, 大井町, 大森, 蒲田, 川崎, 鶴見, 新子安, 東神奈川, 横浜, 桜木町, 関内, 石川町, 山手, 根岸, 磯子, 新杉田, 洋光台, 港南台, 本郷台, 大船]
+    route_preference:
+      大宮: 東北線
+      さいたま新都心: 東北線
+      浦和: 東北線
+      南浦和: 東北線
+      蕨: 東北線
+      西川口: 東北線
+      川口: 東北線
+      赤羽: 東北線
+      東十条: 東北線
+      王子: 東北線
+      上中里: 東北線
+      田端: 東北線
+      上野: 東北線
+      御徒町: 東北線
+      秋葉原: 東北線
+      神田: 東北線
+      東京: 東北線
+      有楽町: 東海道線
+      新橋: 東海道線
+      浜松町: 東海道線
+      田町: 東海道線
+      高輪ゲートウェイ: 東海道線
+      品川: 東海道線
+      大井町: 東海道線
+      大森: 東海道線
+      蒲田: 東海道線
+      川崎: 東海道線
+      鶴見: 東海道線
+      新子安: 東海道線
+      東神奈川: 東海道線
+      横浜: 東海道線
+      桜木町: 根岸線
+      関内: 根岸線
+      石川町: 根岸線
+      山手: 根岸線
+      根岸: 根岸線
+      磯子: 根岸線
+      新杉田: 根岸線
+      洋光台: 根岸線
+      港南台: 根岸線
+      本郷台: 根岸線
+      大船: 根岸線
+    review_note: >-
+      N02はphysical routeを収録するため、京浜東北のservice stopをこの規則で選ぶ。
+      高輪ゲートウェイ等の停車扱いはG2レビューで確認する。
+
+  pc_tokyu_toyoko:
+    display_name_ja: 東急東横線
+    operator: 東急電鉄
+    source_routes: [東横線]
+    endpoint_start: 渋谷
+    endpoint_end: 横浜
+    inclusion_status: local_primary
+    primary_station_order: [渋谷, 代官山, 中目黒, 祐天寺, 学芸大学, 都立大学, 自由が丘, 田園調布, 多摩川, 新丸子, 武蔵小杉, 元住吉, 日吉, 綱島, 大倉山, 菊名, 妙蓮寺, 白楽, 東白楽, 反町, 横浜]
+
+  pc_odakyu_odawara:
+    display_name_ja: 小田急小田原線
+    operator: 小田急電鉄
+    source_routes: [小田原線]
+    endpoint_start: 新宿
+    endpoint_end: 小田原
+    inclusion_status: local_primary
+    primary_station_order: [新宿, 南新宿, 参宮橋, 代々木八幡, 代々木上原, 東北沢, 下北沢, 世田谷代田, 梅ヶ丘, 豪徳寺, 経堂, 千歳船橋, 祖師ヶ谷大蔵, 成城学園前, 喜多見, 狛江, 和泉多摩川, 登戸, 向ヶ丘遊園, 生田, 読売ランド前, 百合ヶ丘, 新百合ヶ丘, 柿生, 鶴川, 玉川学園前, 町田, 相模大野, 小田急相模原, 相武台前, 座間, 海老名, 厚木, 本厚木, 愛甲石田, 伊勢原, 鶴巻温泉, 東海大学前, 秦野, 渋沢, 新松田, 開成, 栢山, 富水, 螢田, 足柄, 小田原]
+
+  pc_tobu_tojo:
+    display_name_ja: 東武東上線
+    operator: 東武鉄道
+    source_routes: [東上本線]
+    endpoint_start: 池袋
+    endpoint_end: 寄居
+    inclusion_status: local_primary
+    primary_station_order: [池袋, 北池袋, 下板橋, 大山, 中板橋, ときわ台, 上板橋, 東武練馬, 下赤塚, 成増, 和光市, 朝霞, 朝霞台, 志木, 柳瀬川, みずほ台, 鶴瀬, ふじみ野, 上福岡, 新河岸, 川越, 川越市, 霞ヶ関, 鶴ヶ島, 若葉, 坂戸, 北坂戸, 高坂, 東松山, 森林公園, つきのわ, 武蔵嵐山, 小川町, 東武竹沢, みなみ寄居, 男衾, 鉢形, 玉淀, 寄居]
+
+  pc_tokyo_metro_ginza:
+    display_name_ja: 東京メトロ銀座線
+    operator: 東京地下鉄
+    source_routes: [3号線銀座線]
+    endpoint_start: 渋谷
+    endpoint_end: 浅草
+    inclusion_status: underground_entry
+    primary_station_order: [渋谷, 表参道, 外苑前, 青山一丁目, 赤坂見附, 溜池山王, 虎ノ門, 新橋, 銀座, 京橋, 日本橋, 三越前, 神田, 末広町, 上野広小路, 上野, 稲荷町, 田原町, 浅草]
+
+  pc_tsukuba_express:
+    display_name_ja: つくばエクスプレス
+    operator: 首都圏新都市鉄道
+    source_routes: [常磐新線]
+    endpoint_start: 秋葉原
+    endpoint_end: つくば
+    inclusion_status: local_primary
+    primary_station_order: [秋葉原, 新御徒町, 浅草, 南千住, 北千住, 青井, 六町, 八潮, 三郷中央, 南流山, 流山セントラルパーク, 流山おおたかの森, 柏の葉キャンパス, 柏たなか, 守谷, みらい平, みどりの, 万博記念公園, 研究学園, つくば]
+
+manual_hub_candidates:
+  - hub_key: asakadai-kitaasaka
+    display_name_ja: 朝霞台—北朝霞
+    station_refs:
+      - {operator: 東武鉄道, route: 東上本線, name: 朝霞台}
+      - {operator: 東日本旅客鉄道, route: 武蔵野線, name: 北朝霞}
+    evidence_required: official_transfer_or_signed_walk
+  - hub_key: asakusa-ginza-tx
+    display_name_ja: 浅草（銀座線—TX）
+    station_refs:
+      - {operator: 東京地下鉄, route: 3号線銀座線, name: 浅草}
+      - {operator: 首都圏新都市鉄道, route: 常磐新線, name: 浅草}
+    evidence_required: official_transfer_or_signed_walk
+  - hub_key: machida-jr-odakyu
+    display_name_ja: 町田（JR—小田急）
+    station_refs:
+      - {operator: 小田急電鉄, route: 小田原線, name: 町田}
+      - {operator: 東日本旅客鉄道, route: 横浜線, name: 町田}
+    evidence_required: official_transfer_or_signed_walk
+
+acceptance:
+  automatic_merge_allowed: false
+  same_name_300m_is_group_candidate_only: true
+  missing_station_action: queue_no_match
+  ambiguous_station_action: queue_ambiguous_match
+  source_code_as_canonical_id: prohibited

@@ -55,6 +55,13 @@ For later phases, add tests that separately report:
 - Safety constraints: no null-to-zero conversion, no ridership leakage into CoreScale, no duplicate center count per line
 - Cost/latency: ETL runtime and artifact size
 
+The Phase 1 identity candidate set must also pass:
+
+```bash
+python scripts/validate_phase1_lock.py
+python scripts/validate_phase1_identity.py
+```
+
 ## STOP conditions
 
 Stop rather than improvise when any of the following is true:

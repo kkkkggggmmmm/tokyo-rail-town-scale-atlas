@@ -1,0 +1,54 @@
+manifest_version: 0.1.0
+project_id: tokyo-rail-town-scale-atlas
+phase: 1
+gate: G2
+status: CANDIDATE_REVIEW
+generated_at: '2026-08-30'
+run_id: run_phase1_g2_identity_candidate_20260830
+source_release_id: N02-25
+source_archive: data/raw/phase1/archives/N02-25_GML.zip
+rules: data/reference/PHASE1_IDENTITY_RULES.yml
+rules_sha256: fe375a1ab3881b5d4f3a93c73825f2f05a9e44270711992e3464b065c5a48a7b
+identity_registry: data/reference/PHASE1_IDENTITY_REGISTRY.yml
+counts:
+  pilot_corridors: 8
+  stations: 242
+  station_groups: 231
+  hubs: 9
+  lines: 8
+  crosswalk_rows: 229
+  review_queue: 13
+  open_reviews: 12
+outputs:
+  stations:
+    path: data/derived/stations.parquet
+    sha256: fd13097d6b6b4fbdce8e01e4e1962f0a90859a788c1d8cb74dc486a8c5836f77
+  station_groups:
+    path: data/derived/station_groups.parquet
+    sha256: 0798ad68b5c8c71a640f13ad1a54e501f6de9aeb0ad89b44477282e087ec4063
+  hubs:
+    path: data/derived/hubs.parquet
+    sha256: 517882e7e2af0f9493261e432338c3d8fcb863db101f27fc037cdb1e76f940d8
+  hub_station_group_links:
+    path: data/derived/hub_station_group_links.parquet
+    sha256: 048bd3e2893006264dbd1bfee88647a61249201412493ed660b8b2f7322f4dd3
+  lines:
+    path: data/derived/lines.parquet
+    sha256: 7107adf58fd9e34ecd90731814b29c84dbd7a26a0693399ac3c5d91838b93f9f
+  station_line_crosswalk:
+    path: data/derived/station_line_crosswalk.parquet
+    sha256: bc34268918ac2a59dc1da23273538b44bc72fee79fe95dd9723f381836f9b4c7
+  station_group_members:
+    path: data/derived/station_group_members.parquet
+    sha256: 21ebbe4db4e71274725526a69a1e74dd0ba18cd9e3dab0b27869af54965fe56c
+  entity_alias:
+    path: data/derived/entity_alias.parquet
+    sha256: 4aafb0602a3b69407b9d37056f53cfe3fa755702cb3cacb66a7bfdf63a36c1bf
+  identity_review_queue:
+    path: data/qa/identity_review_queue.parquet
+    sha256: 5e70b86b302942ba4df77a9f85dfea838de8ae2feb772f605d7abedfce89d44d
+guardrails:
+  source_codes_as_canonical_ids: false
+  automatic_hub_confirmation: false
+  ambiguous_rows_forced: false
+  distance_method_is_sales_km: false

@@ -2,9 +2,9 @@
 
 東京圏の駅を入口に、駅へ接続する **commercial center（商業中心地）** の規模・タイプ・交通力・推定信頼度を分離して推定するプロジェクトです。
 
-## Current status: Phase 1 G1 locked
+## Current status: Phase 1 G2 candidate review
 
-Phase 0（正本定義・取得可能性監査）を完了し、Phase 1 G0/G1として公式ページの再確認と24アーカイブの原本ロックまで進めました。正本リポジトリは [GitHub](https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas) の `main` です。現時点では駅ID crosswalk、最終ランキング、中心地の確定ポリゴン、公開UIを作成していません。
+Phase 0（正本定義・取得可能性監査）とG0/G1（公式ページ再確認・24アーカイブ原本ロック）を完了し、G2の駅・駅群・hub・路線identity候補を生成しました。正本リポジトリは [GitHub](https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas) の `main` です。G2はレビュー中で、最終ランキング、中心地の確定ポリゴン、公開UIは作成していません。
 
 - [Phase 0 audit report](docs/PHASE0_AUDIT_REPORT.md)
 - [Source manifest](SOURCES.yml)
@@ -20,6 +20,10 @@ Phase 0（正本定義・取得可能性監査）を完了し、Phase 1 G0/G1と
 - [Phase 1 source lock](data/manifests/source_lock.phase1.yml)
 - [Official page hash recheck](data/manifests/official_recheck.phase1.yml)
 - [Official correction/distribution recheck — 2026-08-30](docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md)
+- [Phase 1 identity rules](data/reference/PHASE1_IDENTITY_RULES.yml)
+- [Phase 1 identity registry](data/reference/PHASE1_IDENTITY_REGISTRY.yml)
+- [Phase 1 identity candidate report](docs/PHASE1_G2_IDENTITY_REPORT.md)
+- [Phase 1 identity manifest](data/manifests/identity.phase1.yml)
 
 ## Canonical principles
 
@@ -53,6 +57,7 @@ Phase 0（正本定義・取得可能性監査）を完了し、Phase 1 G0/G1と
 ```bash
 python scripts/validate_phase0.py
 python scripts/validate_phase1_lock.py
+python scripts/validate_phase1_identity.py
 ```
 
-The validators check the required files, 8 pilot lines, 60 Golden Eval candidates, source-year separation, null semantics, canonical table declarations, and the local G1 byte/member lock. Raw archives are intentionally not committed to Git.
+The validators check the required files, 8 pilot lines, 60 Golden Eval candidates, source-year separation, null semantics, canonical table declarations, the local G1 byte/member lock, and G2 opaque-ID/crosswalk/review-queue invariants. Raw archives are intentionally not committed to Git.

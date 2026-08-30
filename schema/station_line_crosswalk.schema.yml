@@ -1,4 +1,4 @@
-schema_version: "0.1.0"
+schema_version: "0.2.0"
 artifact: data/derived/station_line_crosswalk.parquet
 production_phase: phase_1_gate_2
 phase_0_status: schema_only_no_rows
@@ -20,8 +20,13 @@ fields:
   - {name: n02_route_key, type: string, nullable: false, description: source route alias}
   - {name: identity_resolution_status, type: string, nullable: false, description: confirmed or reason-coded unresolved}
   - {name: identity_review_id, type: string, nullable: true, description: open/resolved review queue key}
+  - {name: pilot_corridor_id, type: string, nullable: false, description: frozen human-readable pilot scope key}
+  - {name: segment_inclusion_status, type: string, nullable: false, description: primary or explicitly scoped context status}
+  - {name: distance_method, type: string, nullable: false, description: candidate distance method; not an operating-kilometre assertion}
 constraints:
   - source keys must not match the canonical ID columns by construction
   - each source station membership resolves once or appears in identity_review_queue
   - ambiguous hub membership remains nullable and reason-coded
   - no row may be emitted without source release provenance
+  - G2 candidate rows must not carry an unresolved identity status
+  - hub_id is a candidate reference until manual transfer evidence is adjudicated

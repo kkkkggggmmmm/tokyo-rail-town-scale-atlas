@@ -1,8 +1,8 @@
 # Data Dictionary
 
 **Project:** `tokyo-rail-town-scale-atlas`
-**Dictionary version:** `0.1.0`
-**Status:** Phase 0 canonical candidate
+**Dictionary version:** `0.2.0`
+**Status:** Phase 1 G2 identity candidate (not publication-ready)
 
 ## 1. Canonical grain
 
@@ -10,7 +10,7 @@
 
 | Entity | 1行の意味 | Canonical ID | Source keyの扱い |
 |---|---|---|---|
-| `station` | 1事業者・1路線文脈における物理的な駅地物 | `sta_` + UUIDv7/ULID相当 | N02 station code等はalias |
+| `station` | 1事業者・1路線文脈における物理的な駅地物 | `sta_` + persisted opaque registry value | N02 station code等はalias |
 | `station_group` | 同一駅名・近接ホーム等をまとめた公開上の駅群 | `stg_` + opaque ID | N02 300m group codeは初期候補のみ |
 | `hub` | 異名駅も含む、徒歩移動可能な実質的乗換結節点 | `hub_` + opaque ID | 近接だけで自動確定しない |
 | `line` | 事業者・路線または分析対象サービス回廊 | `lin_` + opaque ID | N02 route/operator keyはalias |
@@ -194,3 +194,28 @@ Phase 0では値を生成しない。将来の出力は別列・別版で保持�
 | `transport_town_gap` | Access percentile − CoreScale percentile | raw score同士の無単位減算 |
 
 詳細なDDLは [`schema/canonical.sql`](schema/canonical.sql) を正本とする。
+
+## 7. Phase 1 G2 identity candidate artifacts
+
+G2では、ロック済みN02-25から8つのpilot回廊を切り出す。以下のParquetは候補・
+レビュー用であり、`review_status=candidate` の駅群・hubを公開上の確定identityと
+みなしてはならない。
+
+| Artifact | Grain | Key rule |
+|---|---|---|
+| `data/derived/stations.parquet` | N02 source station node | `station_id` is a persisted opaque registry ID; N02 key is alias |
+| `data/derived/station_groups.parquet` | N02 `N02_005g` seed | same-name/300m is candidate only |
+| `data/derived/hubs.parquet` | multi-operator/route group candidate | all rows remain `manual` + `candidate` until transfer evidence |
+| `data/derived/lines.parquet` | frozen pilot analysis corridor | service/physical route composition is explicit |
+| `data/derived/station_line_crosswalk.parquet` | station × pilot line membership | unresolved station matches are omitted and queued |
+| `data/derived/entity_alias.parquet` | canonical entity × N02 alias | dated `source_release_id` is mandatory |
+| `data/qa/identity_review_queue.parquet` | unresolved or review-required identity case | no ambiguous merge is auto-selected |
+
+`distance_from_origin_km` in the G2 crosswalk is a geodesic centroid-chain candidate,
+not an operating-kilometre claim. The source rule and the persisted ID registry are
+`data/reference/PHASE1_IDENTITY_RULES.yml` and
+`data/reference/PHASE1_IDENTITY_REGISTRY.yml`.
+
+The candidate Parquet stores `centroid_lon` / `centroid_lat` for lightweight review;
+the canonical SQL `centroid_wkb` field remains the geometry interchange target for a
+later promoted run.

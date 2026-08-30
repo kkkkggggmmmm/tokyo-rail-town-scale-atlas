@@ -26,3 +26,19 @@ logs/
 # Keep reference registries and fixtures under version control.
 !data/reference/
 !data/reference/**
+
+# Small, reviewable Phase 1 identity artifacts are canonical candidates.
+# Keep the rest of derived/QA ignored so later bulk products are not committed by accident.
+!data/derived/
+data/derived/*
+!data/derived/stations.parquet
+!data/derived/station_groups.parquet
+!data/derived/hubs.parquet
+!data/derived/hub_station_group_links.parquet
+!data/derived/lines.parquet
+!data/derived/station_line_crosswalk.parquet
+!data/derived/station_group_members.parquet
+!data/derived/entity_alias.parquet
+!data/qa/
+data/qa/*
+!data/qa/identity_review_queue.parquet

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 — 2026-08-30
+
+- Advanced to Phase 1 G2 candidate review from the locked N02-25 source.
+- Added persisted opaque ID registry and explicit eight-corridor identity rules.
+- Generated review-only station, station-group, hub, line, alias, and crosswalk Parquet artifacts (240 stations, 229 crosswalk rows, 8 open reviews).
+- Added G2 identity validator; ambiguous matches and hub confirmations remain queued.
+- No center polygons, scores, rankings, or public UI were produced.
+
 ## 0.2.0 — 2026-08-30
 
 - Started Phase 1 G0/G1 after the Phase 0 baseline.
