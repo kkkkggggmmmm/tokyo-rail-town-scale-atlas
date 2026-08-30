@@ -56,7 +56,7 @@ official_correction_recheck: PASS_2026-08-30
 
 ## Phase 1 gates remaining after G1
 
-1. G2: adjudicate the 8 open identity/hub cases and confirm exact service segments.
+1. G2: adjudicate the 12 open identity/hub cases and confirm exact service segments.
 2. G3: normalize mesh tables, official mesh geometry, S12 codes, and L01 points while preserving missingness.
 3. G4–G6: compare center challengers, adjudicate Golden Evals, and record a method-selection decision.
 
