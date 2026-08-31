@@ -497,6 +497,7 @@ maps:
     group:003922: hub_c2ccec33202b43a1a636c5d3889a21bc
     group:004633: hub_25039e3d85f341c69f4f9ac11b8f46bd
     group:004387: hub_88a6f30ec75e4994b562857340a587f2
+    manual:asakadai-kitaasaka: hub_c2d932fa92de4e8b92968e67d1612e1d
   alias:
     station_group|002611: als_e7504fca9c5344fa95bd53d963c43673
     station_group|002614: als_b34ba602410a46a085438033a2d0a248
@@ -979,6 +980,16 @@ maps:
     station_group|003056: als_2363514bc1f441e7872a36ed28d195a7
     station|東日本旅客鉄道|横浜線|004396: als_f1533b2311684608b36fb1669f2cf729
     station|東日本旅客鉄道|武蔵野線|003056: als_2daeb8e972684f958dbde45db3c88f65
+    hub|group:003505: als_e522d6fa157c4b1fa25405639dba945c
+    hub|group:003615: als_30d5a4707e0c4810918e74ab8e260c8b
+    hub|group:003624: als_88ad49ba68fb4e6f9210d606d01a71d5
+    hub|group:003677: als_ad2be10fab0d4a389cc4b3835eac3a05
+    hub|group:003700: als_ae5a1e6e74d34b02a607d8cde84b932a
+    hub|group:003872: als_f7e775fe7e9d45ab90136dd476430c41
+    hub|group:003922: als_43a6c044ac964b7490268f6cbd7235ab
+    hub|group:004387: als_b96a47f352df461e93d2af2753cbcde7
+    hub|group:004633: als_77e227bced154975afc072a08bdb8346
+    hub|manual:asakadai-kitaasaka: als_26a50e6070ab4d5fb2891fa4f9612fec
   review:
     ? '{"corridor_id":"pc_jr_chuo_rapid","entity_type":"station","issue_type":"merge_candidate","source_key":"東日本旅客鉄道|東北線|003766"}'
     : idr_1a71c26beb1f41659a5c1259701d8484

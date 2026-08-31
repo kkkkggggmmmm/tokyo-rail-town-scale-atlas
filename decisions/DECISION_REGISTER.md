@@ -76,7 +76,18 @@
 ## DEC-0011 — G2 identity candidate and review boundary
 
 - Date: 2026-08-30
-- Status: accepted for candidate generation; adjudication pending
+- Status: accepted for candidate generation; adjudication closed by DEC-0012
 - Decision: Phase 1 G2 mints persisted opaque IDs for the eight pilot corridors and keeps N02 station/route/group keys only as dated aliases. N02 same-name/300m groups create `station_group` candidates; they do not confirm a hub.
 - Rationale: N02 source codes are release-bound, and proximity alone cannot establish an operational transfer relationship. Service corridors such as JR京浜東北・根岸線 also span multiple physical N02 route aliases.
 - Consequence: unresolved station matches, service-scope choices, same-name collisions, and hub candidates remain in `data/qa/identity_review_queue.parquet`. G3 may not consume an unreviewed crosswalk as a confirmed identity layer.
+
+## DEC-0012 — G2 hub adjudication and exact service-segment lock
+
+- Date: 2026-08-31
+- Status: accepted
+- Decision: Close all 12 open G2 identity/hub reviews using the cited operator-official evidence in `data/reference/PHASE1_G2_ADJUDICATIONS.yml`. Confirm the nine existing same-name hub candidates and the different-name 朝霞台—北朝霞 hub; reject 浅草（銀座線—TX）as an operational transfer hub; resolve the manual 町田 candidate as a duplicate of the existing `004387` hub.
+- Service scope: Lock the eight pilot segments at 24 / 21 / 42 / 21 / 47 / 39 / 19 / 20 stations for JR中央線快速, JR総武線各駅停車, JR京浜東北・根岸線, 東急東横線, 小田急小田原線, 東武東上線, 東京メトロ銀座線, and つくばエクスプレス respectively. Persist both ordered station-name and ordered N02 source-key SHA-256 locks.
+- Rationale: An N02 same-name/300m seed establishes a review candidate but not an operational transfer. Operator-official transfer guidance is sufficient to confirm or reject the hub relation without inventing proximity rules. Exact segment membership follows the official named route nodes between frozen endpoints, not a single train class or timetable pattern.
+- Correction: The JR中央線快速 candidate omitted 高円寺・阿佐ヶ谷・荻窪・西荻窪. Move these four from auxiliary context into the 24-station primary segment before locking. Keep the eight stations served only by the 中央・総武緩行 context outside the primary segment.
+- Reconciliation: The current Tobu route page explicitly enumerates 39 named 池袋—寄居 station nodes, while a corporate overview reports an aggregate station count of 40. Record the discrepancy and use the operator's current route-specific enumeration for segment membership; the unexplained aggregate definition does not identify a missing node.
+- Consequence: G2 is PASS with 242 stations, 231 station groups, 10 confirmed hubs, 233 confirmed crosswalk rows, eight locked segments, and zero open reviews. G3 may consume this identity layer. Publication, ranking, final center geometry, and UI remain blocked.

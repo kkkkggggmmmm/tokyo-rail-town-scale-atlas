@@ -2,9 +2,9 @@
 
 東京圏の駅を入口に、駅へ接続する **commercial center（商業中心地）** の規模・タイプ・交通力・推定信頼度を分離して推定するプロジェクトです。
 
-## Current status: Phase 1 G2 candidate review
+## Current status: Phase 1 G2 PASS / G3 ready
 
-Phase 0（正本定義・取得可能性監査）とG0/G1（公式ページ再確認・24アーカイブ原本ロック）を完了し、G2の駅・駅群・hub・路線identity候補を生成しました。正本リポジトリは [GitHub](https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas) の `main` です。G2はレビュー中で、最終ランキング、中心地の確定ポリゴン、公開UIは作成していません。
+Phase 0（正本定義・取得可能性監査）、G0/G1（公式ページ再確認・24アーカイブ原本ロック）、G2（station/group/hub/line identity）を完了しました。G2は12件のレビューを全件解決し、8回廊のexact service segmentを固定したため、G3のmesh/S12/L01正規化へ進めます。正本リポジトリは [GitHub](https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas) の `main` です。最終ランキング、中心地の確定ポリゴン、公開UIは依然として作成していません。
 
 - [Phase 0 audit report](docs/PHASE0_AUDIT_REPORT.md)
 - [Source manifest](SOURCES.yml)
@@ -21,8 +21,9 @@ Phase 0（正本定義・取得可能性監査）とG0/G1（公式ページ再�
 - [Official page hash recheck](data/manifests/official_recheck.phase1.yml)
 - [Official correction/distribution recheck — 2026-08-30](docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md)
 - [Phase 1 identity rules](data/reference/PHASE1_IDENTITY_RULES.yml)
+- [Phase 1 G2 adjudications](data/reference/PHASE1_G2_ADJUDICATIONS.yml)
 - [Phase 1 identity registry](data/reference/PHASE1_IDENTITY_REGISTRY.yml)
-- [Phase 1 identity candidate report](docs/PHASE1_G2_IDENTITY_REPORT.md)
+- [Phase 1 G2 identity report](docs/PHASE1_G2_IDENTITY_REPORT.md)
 - [Phase 1 identity manifest](data/manifests/identity.phase1.yml)
 
 ## Canonical principles
@@ -60,4 +61,4 @@ python scripts/validate_phase1_lock.py
 python scripts/validate_phase1_identity.py
 ```
 
-The validators check the required files, 8 pilot lines, 60 Golden Eval candidates, source-year separation, null semantics, canonical table declarations, the local G1 byte/member lock, and G2 opaque-ID/crosswalk/review-queue invariants. Raw archives are intentionally not committed to Git.
+The validators check the required files, 8 pilot lines, 60 Golden Eval candidates, source-year separation, null semantics, canonical table declarations, the local G1 byte/member lock, G2 opaque-ID/hub adjudications, and exact-segment count/order/hash invariants. Raw archives are intentionally not committed to Git.

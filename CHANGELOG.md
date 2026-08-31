@@ -1,10 +1,18 @@
 # Changelog
 
+## 0.4.0 — 2026-08-31
+
+- Closed all 12 Phase 1 G2 identity/hub reviews with operator-official evidence; review history remains in the queue with zero open rows.
+- Confirmed nine existing hubs, added the two-group 朝霞台—北朝霞 hub, rejected 浅草（銀座線—TX）as an operational-transfer hub, and folded the manual 町田 case into its existing hub.
+- Locked all eight exact service segments with ordered station-name and N02 source-key hashes.
+- Corrected JR中央線快速 from 20 to 24 primary stations by adding 高円寺・阿佐ヶ谷・荻窪・西荻窪; the crosswalk increased from 229 to 233 rows.
+- Advanced project state to `G2_PASS_G3_READY`; publication, ranking, final center polygons, and public UI remain blocked.
+
 ## 0.3.0 — 2026-08-30
 
 - Advanced to Phase 1 G2 candidate review from the locked N02-25 source.
 - Added persisted opaque ID registry and explicit eight-corridor identity rules.
-- Generated review-only station, station-group, hub, line, alias, and crosswalk Parquet artifacts (240 stations, 229 crosswalk rows, 8 open reviews).
+- Generated the initial review-only station, station-group, hub, line, alias, and crosswalk Parquet artifacts; subsequent same-version candidate expansion reached 242 stations, 229 crosswalk rows, and 12 open reviews before G2 adjudication.
 - Added G2 identity validator; ambiguous matches and hub confirmations remain queued.
 - No center polygons, scores, rankings, or public UI were produced.
 

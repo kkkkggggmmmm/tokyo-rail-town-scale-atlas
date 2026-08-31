@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Build review-only Phase 1 G2 identity candidates from the locked N02 archive.
+"""Build the adjudicated Phase 1 G2 identity layer from the locked N02 archive.
 
 The script deliberately does not promote N02 codes to canonical IDs.  A small
 persisted registry mints opaque IDs once; source keys remain in entity_alias and
-the crosswalk.  Service-corridor rules are explicit in
-``data/reference/PHASE1_IDENTITY_RULES.yml`` so missing or ambiguous names become
-review-queue records instead of silent merges.
+the crosswalk. Service-corridor rules are explicit in
+``data/reference/PHASE1_IDENTITY_RULES.yml``; manual hub and exact-segment
+decisions live in ``data/reference/PHASE1_G2_ADJUDICATIONS.yml``. Missing or
+ambiguous names still become review-queue records instead of silent merges.
 """
 
 from __future__ import annotations
@@ -29,6 +30,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 ARCHIVE = ROOT / "data/raw/phase1/archives/N02-25_GML.zip"
 RULES_PATH = ROOT / "data/reference/PHASE1_IDENTITY_RULES.yml"
+ADJUDICATION_PATH = ROOT / "data/reference/PHASE1_G2_ADJUDICATIONS.yml"
 REGISTRY_PATH = ROOT / "data/reference/PHASE1_IDENTITY_REGISTRY.yml"
 DERIVED = ROOT / "data/derived"
 QA = ROOT / "data/qa"
@@ -36,9 +38,11 @@ MANIFEST_PATH = ROOT / "data/manifests/identity.phase1.yml"
 REPORT_PATH = ROOT / "docs/PHASE1_G2_IDENTITY_REPORT.md"
 SOURCE_RELEASE_ID = "N02-25"
 SOURCE_NAMESPACE = "N02_2025"
-FIXED_DATE = "2026-08-30"
-RUN_ID = "run_phase1_g2_identity_candidate_20260830"
+FIXED_DATE = "2026-08-31"
+RUN_ID = "run_phase1_g2_adjudicated_20260831"
+IDENTITY_CREATED_AT = "2026-08-30"
 SOURCE_VALID_FROM = date(2025, 12, 31)
+ADJUDICATION_VALID_FROM = date(2026, 8, 31)
 
 
 def compact_json(value: Any) -> str:
@@ -173,10 +177,21 @@ def required_string(name: str) -> pa.Field:
 
 def build() -> dict[str, Any]:
     rules = yaml.safe_load(RULES_PATH.read_text(encoding="utf-8"))
+    adjudication = yaml.safe_load(ADJUDICATION_PATH.read_text(encoding="utf-8"))
+    if adjudication.get("status") != "accepted" or adjudication.get("gate") != "G2":
+        raise ValueError("G2 adjudication must be accepted before building confirmed artifacts")
+    review_decisions = {
+        row["source_key"]: row for row in adjudication.get("review_decisions", [])
+    }
+    segment_decisions = {
+        row["corridor_id"]: row for row in adjudication.get("service_segments", [])
+    }
     grouped = load_n02()
     registry = load_registry()
 
     corridors = rules["corridors"]
+    if set(segment_decisions) != set(corridors):
+        raise ValueError("G2 adjudication must lock exactly the configured pilot corridors")
     # Index records by operator/route/name and retain all source variants.
     by_name: dict[tuple[str, str, str], list[dict[str, Any]]] = defaultdict(list)
     for route_records in grouped.values():
@@ -222,7 +237,7 @@ def build() -> dict[str, Any]:
                     "candidate_entity_ids_json": compact_json(candidate_ids),
                     "status": status,
                     "resolution_note": note,
-                    "resolved_at": FIXED_DATE if status == "resolved" else None,
+                    "resolved_at": IDENTITY_CREATED_AT if status == "resolved" else None,
                     "pilot_corridor_id": corridor_id,
                     "evidence_json": compact_json(evidence),
                 }
@@ -348,7 +363,7 @@ def build() -> dict[str, Any]:
                     "identity_resolution_status": resolution_status,
                     "identity_review_id": review_id,
                     "pilot_corridor_id": corridor_id,
-                    "segment_inclusion_status": "primary",
+                    "segment_inclusion_status": "primary_confirmed",
                     "distance_method": "geodesic_centroid_chain_candidate",
                 }
             )
@@ -386,6 +401,17 @@ def build() -> dict[str, Any]:
                     }
                 )
 
+        segment_decision = segment_decisions[corridor_id]
+        if segment_decision.get("decision") != "confirmed_exact_segment":
+            raise ValueError(f"service segment is not confirmed: {corridor_id}")
+        if (
+            segment_decision.get("endpoint_start") != corridor["endpoint_start"]
+            or segment_decision.get("endpoint_end") != corridor["endpoint_end"]
+            or int(segment_decision.get("station_count", -1)) != len(primary_names)
+        ):
+            raise ValueError(f"service segment lock conflicts with identity rule: {corridor_id}")
+        if unresolved or emitted != len(primary_names):
+            raise ValueError(f"cannot confirm an incomplete service segment: {corridor_id}")
         line_rows.append(
             {
                 "line_id": line_id,
@@ -397,12 +423,16 @@ def build() -> dict[str, Any]:
                 "source_route_keys_json": compact_json(corridor["source_routes"]),
                 "endpoint_start": corridor["endpoint_start"],
                 "endpoint_end": corridor["endpoint_end"],
-                "resolution_status": "candidate_review" if unresolved or len(corridor["source_routes"]) > 1 else "candidate_exact_route",
+                "resolution_status": "confirmed_exact_segment",
                 "inclusion_status": corridor["inclusion_status"],
                 "station_count": emitted,
                 "unresolved_station_count": unresolved,
                 "rule_version": rules["rules_version"],
                 "source_release_id": SOURCE_RELEASE_ID,
+                "segment_station_order_sha256": sha256_bytes(compact_json(primary_names).encode("utf-8")),
+                "segment_source_keys_sha256": "",
+                "segment_lock_version": adjudication["adjudication_version"],
+                "segment_evidence_json": compact_json(segment_decision.get("evidence", [])),
             }
         )
 
@@ -487,7 +517,7 @@ def build() -> dict[str, Any]:
                 "valid_to": None,
                 "match_method": "exact_source_seed",
                 "match_confidence": 0.8,
-                "review_status": "candidate",
+                "review_status": "confirmed",
             }
         )
 
@@ -559,8 +589,126 @@ def build() -> dict[str, Any]:
             evidence=evidence,
         )
 
-    # Patch hub references only after candidates are known.
-    group_to_hub = {row["station_group_id"]: row["hub_id"] for row in hub_rows}
+    # Apply the accepted, source-cited hub decisions. The decision file, rather
+    # than proximity or N02 grouping alone, is the authority for confirmation.
+    open_source_keys = {row["source_key"] for row in review_rows if row["status"] == "open"}
+    if open_source_keys != set(review_decisions):
+        missing = sorted(open_source_keys - set(review_decisions))
+        extra = sorted(set(review_decisions) - open_source_keys)
+        raise ValueError(f"G2 review decision coverage mismatch; missing={missing}, extra={extra}")
+
+    hubs_by_key = {f"group:{row['n02_station_group_key']}": row for row in hub_rows}
+    links_by_hub = defaultdict(list)
+    for link in hub_link_rows:
+        links_by_hub[link["hub_id"]].append(link)
+
+    for decision in review_decisions.values():
+        action = decision["decision"]
+        target_key = decision.get("target_hub_key")
+        if action in {"confirm_hub", "resolve_duplicate"} and not target_key:
+            raise ValueError(f"hub decision has no target: {decision['source_key']}")
+
+        if action == "confirm_hub" and target_key not in hubs_by_key:
+            group_keys = decision.get("station_group_keys", [])
+            if len(group_keys) < 2:
+                raise ValueError(f"new manual hub must link at least two groups: {target_key}")
+            unknown_groups = sorted(set(group_keys) - set(groups))
+            if unknown_groups:
+                raise ValueError(f"manual hub refers to unknown groups: {unknown_groups}")
+            members = [item for group_key in group_keys for item in groups[group_key]]
+            hub_id = opaque_id(registry, "hub", target_key)
+            evidence = {
+                "basis": "accepted G2 manual adjudication",
+                "adjudication_version": adjudication["adjudication_version"],
+                "decision": decision,
+            }
+            hub_row = {
+                "hub_id": hub_id,
+                "display_name_ja": decision["display_name_ja"],
+                "transfer_basis": decision["transfer_basis"],
+                "review_status": "confirmed",
+                "source_release_id": adjudication["adjudication_release_id"],
+                "station_group_id": None,
+                "n02_station_group_key": None,
+                "operator_keys_json": compact_json(sorted({item["record"]["operator"] for item in members})),
+                "route_keys_json": compact_json(sorted({item["record"]["route"] for item in members})),
+                "evidence_json": compact_json(evidence),
+            }
+            hub_rows.append(hub_row)
+            hubs_by_key[target_key] = hub_row
+            for group_key in group_keys:
+                link = {
+                    "hub_id": hub_id,
+                    "station_group_id": opaque_id(registry, "station_group", group_key),
+                    "walking_distance_m": None,
+                    "evidence_json": compact_json(evidence),
+                    "is_manual": 1,
+                }
+                hub_link_rows.append(link)
+                links_by_hub[hub_id].append(link)
+
+        if action == "confirm_hub":
+            hub_row = hubs_by_key[target_key]
+            evidence = {
+                "basis": "accepted G2 manual adjudication",
+                "adjudication_version": adjudication["adjudication_version"],
+                "decision": decision,
+            }
+            hub_row["transfer_basis"] = decision["transfer_basis"]
+            hub_row["review_status"] = "confirmed"
+            hub_row["source_release_id"] = adjudication["adjudication_release_id"]
+            hub_row["evidence_json"] = compact_json(evidence)
+            for link in links_by_hub[hub_row["hub_id"]]:
+                link["evidence_json"] = compact_json(evidence)
+                link["is_manual"] = 1
+        elif action == "resolve_duplicate":
+            if target_key not in hubs_by_key:
+                raise ValueError(f"duplicate decision target is unknown: {target_key}")
+        elif action != "reject_hub":
+            raise ValueError(f"unknown hub decision: {action}")
+
+    for row in review_rows:
+        if row["status"] != "open":
+            continue
+        decision = review_decisions[row["source_key"]]
+        row["status"] = "resolved"
+        row["resolved_at"] = adjudication["adjudicated_at"]
+        row["resolution_note"] = decision["resolution_note"]
+        original_evidence = json.loads(row["evidence_json"])
+        original_evidence["adjudication"] = decision
+        target_key = decision.get("target_hub_key")
+        if target_key:
+            original_evidence["resolved_hub_id"] = hubs_by_key[target_key]["hub_id"]
+        row["evidence_json"] = compact_json(original_evidence)
+
+    if any(row["status"] == "open" for row in review_rows):
+        raise ValueError("G2 cannot pass with an open identity review")
+
+    for target_key, hub_row in sorted(hubs_by_key.items()):
+        alias_key = f"hub|{target_key}"
+        alias_rows.append(
+            {
+                "entity_alias_id": opaque_id(registry, "alias", alias_key),
+                "entity_type": "hub",
+                "entity_id": hub_row["hub_id"],
+                "source_release_id": adjudication["adjudication_release_id"],
+                "source_namespace": "PHASE1_G2_ADJUDICATION",
+                "source_key": target_key,
+                "source_name": hub_row["display_name_ja"],
+                "valid_from": ADJUDICATION_VALID_FROM,
+                "valid_to": None,
+                "match_method": "manual_adjudication",
+                "match_confidence": 1.0,
+                "review_status": "confirmed",
+            }
+        )
+
+    # Patch crosswalk hub references only after all confirmed links are known.
+    group_to_hub: dict[str, str] = {}
+    for link in hub_link_rows:
+        if link["station_group_id"] in group_to_hub:
+            raise ValueError(f"station group linked to multiple G2 hubs: {link['station_group_id']}")
+        group_to_hub[link["station_group_id"]] = link["hub_id"]
     for row in crosswalk_rows:
         row["hub_id"] = group_to_hub.get(row["station_group_id"])
 
@@ -582,7 +730,7 @@ def build() -> dict[str, Any]:
                 "centroid_lon": record["lon"],
                 "centroid_lat": record["lat"],
                 "geometry_crs": "EPSG:6668",
-                "created_at": FIXED_DATE,
+                "created_at": IDENTITY_CREATED_AT,
                 "n02_source_release_id": SOURCE_RELEASE_ID,
                 "n02_station_key": key,
                 "n02_station_group_key": record["group_code"] or None,
@@ -591,7 +739,7 @@ def build() -> dict[str, Any]:
                 "source_feature_count": record["feature_count"],
                 "pilot_corridor_ids_json": compact_json(sorted(item["corridors"])),
                 "inclusion_status": "+".join(sorted(item["inclusion_statuses"])),
-                "identity_resolution_status": "+".join(sorted(item["resolution_statuses"])) or "candidate",
+                "identity_resolution_status": "+".join(sorted(item["resolution_statuses"])) or "confirmed_source_identity",
             }
         )
         group_id = opaque_id(registry, "station_group", group_key)
@@ -601,7 +749,7 @@ def build() -> dict[str, Any]:
                 "station_id": station_id,
                 "membership_basis": "n02_same_name_300m_source_seed",
                 "confidence": 0.8,
-                "review_status": "candidate",
+                "review_status": "confirmed",
                 "source_release_id": SOURCE_RELEASE_ID,
                 "n02_station_group_key": record["group_code"] or None,
             }
@@ -620,7 +768,7 @@ def build() -> dict[str, Any]:
                 "valid_to": None,
                 "match_method": "exact_source_seed",
                 "match_confidence": 0.95,
-                "review_status": "candidate",
+                "review_status": "confirmed",
             }
         )
 
@@ -640,7 +788,7 @@ def build() -> dict[str, Any]:
                 "valid_to": None,
                 "match_method": "crosswalk",
                 "match_confidence": 0.85 if len(corridor["source_routes"]) > 1 else 0.95,
-                "review_status": "candidate",
+                "review_status": "confirmed",
             }
         )
 
@@ -650,6 +798,16 @@ def build() -> dict[str, Any]:
         for row in rows:
             by_key[row[key]] = row
         return [by_key[k] for k in sorted(by_key)]
+
+    crosswalk_by_line: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in crosswalk_rows:
+        crosswalk_by_line[row["line_id"]].append(row)
+    for row in line_rows:
+        ordered = sorted(crosswalk_by_line[row["line_id"]], key=lambda item: item["sequence_index"])
+        source_keys = [item["n02_station_key"] for item in ordered]
+        if len(source_keys) != row["station_count"]:
+            raise ValueError(f"line/crosswalk count mismatch: {row['pilot_corridor_id']}")
+        row["segment_source_keys_sha256"] = sha256_bytes(compact_json(source_keys).encode("utf-8"))
 
     station_schema = pa.schema(
         [
@@ -676,7 +834,7 @@ def build() -> dict[str, Any]:
                 "station_group_id": opaque_id(registry, "station_group", group_key),
                 "display_name_ja": names[0] if names else group_key,
                 "group_rule": "source_seed",
-                "review_status": "candidate",
+                "review_status": "confirmed",
                 "n02_station_group_key": group_key,
                 "member_count": len(members),
                 "source_release_id": SOURCE_RELEASE_ID,
@@ -691,7 +849,9 @@ def build() -> dict[str, Any]:
          required_string("lifecycle_status"), required_string("pilot_corridor_id"), required_string("source_route_keys_json"),
          required_string("endpoint_start"), required_string("endpoint_end"), required_string("resolution_status"),
          required_string("inclusion_status"), pa.field("station_count", pa.int32(), nullable=False),
-         pa.field("unresolved_station_count", pa.int32(), nullable=False), required_string("rule_version"), required_string("source_release_id")]
+         pa.field("unresolved_station_count", pa.int32(), nullable=False), required_string("rule_version"), required_string("source_release_id"),
+         required_string("segment_station_order_sha256"), required_string("segment_source_keys_sha256"),
+         required_string("segment_lock_version"), required_string("segment_evidence_json")]
     )
     member_schema = pa.schema(
         [required_string("station_group_id"), required_string("station_id"), required_string("membership_basis"),
@@ -716,7 +876,7 @@ def build() -> dict[str, Any]:
     )
     hub_schema = pa.schema(
         [required_string("hub_id"), required_string("display_name_ja"), required_string("transfer_basis"), required_string("review_status"),
-         required_string("source_release_id"), required_string("station_group_id"), required_string("n02_station_group_key"),
+         required_string("source_release_id"), s("station_group_id"), s("n02_station_group_key"),
          required_string("operator_keys_json"), required_string("route_keys_json"), required_string("evidence_json")]
     )
     hub_link_schema = pa.schema(
@@ -749,18 +909,30 @@ def build() -> dict[str, Any]:
 
     save_registry(registry)
     file_hashes = {name: sha256_bytes(path.read_bytes()) for name, path in outputs.items()}
+    segment_manifest = {}
+    for row in sorted(line_rows, key=lambda item: item["pilot_corridor_id"]):
+        segment_manifest[row["pilot_corridor_id"]] = {
+            "status": row["resolution_status"],
+            "endpoint_start": row["endpoint_start"],
+            "endpoint_end": row["endpoint_end"],
+            "station_count": row["station_count"],
+            "station_order_sha256": row["segment_station_order_sha256"],
+            "source_keys_sha256": row["segment_source_keys_sha256"],
+        }
     manifest = {
-        "manifest_version": "0.1.0",
+        "manifest_version": "0.2.0",
         "project_id": "tokyo-rail-town-scale-atlas",
         "phase": 1,
         "gate": "G2",
-        "status": "CANDIDATE_REVIEW",
+        "status": "PASS",
         "generated_at": FIXED_DATE,
         "run_id": RUN_ID,
         "source_release_id": SOURCE_RELEASE_ID,
         "source_archive": "data/raw/phase1/archives/N02-25_GML.zip",
         "rules": str(RULES_PATH.relative_to(ROOT)),
         "rules_sha256": sha256_bytes(RULES_PATH.read_bytes()),
+        "adjudication": str(ADJUDICATION_PATH.relative_to(ROOT)),
+        "adjudication_sha256": sha256_bytes(ADJUDICATION_PATH.read_bytes()),
         "identity_registry": str(REGISTRY_PATH.relative_to(ROOT)),
         "counts": {
             "pilot_corridors": len(corridors),
@@ -771,61 +943,101 @@ def build() -> dict[str, Any]:
             "crosswalk_rows": len(crosswalk_rows),
             "review_queue": len(review_rows),
             "open_reviews": sum(row["status"] == "open" for row in review_rows),
+            "resolved_reviews": sum(row["status"] == "resolved" for row in review_rows),
+            "confirmed_hubs": sum(row["review_status"] == "confirmed" for row in hub_rows),
+            "locked_service_segments": sum(row["resolution_status"] == "confirmed_exact_segment" for row in line_rows),
         },
-        "outputs": {name: {"path": str(path.relative_to(ROOT)), "sha256": digest} for name, (path, digest) in zip(outputs, [(p, file_hashes[n]) for n, p in outputs.items()])},
+        "service_segments": segment_manifest,
+        "outputs": {
+            name: {"path": str(path.relative_to(ROOT)), "sha256": file_hashes[name]}
+            for name, path in outputs.items()
+        },
         "guardrails": {
             "source_codes_as_canonical_ids": False,
             "automatic_hub_confirmation": False,
+            "manual_decisions_have_cited_evidence": True,
             "ambiguous_rows_forced": False,
             "distance_method_is_sales_km": False,
+            "publication_unblocked": False,
         },
     }
     MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
     MANIFEST_PATH.write_text(yaml.safe_dump(manifest, allow_unicode=True, sort_keys=False), encoding="utf-8")
 
-    open_reviews = [row for row in review_rows if row["status"] == "open"]
+    decision_labels = {
+        "confirm_hub": "hub確定",
+        "reject_hub": "hub不成立（分離維持）",
+        "resolve_duplicate": "既存hubへ重複統合",
+    }
     report_lines = [
-        "# Phase 1 G2 identity report — 2026-08-30",
+        "# Phase 1 G2 identity report — 2026-08-31",
         "",
         "## 判定",
         "",
-        "**CANDIDATE_REVIEW（G2の候補生成完了、確定前）**。N02-25の駅地物を8つのpilot回廊へ切り出し、opaque ID、N02 alias、駅群seed、hub候補、crosswalk、レビューキューを生成した。",
+        "**PASS — G2を閉じ、G3へ進める。** 2026-08-30のcanonical `main`（`0607003`）に残っていた12件を、現行の事業者公式情報とロック済みN02-25により全件判定した。8回廊のexact service segmentも駅順とsource-key列のSHA-256付きで固定した。",
         "",
-        "自動処理は同名300mのN02 group seedを候補として保持するだけで、station_group／hubの公開確定や異名乗換の自動統合を行わない。営業キロではなく、駅中心点間の測地線累積を候補距離として明示した。",
+        "N02の同名300m group seedや近接だけではhubを確定していない。各confirm/rejectは `data/reference/PHASE1_G2_ADJUDICATIONS.yml` の公式根拠に従い、履歴行は削除せずreview queueで `resolved` とした。",
         "",
         "## 件数",
         "",
         f"- pilot回廊: {len(corridors)}",
-        f"- station node候補: {len(station_rows)}",
-        f"- station_group候補: {len(group_rows)}",
-        f"- hub候補: {len(hub_rows)}（全件 `candidate`、手動transfer evidence待ち）",
-        f"- station-line crosswalk候補: {len(crosswalk_rows)}",
-        f"- identity review queue: {len(review_rows)}（open {len(open_reviews)}）",
+        f"- confirmed station node: {len(station_rows)}",
+        f"- confirmed station_group: {len(group_rows)}",
+        f"- confirmed hub: {len(hub_rows)}",
+        f"- confirmed station-line crosswalk: {len(crosswalk_rows)}",
+        f"- identity review queue: {len(review_rows)}（open 0 / resolved {sum(row['status'] == 'resolved' for row in review_rows)}）",
+        "",
+        "## 12件の判定",
+        "",
+        "| source key | 表示 | 判定 |",
+        "|---|---|---|",
+    ]
+    for decision in adjudication["review_decisions"]:
+        report_lines.append(
+            f"| `{decision['source_key']}` | {decision['display_name_ja']} | {decision_labels[decision['decision']]} |"
+        )
+    report_lines.extend(
+        [
+        "",
+        "結果は既存9 hubを確定、朝霞台—北朝霞を2 station_groupからなるhubとして追加、浅草（銀座線—TX）は公式乗換の相互記載がないため分離維持、町田の手動候補は既存 `004387` hubへの重複として解消した。",
+        "",
+        "## Exact service segments",
+        "",
+        "| corridor | endpoints | stations | status |",
+        "|---|---|---:|---|",
+        ]
+    )
+    for segment in adjudication["service_segments"]:
+        report_lines.append(
+            f"| `{segment['corridor_id']}` | {segment['endpoint_start']}—{segment['endpoint_end']} | {segment['station_count']} | `confirmed_exact_segment` |"
+        )
+    report_lines.extend(
+        [
+        "",
+        "中央快速線は候補20駅をそのまま承認せず、公式の東京—高尾24駅へ修正した。高円寺・阿佐ヶ谷・荻窪・西荻窪をprimaryへ移し、中央・総武緩行だけの8駅は `auxiliary_context` に残した。京浜東北・根岸線は3つのN02 physical route aliasを跨ぐ大宮—大船42駅のservice corridorとして固定した。",
+        "",
+        "東武東上線は現行の公式路線別ページが駅名付きで列挙する39駅を採用した。同社会社概要の集計値40との定義差はadjudicationに残し、駅ノード選択には直接列挙を優先した。",
         "",
         "## 成果物",
         "",
+        "- `data/reference/PHASE1_G2_ADJUDICATIONS.yml`",
         "- `data/derived/stations.parquet`",
         "- `data/derived/station_groups.parquet`",
         "- `data/derived/hubs.parquet`",
+        "- `data/derived/hub_station_group_links.parquet`",
         "- `data/derived/lines.parquet`",
         "- `data/derived/station_line_crosswalk.parquet`",
         "- `data/derived/entity_alias.parquet`",
         "- `data/qa/identity_review_queue.parquet`",
         "- `data/manifests/identity.phase1.yml`",
         "",
-        "## 未解決を残した理由",
+        "## G3 handoff",
         "",
-        "- 複数source aliasが異なるgroup seedを持つ場合は `ambiguous_match` として未選択。",
-        "- N02の同名300m groupはhub確定根拠ではないため、hub候補を全件手動レビュー待ちにした。",
-        "- 複数のphysical routeを束ねる京浜東北・根岸線は `candidate_review` とし、service stopの確認をG2レビューへ送った。",
-        "- 中央線快速の緩行駅はprimary crosswalkへ混入させず、`auxiliary_context` として候補駅へ残した。",
+        "G3はこのconfirmed crosswalkを入力としてmesh table・公式mesh geometry・S12 code・L01 pointを正規化できる。中心地、スコア、ランキング、公開UIは引き続き生成しておらず、publication gateは閉じたまま。",
         "",
-        "## 次の作業",
-        "",
-        "G2レビューでopen queueを解決し、駅・駅群・hubの手動根拠とroute segmentを確定する。確定後にG3でmesh/S12/L01を正規化する。現時点では中心地、スコア、ランキング、公開UIを生成していない。",
-        "",
-        "参照: `data/reference/PHASE1_IDENTITY_RULES.yml`, `data/reference/PHASE1_IDENTITY_REGISTRY.yml`, `data/manifests/source_lock.phase1.yml`",
-    ]
+        "参照: `data/reference/PHASE1_G2_ADJUDICATIONS.yml`, `data/reference/PHASE1_IDENTITY_RULES.yml`, `data/reference/PHASE1_IDENTITY_REGISTRY.yml`, `data/manifests/source_lock.phase1.yml`",
+        ]
+    )
     REPORT_PATH.write_text("\n".join(report_lines) + "\n", encoding="utf-8")
     return manifest
 
@@ -833,7 +1045,7 @@ def build() -> dict[str, Any]:
 if __name__ == "__main__":
     result = build()
     print(
-        "PASS Phase 1 G2 identity candidates: "
+        "PASS Phase 1 G2 identity adjudication: "
         f"{result['counts']['stations']} stations, {result['counts']['crosswalk_rows']} crosswalk rows, "
         f"{result['counts']['open_reviews']} open reviews"
     )

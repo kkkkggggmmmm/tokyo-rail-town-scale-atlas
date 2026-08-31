@@ -427,13 +427,21 @@ phase_1_acquisition:
     Phase 1 G1で取得した原本はdata/raw/phase1以下に保持し、Gitには取得範囲と
     ハッシュ・アーカイブメンバーを記録したロックファイルだけを登録する。
 
-phase_1_identity_candidate:
-  status: G2_CANDIDATE_REVIEW
+phase_1_identity:
+  status: G2_PASS
   rules: data/reference/PHASE1_IDENTITY_RULES.yml
+  adjudication: data/reference/PHASE1_G2_ADJUDICATIONS.yml
   registry: data/reference/PHASE1_IDENTITY_REGISTRY.yml
   manifest: data/manifests/identity.phase1.yml
   report: docs/PHASE1_G2_IDENTITY_REPORT.md
   source_release_id: N02-25
+  counts:
+    stations: 242
+    station_groups: 231
+    confirmed_hubs: 10
+    crosswalk_rows: 233
+    locked_service_segments: 8
+    open_reviews: 0
   outputs:
     - data/derived/stations.parquet
     - data/derived/station_groups.parquet
@@ -449,4 +457,5 @@ phase_1_identity_candidate:
     same_name_300m_group_is_candidate_only: true
     hub_confirmation_requires_manual_transfer_evidence: true
     unresolved_matches_are_queued_not_forced: true
+    exact_segments_have_order_and_source_hashes: true
     distance_is_operating_km: false

@@ -1,8 +1,8 @@
 # Data Dictionary
 
 **Project:** `tokyo-rail-town-scale-atlas`
-**Dictionary version:** `0.2.0`
-**Status:** Phase 1 G2 identity candidate (not publication-ready)
+**Dictionary version:** `0.3.0`
+**Status:** Phase 1 G2 identity PASS / G3 ready (not publication-ready)
 
 ## 1. Canonical grain
 
@@ -195,27 +195,32 @@ Phase 0では値を生成しない。将来の出力は別列・別版で保持�
 
 詳細なDDLは [`schema/canonical.sql`](schema/canonical.sql) を正本とする。
 
-## 7. Phase 1 G2 identity candidate artifacts
+## 7. Phase 1 G2 confirmed identity artifacts
 
-G2では、ロック済みN02-25から8つのpilot回廊を切り出す。以下のParquetは候補・
-レビュー用であり、`review_status=candidate` の駅群・hubを公開上の確定identityと
-みなしてはならない。
+G2では、ロック済みN02-25から8つのpilot回廊を切り出し、12件の手動判定と
+exact service segment監査を通過した。判定の正本は
+`data/reference/PHASE1_G2_ADJUDICATIONS.yml`、再生成結果のハッシュは
+`data/manifests/identity.phase1.yml` に保持する。この確定はG3入力としてのidentityを
+意味し、中心地・スコア・ランキングの公開を許可するものではない。
 
 | Artifact | Grain | Key rule |
 |---|---|---|
-| `data/derived/stations.parquet` | N02 source station node | `station_id` is a persisted opaque registry ID; N02 key is alias |
-| `data/derived/station_groups.parquet` | N02 `N02_005g` seed | same-name/300m is candidate only |
-| `data/derived/hubs.parquet` | multi-operator/route group candidate | all rows remain `manual` + `candidate` until transfer evidence |
-| `data/derived/lines.parquet` | frozen pilot analysis corridor | service/physical route composition is explicit |
-| `data/derived/station_line_crosswalk.parquet` | station × pilot line membership | unresolved station matches are omitted and queued |
-| `data/derived/entity_alias.parquet` | canonical entity × N02 alias | dated `source_release_id` is mandatory |
-| `data/qa/identity_review_queue.parquet` | unresolved or review-required identity case | no ambiguous merge is auto-selected |
+| `data/derived/stations.parquet` | confirmed N02 source station node | `station_id` is a persisted opaque registry ID; N02 key is alias |
+| `data/derived/station_groups.parquet` | reviewed N02 `N02_005g` seed | `confirmed` records passed collision/hub review; the source seed alone remains insufficient evidence |
+| `data/derived/hubs.parquet` | confirmed operational transfer hub | 10 rows use `transfer_basis=official`; a multi-group hub has nullable legacy single-group columns |
+| `data/derived/hub_station_group_links.parquet` | hub × station group | authoritative many-to-many membership with manual-adjudication evidence |
+| `data/derived/lines.parquet` | frozen pilot analysis corridor | all 8 rows are `confirmed_exact_segment` with station-order and source-key SHA-256 locks |
+| `data/derived/station_line_crosswalk.parquet` | station × pilot line membership | 233 confirmed primary memberships; exact segment order is contiguous |
+| `data/derived/entity_alias.parquet` | canonical entity × source/adjudication alias | dated `source_release_id` and review status are mandatory |
+| `data/qa/identity_review_queue.parquet` | identity review history | 13 resolved rows, including the 12 formerly open hub cases; no history is deleted |
 
-`distance_from_origin_km` in the G2 crosswalk is a geodesic centroid-chain candidate,
-not an operating-kilometre claim. The source rule and the persisted ID registry are
-`data/reference/PHASE1_IDENTITY_RULES.yml` and
-`data/reference/PHASE1_IDENTITY_REGISTRY.yml`.
+`distance_from_origin_km` in the G2 crosswalk remains a geodesic centroid-chain candidate,
+not an operating-kilometre claim. Exact segment confirmation fixes membership and order,
+not sales-distance semantics. `lines.parquet` stores `segment_station_order_sha256`,
+`segment_source_keys_sha256`, `segment_lock_version`, and `segment_evidence_json`.
+The source rule and persisted ID registry are `data/reference/PHASE1_IDENTITY_RULES.yml`
+and `data/reference/PHASE1_IDENTITY_REGISTRY.yml`.
 
-The candidate Parquet stores `centroid_lon` / `centroid_lat` for lightweight review;
+The G2 Parquet stores `centroid_lon` / `centroid_lat` for lightweight review;
 the canonical SQL `centroid_wkb` field remains the geometry interchange target for a
 later promoted run.

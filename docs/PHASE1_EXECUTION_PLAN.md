@@ -67,6 +67,10 @@ Unknown third-party rights, an unexplained revision, or a missing table definiti
 
 ## G2 — Station, group, hub, and line identity
 
+**Status: PASS (2026-08-31).** The 12 queued identity/hub cases are resolved with
+official evidence, and all eight exact service segments are locked by station order
+and N02 source-key hashes. See `docs/PHASE1_G2_IDENTITY_REPORT.md`.
+
 ### Work
 
 1. Parse N02 into release-scoped staging tables.
@@ -99,6 +103,9 @@ An input row is silently discarded, a source code becomes canonical ID, or an am
 match is auto-selected without a queue record.
 
 ## G3 — Mesh normalization and missingness
+
+**Status: READY.** G3 may consume the confirmed G2 station-line crosswalk. Publication,
+ranking, and final center geometry remain blocked by later gates.
 
 ### Work
 

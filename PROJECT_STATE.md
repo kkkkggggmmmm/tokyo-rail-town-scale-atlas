@@ -3,11 +3,13 @@
 ```yaml
 project_id: tokyo-rail-town-scale-atlas
 repository_candidate: tokyo-rail-town-scale-atlas
-state_version: 0.3.0
-updated_at: 2026-08-30
+state_version: 0.4.0
+updated_at: 2026-08-31
 phase: 1
-phase_name: pilot-identity-candidate-review
-phase_status: G2_CANDIDATE_REVIEW
+phase_name: pilot-metric-normalization-ready
+phase_status: G2_PASS_G3_READY
+identity_gate: PASS_2026-08-31
+next_gate: G3_MESH_MISSINGNESS_NORMALIZATION
 release_status: NOT_PUBLISHABLE
 ranking_status: PROHIBITED_IN_PHASE_1
 ui_status: PROHIBITED_IN_PHASE_1
@@ -33,7 +35,7 @@ official_correction_recheck: PASS_2026-08-30
 9. PLATEAU、POI、人流はEnhanced layerとして扱う。
 10. GitHubをコード、変換処理、データ辞書、判断履歴の正本とする。
 
-## Phase 0 completion ledger
+## Completion ledger
 
 | Requirement | State | Canonical artifact |
 |---|---|---|
@@ -48,24 +50,25 @@ official_correction_recheck: PASS_2026-08-30
 | Phase 1 execution plan | Complete | `docs/PHASE1_EXECUTION_PLAN.md` |
 | Official correction/distribution recheck | Complete; acquisition-day recheck remains mandatory | `docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md` |
 | Phase 1 G0/G1 source acquisition | Complete; 24 archives, 91 members, SHA-256 locked | `docs/PHASE1_G0_G1_REPORT.md`, `data/manifests/source_lock.phase1.yml` |
-| Phase 1 G2 identity candidates | Candidate review; 242 stations, 229 crosswalk rows, 12 open reviews | `docs/PHASE1_G2_IDENTITY_REPORT.md`, `data/manifests/identity.phase1.yml` |
+| Phase 1 G2 identity and exact segments | Complete; 242 stations, 231 station groups, 10 confirmed hubs, 233 crosswalk rows, 8 locked segments, 0 open reviews | `docs/PHASE1_G2_IDENTITY_REPORT.md`, `data/reference/PHASE1_G2_ADJUDICATIONS.yml`, `data/manifests/identity.phase1.yml` |
 
 ## Phase 0 decision
 
 **GO to Phase 1, with gates.** All five source families are obtainable and their usage terms are identifiable. Missingness can be represented without zero-imputation. The N02 source codes are not accepted as durable canonical IDs; the alias-registry design is therefore mandatory before acquisition is promoted into canonical tables.
 
-## Phase 1 gates remaining after G1
+## Phase 1 gates remaining after G2
 
-1. G2: adjudicate the 12 open identity/hub cases and confirm exact service segments.
-2. G3: normalize mesh tables, official mesh geometry, S12 codes, and L01 points while preserving missingness.
-3. G4–G6: compare center challengers, adjudicate Golden Evals, and record a method-selection decision.
+1. G3: normalize mesh tables, official mesh geometry, S12 codes, and L01 points while preserving missingness.
+2. G4–G6: compare center challengers, adjudicate Golden Evals, and record a method-selection decision.
 
 ## Current blockers and non-blockers
 
-- **Resolved external work:** public canonical repository is [kkkkggggmmmm/tokyo-rail-town-scale-atlas](https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas); `main` contains the Phase 1 G2 candidate artifact set.
+- **Resolved external work:** public canonical repository is [kkkkggggmmmm/tokyo-rail-town-scale-atlas](https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas); `main` contains the Phase 1 G2 adjudication and confirmed identity artifact set.
 - **Resolved source audit:** official catalog, correction, terms, update, and definition pages were rechecked and hashed on 2026-08-30. The 500m JGD2011 population input is pinned to e-Stat `T001141`; `T001192` is explicitly excluded because it is the age-class table.
 - **Resolved acquisition:** 24 official ZIP archives (38,883,077 bytes) passed byte-size/CRC/path checks and are recorded in `data/manifests/source_lock.phase1.yml`; originals are read-only outside Git.
-- **Non-blocker:** no center transformation, ranking, final polygon, or public UI has been produced. G2 review is the next execution gate; G3 must not consume an unreviewed service crosswalk.
+- **Resolved G2 gate:** all 12 identity/hub reviews are reason-coded and resolved. Nine existing hubs plus 朝霞台—北朝霞 are confirmed from official transfer evidence; 浅草（銀座線—TX）remains separate and the manual 町田 case resolves to the existing hub.
+- **Resolved service scope:** all eight exact segments are locked. JR中央線快速 was corrected from 20 to 24 primary stations before acceptance; all other candidate sequences were confirmed.
+- **Non-blocker:** no center transformation, ranking, final polygon, or public UI has been produced. G3 may consume the confirmed G2 crosswalk, while publication remains blocked.
 - **Known risk:** 500 m Economic Census cells limit Core boundary precision. Enhanced layers may refine geometry later, but may not back-propagate into a supposedly nationwide Core score without a new decision.
 
 ## STOP conditions carried forward

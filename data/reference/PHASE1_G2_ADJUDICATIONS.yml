@@ -1,0 +1,264 @@
+adjudication_version: "0.1.0"
+project_id: tokyo-rail-town-scale-atlas
+phase: 1
+gate: G2
+status: accepted
+source_release_id: N02-25
+adjudication_release_id: G2-ADJ-2026-08-31
+reviewed_snapshot_commit: 0607003156831c807596c55ddd12b8abc12fa65a
+adjudicated_at: "2026-08-31T11:36:19Z"
+official_evidence_retrieved_at: "2026-08-31"
+reviewer: OpenAI Codex, requested repository audit
+decision_rule:
+  hub: >-
+    Confirm only when an operator's current official station or route material identifies
+    the railway transfer. Proximity or the N02 same-name/300m seed alone is insufficient.
+  rejection: >-
+    Keep station groups separate when both operators' current official transfer guidance
+    does not identify the other railway; a later center may still link both stations.
+  service_segment: >-
+    Lock every named station node, in official route order, between the frozen endpoints.
+    Train-class, weekday, and time-of-day skip patterns do not delete route nodes.
+
+review_decisions:
+  - source_key: "003505"
+    display_name_ja: 上野
+    decision: confirm_hub
+    target_hub_key: "group:003505"
+    station_group_keys: ["003505"]
+    transfer_basis: official
+    resolution_note: 東京メトロ銀座線の公式駅一覧がG16上野の乗換路線にJR線を明記。
+    evidence:
+      - url: https://www.tokyometro.jp/station/line_ginza/index.html
+        supports: G16 上野の乗換路線にJR線。
+
+  - source_key: "003615"
+    display_name_ja: 御茶ノ水
+    decision: confirm_hub
+    target_hub_key: "group:003615"
+    station_group_keys: ["003615"]
+    transfer_basis: official
+    resolution_note: JR東日本の公式駅ページが中央線と中央・総武線各駅停車を同一御茶ノ水駅で案内。
+    evidence:
+      - url: https://www.jreast.co.jp/estation/stations/384.html
+        supports: 御茶ノ水駅の中央線・中央総武線の公式駅情報。
+
+  - source_key: "003624"
+    display_name_ja: 秋葉原
+    decision: confirm_hub
+    target_hub_key: "group:003624"
+    station_group_keys: ["003624"]
+    transfer_basis: official
+    resolution_note: TXの公式駅ページが秋葉原の乗換路線にJR山手・京浜東北・総武線を明記。
+    evidence:
+      - url: https://www.mir.co.jp/route_map/akihabara/
+        supports: 秋葉原駅のJR線乗換案内。
+
+  - source_key: "003677"
+    display_name_ja: 神田
+    decision: confirm_hub
+    target_hub_key: "group:003677"
+    station_group_keys: ["003677"]
+    transfer_basis: official
+    resolution_note: 東京メトロ銀座線の公式駅一覧がG13神田の乗換路線にJR線を明記。
+    evidence:
+      - url: https://www.tokyometro.jp/station/line_ginza/index.html
+        supports: G13 神田の乗換路線にJR線。
+
+  - source_key: "003700"
+    display_name_ja: 新宿
+    decision: confirm_hub
+    target_hub_key: "group:003700"
+    station_group_keys: ["003700"]
+    transfer_basis: official
+    resolution_note: 小田急の公式駅ページと構内案内がJR乗換口を明記。
+    evidence:
+      - url: https://www.odakyu.jp/station/shinjuku/
+        supports: 新宿駅のJR乗換と構内案内。
+
+  - source_key: "003872"
+    display_name_ja: 新橋
+    decision: confirm_hub
+    target_hub_key: "group:003872"
+    station_group_keys: ["003872"]
+    transfer_basis: official
+    resolution_note: 東京メトロ銀座線の公式駅一覧がG08新橋の乗換路線にJR線を明記。
+    evidence:
+      - url: https://www.tokyometro.jp/station/line_ginza/index.html
+        supports: G08 新橋の乗換路線にJR線。
+
+  - source_key: "003922"
+    display_name_ja: 渋谷
+    decision: confirm_hub
+    target_hub_key: "group:003922"
+    station_group_keys: ["003922"]
+    transfer_basis: official
+    resolution_note: 東京メトロ銀座線の公式駅一覧がG01渋谷の乗換路線にJR線と東急東横線を明記。
+    evidence:
+      - url: https://www.tokyometro.jp/station/line_ginza/index.html
+        supports: G01 渋谷のJR線・東急東横線乗換案内。
+
+  - source_key: "004387"
+    display_name_ja: 町田
+    decision: confirm_hub
+    target_hub_key: "group:004387"
+    station_group_keys: ["004387"]
+    transfer_basis: official
+    resolution_note: 小田急の公式駅ページが他社線乗り換えにJR横浜線を明記。
+    evidence:
+      - url: https://www.odakyu.jp/station/machida/
+        supports: 町田駅のJR横浜線乗換案内。
+
+  - source_key: "004633"
+    display_name_ja: 横浜
+    decision: confirm_hub
+    target_hub_key: "group:004633"
+    station_group_keys: ["004633"]
+    transfer_basis: official
+    resolution_note: 東急東横線の公式路線ページが横浜の乗換路線にJR線を明記。
+    evidence:
+      - url: https://www.tokyu.co.jp/railway/ty/
+        supports: TY21 横浜のJR線乗換案内。
+
+  - source_key: manual:asakadai-kitaasaka
+    display_name_ja: 朝霞台—北朝霞
+    decision: confirm_hub
+    target_hub_key: manual:asakadai-kitaasaka
+    station_group_keys: ["003061", "003056"]
+    transfer_basis: official
+    resolution_note: 東武の公式朝霞台駅ページが乗り換え案内にJR線（北朝霞）を明記するため、異名の2 station_groupを1 hubに連結。
+    evidence:
+      - url: https://www.tobu.co.jp/railway/guide/station/info/7307/
+        supports: 朝霞台駅のJR線乗換案内。
+
+  - source_key: manual:asakusa-ginza-tx
+    display_name_ja: 浅草（銀座線—TX）
+    decision: reject_hub
+    station_group_keys: ["003522", "003502"]
+    transfer_basis: null
+    resolution_note: >-
+      東京メトロG19の公式乗換は都営浅草線・東武スカイツリーラインでTXを含まず、
+      TX浅草の公式「乗換案内」はバスのみ。近接・同名だけでは定義を満たさないためstation_groupを分離維持。
+    evidence:
+      - url: https://www.tokyometro.jp/station/line_ginza/index.html
+        supports: G19浅草の公式乗換路線にTXなし。
+      - url: https://www.mir.co.jp/route_map/asakusa/
+        supports: TX浅草の乗換案内はバスのみ。メトロ駅は周辺施設案内。
+
+  - source_key: manual:machida-jr-odakyu
+    display_name_ja: 町田（JR—小田急）
+    decision: resolve_duplicate
+    target_hub_key: "group:004387"
+    station_group_keys: ["004387"]
+    transfer_basis: official
+    resolution_note: N02の両station nodeは既存group 004387に収容済みで、公式乗換根拠も同じため新規hubを作らず既存町田hubへ統合。
+    evidence:
+      - url: https://www.odakyu.jp/station/machida/
+        supports: 町田駅のJR横浜線乗換案内。
+
+service_segments:
+  - corridor_id: pc_jr_chuo_rapid
+    display_name_ja: JR中央線快速
+    decision: confirmed_exact_segment
+    endpoint_start: 東京
+    endpoint_end: 高尾
+    station_count: 24
+    audit_note: >-
+      候補20駅は不足。公式の東京—高尾24駅に修正し、現行平日快速も停車する
+      高円寺・阿佐ヶ谷・荻窪・西荻窪をprimaryへ移した。中央・総武緩行のみの8駅はcontextに残す。
+    evidence:
+      - url: https://www.jreast.co.jp/hachioji/info/20181116/20181116_info1.pdf
+        supports: 中央快速線停車駅（東京—高尾）24駅の公式列挙。
+      - url: https://timetables.jreast.co.jp/2609/train/155/155351.html
+        supports: 現行平日快速の高円寺・阿佐ヶ谷・荻窪・西荻窪停車。
+
+  - corridor_id: pc_jr_sobu_local
+    display_name_ja: JR総武線各駅停車
+    decision: confirmed_exact_segment
+    endpoint_start: 御茶ノ水
+    endpoint_end: 千葉
+    station_count: 21
+    audit_note: 御茶ノ水—千葉21駅の順序とN02対応を確認。
+    evidence:
+      - url: https://www.jreast.co.jp/map/pdf/map_tokyo.pdf
+        supports: JR東日本公式路線図の中央・総武線各駅停車。
+
+  - corridor_id: pc_jr_keihin_tohoku_negishi
+    display_name_ja: JR京浜東北・根岸線
+    decision: confirmed_exact_segment
+    endpoint_start: 大宮
+    endpoint_end: 大船
+    station_count: 42
+    audit_note: 東北線・東海道線・根岸線のN02 physical routeを大宮—大船42駅のservice corridorとして順序固定。
+    evidence:
+      - url: https://timetables.jreast.co.jp/2608/train/120/120121.html
+        supports: 京浜東北・根岸線の大宮—大船現行駅時刻表。
+      - url: https://www.jreast.co.jp/map/pdf/map_tokyo.pdf
+        supports: JR東日本公式路線図の京浜東北・根岸線。
+
+  - corridor_id: pc_tokyu_toyoko
+    display_name_ja: 東急東横線
+    decision: confirmed_exact_segment
+    endpoint_start: 渋谷
+    endpoint_end: 横浜
+    station_count: 21
+    audit_note: 公式路線順の渋谷—横浜21駅とN02対応を確認。
+    evidence:
+      - url: https://www.tokyu.co.jp/railway/ty/
+        supports: 東急東横線TY01—TY21の公式駅一覧。
+
+  - corridor_id: pc_odakyu_odawara
+    display_name_ja: 小田急小田原線
+    decision: confirmed_exact_segment
+    endpoint_start: 新宿
+    endpoint_end: 小田原
+    station_count: 47
+    audit_note: 公式駅一覧の新宿—小田原47駅とN02対応を確認。
+    evidence:
+      - url: https://www.odakyu.jp/station/timetables-download.html
+        supports: 小田急小田原線の公式駅一覧。
+
+  - corridor_id: pc_tobu_tojo
+    display_name_ja: 東武東上線
+    decision: confirmed_exact_segment
+    endpoint_start: 池袋
+    endpoint_end: 寄居
+    station_count: 39
+    audit_note: >-
+      公式路線ページが名前付きで列挙する池袋—寄居39駅を固定。会社概要の集計駅数40との
+      定義差は注記し、駅ノード選定には同社の現行路線別列挙を優先した。
+    evidence:
+      - url: https://www.tobu.co.jp/railway/guide/line/tojo_line.html
+        supports: 東上線の池袋—寄居の公式駅別列挙。
+      - url: https://www.tobu.co.jp/corporation/rail/route/
+        supports: 東上本線の会社概要上の集計駅数。定義差の監査記録。
+
+  - corridor_id: pc_tokyo_metro_ginza
+    display_name_ja: 東京メトロ銀座線
+    decision: confirmed_exact_segment
+    endpoint_start: 渋谷
+    endpoint_end: 浅草
+    station_count: 19
+    audit_note: 公式駅一覧のG01渋谷—G19浅草19駅とN02対応を確認。
+    evidence:
+      - url: https://www.tokyometro.jp/station/line_ginza/index.html
+        supports: 銀座線G01—G19の公式駅一覧。
+
+  - corridor_id: pc_tsukuba_express
+    display_name_ja: つくばエクスプレス
+    decision: confirmed_exact_segment
+    endpoint_start: 秋葉原
+    endpoint_end: つくば
+    station_count: 20
+    audit_note: 公式路線図の秋葉原—つくば20駅とN02対応を確認。
+    evidence:
+      - url: https://www.mir.co.jp/route_map/
+        supports: TX秋葉原—つくば20駅の公式路線図。
+
+acceptance:
+  expected_preexisting_open_reviews: 12
+  expected_remaining_open_reviews: 0
+  expected_confirmed_hubs: 10
+  expected_rejected_hub_candidates: 1
+  expected_duplicate_reviews: 1
+  expected_locked_service_segments: 8

@@ -1,9 +1,9 @@
-rules_version: "0.1.0"
+rules_version: "0.2.0"
 project_id: tokyo-rail-town-scale-atlas
 phase: 1
 gate: G2
-status: candidate_review
-fixed_at: "2026-08-30"
+status: adjudicated
+fixed_at: "2026-08-31"
 source_release_id: N02-25
 source_namespace: N02_2025
 notes:
@@ -16,6 +16,9 @@ notes:
   - >-
     distance_from_origin_kmは駅中心点間の測地線累積値であり、営業キロではない。
     路線形状からの営業距離は後続ゲートで置換または検証する。
+  - >-
+    exact service segmentは公式路線の全駅ノードを始点から終点まで順序固定したものである。
+    列車種別・曜日・時間帯による通過はsegmentから駅ノードを除外する根拠にしない。
 
 corridors:
   pc_jr_chuo_rapid:
@@ -25,11 +28,12 @@ corridors:
     endpoint_start: 東京
     endpoint_end: 高尾
     inclusion_status: >-
-      rapid_primary only; 中央・総武緩行の駅は補助contextとして別レビューに残す。
-    primary_station_order: [東京, 神田, 御茶ノ水, 四ツ谷, 新宿, 中野, 吉祥寺, 三鷹, 武蔵境, 東小金井, 武蔵小金井, 国分寺, 西国分寺, 国立, 立川, 日野, 豊田, 八王子, 西八王子, 高尾]
+      chuo_rapid_corridor_primary; 東京—高尾の公式路線24駅を固定する。平日快速が停車する
+      高円寺・阿佐ヶ谷・荻窪・西荻窪を含み、個別の列車種別による通過は路線駅ノードを削らない。
+    primary_station_order: [東京, 神田, 御茶ノ水, 四ツ谷, 新宿, 中野, 高円寺, 阿佐ヶ谷, 荻窪, 西荻窪, 吉祥寺, 三鷹, 武蔵境, 東小金井, 武蔵小金井, 国分寺, 西国分寺, 国立, 立川, 日野, 豊田, 八王子, 西八王子, 高尾]
     source_route_overrides:
       東京: {operator: 東日本旅客鉄道, route: 東北線, reason: 中央線source row absent; shared N02 group seed with JR Tokyo}
-    auxiliary_station_names: [水道橋, 飯田橋, 市ヶ谷, 信濃町, 千駄ヶ谷, 代々木, 大久保, 東中野, 高円寺, 阿佐ヶ谷, 荻窪, 西荻窪]
+    auxiliary_station_names: [水道橋, 飯田橋, 市ヶ谷, 信濃町, 千駄ヶ谷, 代々木, 大久保, 東中野]
 
   pc_jr_sobu_local:
     display_name_ja: JR総武線各駅停車
@@ -46,7 +50,7 @@ corridors:
     source_routes: [東北線, 東海道線, 根岸線]
     endpoint_start: 大宮
     endpoint_end: 大船
-    inclusion_status: service_corridor_candidate
+    inclusion_status: service_corridor_primary
     primary_station_order: [大宮, さいたま新都心, 浦和, 南浦和, 蕨, 西川口, 川口, 赤羽, 東十条, 王子, 上中里, 田端, 上野, 御徒町, 秋葉原, 神田, 東京, 有楽町, 新橋, 浜松町, 田町, 高輪ゲートウェイ, 品川, 大井町, 大森, 蒲田, 川崎, 鶴見, 新子安, 東神奈川, 横浜, 桜木町, 関内, 石川町, 山手, 根岸, 磯子, 新杉田, 洋光台, 港南台, 本郷台, 大船]
     route_preference:
       大宮: 東北線
@@ -91,9 +95,9 @@ corridors:
       港南台: 根岸線
       本郷台: 根岸線
       大船: 根岸線
-    review_note: >-
+    adjudication_note: >-
       N02はphysical routeを収録するため、京浜東北のservice stopをこの規則で選ぶ。
-      高輪ゲートウェイ等の停車扱いはG2レビューで確認する。
+      JR東日本の現行駅時刻表で大宮—大船の42駅を確認し、G2で順序固定した。
 
   pc_tokyu_toyoko:
     display_name_ja: 東急東横線

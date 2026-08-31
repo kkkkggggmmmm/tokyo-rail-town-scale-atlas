@@ -1,54 +1,118 @@
-manifest_version: 0.1.0
+manifest_version: 0.2.0
 project_id: tokyo-rail-town-scale-atlas
 phase: 1
 gate: G2
-status: CANDIDATE_REVIEW
-generated_at: '2026-08-30'
-run_id: run_phase1_g2_identity_candidate_20260830
+status: PASS
+generated_at: '2026-08-31'
+run_id: run_phase1_g2_adjudicated_20260831
 source_release_id: N02-25
 source_archive: data/raw/phase1/archives/N02-25_GML.zip
 rules: data/reference/PHASE1_IDENTITY_RULES.yml
-rules_sha256: fe375a1ab3881b5d4f3a93c73825f2f05a9e44270711992e3464b065c5a48a7b
+rules_sha256: 50151e6fbc81f008798f2910eade13db89359fac055270b4f010dc796df73866
+adjudication: data/reference/PHASE1_G2_ADJUDICATIONS.yml
+adjudication_sha256: 5b73b4b23795006c921ed2d95f146518a720555bf89b8738c1950fc0c12a058d
 identity_registry: data/reference/PHASE1_IDENTITY_REGISTRY.yml
 counts:
   pilot_corridors: 8
   stations: 242
   station_groups: 231
-  hubs: 9
+  hubs: 10
   lines: 8
-  crosswalk_rows: 229
+  crosswalk_rows: 233
   review_queue: 13
-  open_reviews: 12
+  open_reviews: 0
+  resolved_reviews: 13
+  confirmed_hubs: 10
+  locked_service_segments: 8
+service_segments:
+  pc_jr_chuo_rapid:
+    status: confirmed_exact_segment
+    endpoint_start: 東京
+    endpoint_end: 高尾
+    station_count: 24
+    station_order_sha256: bd826467f2f824618a6b26a2794c2495f3bf9cd8a493b35da21e9d6e3f94b41f
+    source_keys_sha256: 67da8646a033338548aa87c7f34e7319b5b6279348e1175ddd0f9a9571a48e17
+  pc_jr_keihin_tohoku_negishi:
+    status: confirmed_exact_segment
+    endpoint_start: 大宮
+    endpoint_end: 大船
+    station_count: 42
+    station_order_sha256: d68a5046565571d89bedbe2f3e6c0d8114a6e1b4b92b0079db35e3bfad646711
+    source_keys_sha256: 009a92a2d826d6c14f4055331fba695eb2a9fd68e55f524e0604e00cd582d3e6
+  pc_jr_sobu_local:
+    status: confirmed_exact_segment
+    endpoint_start: 御茶ノ水
+    endpoint_end: 千葉
+    station_count: 21
+    station_order_sha256: 8a866f2a5a31fadf18af164ce1415fbe7524d0704306bb0f3ee662c73f7cd064
+    source_keys_sha256: e9c57335b1843688ed0fce5ebeea97667a71998faf6ab9dfcd26e46861116525
+  pc_odakyu_odawara:
+    status: confirmed_exact_segment
+    endpoint_start: 新宿
+    endpoint_end: 小田原
+    station_count: 47
+    station_order_sha256: 1989c47e603473f2373fbae9f78332aa7cce3fbd66df76122a0c3bfb3b9f3854
+    source_keys_sha256: 8d1e9ede36143c066e10f831dd4b5e7b6759cd106cbe4938c9d6b7acc39e316d
+  pc_tobu_tojo:
+    status: confirmed_exact_segment
+    endpoint_start: 池袋
+    endpoint_end: 寄居
+    station_count: 39
+    station_order_sha256: 28fd57877ea39ce51aa4bacffb2612de4f0325861ae589902a81dd33c0c0a7d5
+    source_keys_sha256: e393f06b475028ebfdc38fa686be56cddde84e56e25933bda9b26c94712aaba9
+  pc_tokyo_metro_ginza:
+    status: confirmed_exact_segment
+    endpoint_start: 渋谷
+    endpoint_end: 浅草
+    station_count: 19
+    station_order_sha256: aae124d537299ca3983ee89bab51e0a0ae6928be7df79066db130c73007ae749
+    source_keys_sha256: 8b346ebaa57f67129056994bbedab67e0f4dcf62d46f2fe02535856f7fd892d1
+  pc_tokyu_toyoko:
+    status: confirmed_exact_segment
+    endpoint_start: 渋谷
+    endpoint_end: 横浜
+    station_count: 21
+    station_order_sha256: 395aca133d65b78352b600d03bd058acbd53f24e7a8204b5525c2c767a8482a5
+    source_keys_sha256: 64af69fef7b8a29eba55fd10a36a60b8682ad4474988d9db5ce1a8fc40a24db7
+  pc_tsukuba_express:
+    status: confirmed_exact_segment
+    endpoint_start: 秋葉原
+    endpoint_end: つくば
+    station_count: 20
+    station_order_sha256: 1d5390406b98d10c25827faddd740e763cdb1cac5f243b975f744d295a2c2df6
+    source_keys_sha256: e1be688c02e57e271b90619bf84cf16c57cce643bffd3d872f331a0bd08d1ef1
 outputs:
   stations:
     path: data/derived/stations.parquet
-    sha256: fd13097d6b6b4fbdce8e01e4e1962f0a90859a788c1d8cb74dc486a8c5836f77
+    sha256: 9e4cd8d0d7c812ec0ed973e2e8c88f870f12191ce070442b590e0c2d72b8c8a5
   station_groups:
     path: data/derived/station_groups.parquet
-    sha256: 0798ad68b5c8c71a640f13ad1a54e501f6de9aeb0ad89b44477282e087ec4063
+    sha256: 90c968fe7c18c330a6250d6623957d9415d4002a357f8505af24a85ba7ff6100
   hubs:
     path: data/derived/hubs.parquet
-    sha256: 517882e7e2af0f9493261e432338c3d8fcb863db101f27fc037cdb1e76f940d8
+    sha256: 1e2f0a14fd2b94e450d28228138b672409389d600001f10f33dd3679a026b38b
   hub_station_group_links:
     path: data/derived/hub_station_group_links.parquet
-    sha256: 048bd3e2893006264dbd1bfee88647a61249201412493ed660b8b2f7322f4dd3
+    sha256: 2623e152849038fcd35a27e999bd8b4b47bbeeb3636cb20e98c8461bede9b410
   lines:
     path: data/derived/lines.parquet
-    sha256: 7107adf58fd9e34ecd90731814b29c84dbd7a26a0693399ac3c5d91838b93f9f
+    sha256: 665fd8fbaefadbc42c9c4e9538e750ba32497a3505cd2167201a4c8e5d8bb20e
   station_line_crosswalk:
     path: data/derived/station_line_crosswalk.parquet
-    sha256: bc34268918ac2a59dc1da23273538b44bc72fee79fe95dd9723f381836f9b4c7
+    sha256: be4c9dd309064488d4ddfae769b4753be0c3c1fe4b090588d281fca59f40b9a1
   station_group_members:
     path: data/derived/station_group_members.parquet
-    sha256: 21ebbe4db4e71274725526a69a1e74dd0ba18cd9e3dab0b27869af54965fe56c
+    sha256: 437f7904f0d1660cee8292b1eba965ec5d2ad3aef90938c691d38e23400b6938
   entity_alias:
     path: data/derived/entity_alias.parquet
-    sha256: 4aafb0602a3b69407b9d37056f53cfe3fa755702cb3cacb66a7bfdf63a36c1bf
+    sha256: 35c45abd8883672ef10fc3aa65626eb297751d058a9fbe9ebf186539ee1f5861
   identity_review_queue:
     path: data/qa/identity_review_queue.parquet
-    sha256: 5e70b86b302942ba4df77a9f85dfea838de8ae2feb772f605d7abedfce89d44d
+    sha256: 3adf24074a54cfd06a0bc9fd28c9d2004b81e15793371255b411daa55ce3b238
 guardrails:
   source_codes_as_canonical_ids: false
   automatic_hub_confirmation: false
+  manual_decisions_have_cited_evidence: true
   ambiguous_rows_forced: false
   distance_method_is_sales_km: false
+  publication_unblocked: false
