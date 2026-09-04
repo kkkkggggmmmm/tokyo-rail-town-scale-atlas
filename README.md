@@ -2,9 +2,9 @@
 
 東京圏の駅を入口に、駅へ接続する **commercial center（商業中心地）** の規模・タイプ・交通力・推定信頼度を分離して推定するプロジェクトです。
 
-## Current status: Phase 1 G2 PASS / G3 ready
+## Current status: R0 canonical reset complete / Phase 1 G2 PASS / G3 ready
 
-Phase 0（正本定義・取得可能性監査）、G0/G1（公式ページ再確認・24アーカイブ原本ロック）、G2（station/group/hub/line identity）を完了しました。G2は12件のレビューを全件解決し、8回廊のexact service segmentを固定したため、G3のmesh/S12/L01正規化へ進めます。正本リポジトリは [GitHub](https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas) の `main` です。最終ランキング、中心地の確定ポリゴン、公開UIは依然として作成していません。
+Phase 0（正本定義・取得可能性監査）、G0/G1（公式ページ再確認・24アーカイブ原本ロック）、G2（station/group/hub/line identity）を完了しました。2026-09-04にGitHub `main@5c886415` を再開基準として固定し、cloneだけで検証可能なCIと、raw archiveが必要な完全検証を分離しました。G3のmesh/S12/L01正規化が次の実装ゲートです。最終ランキング、中心地の確定ポリゴン、公開UIは依然として作成していません。
 
 - [Phase 0 audit report](docs/PHASE0_AUDIT_REPORT.md)
 - [Source manifest](SOURCES.yml)
@@ -56,9 +56,15 @@ Phase 0（正本定義・取得可能性監査）、G0/G1（公式ページ再�
 ## Validation
 
 ```bash
-python scripts/validate_phase0.py
-python scripts/validate_phase1_lock.py
-python scripts/validate_phase1_identity.py
+make verify-fast
 ```
 
-The validators check the required files, 8 pilot lines, 60 Golden Eval candidates, source-year separation, null semantics, canonical table declarations, the local G1 byte/member lock, G2 opaque-ID/hub adjudications, and exact-segment count/order/hash invariants. Raw archives are intentionally not committed to Git.
+`verify-fast` is the clone-safe check run by GitHub Actions. It validates the required files, 8 pilot lines, 60 Golden Eval candidates, source-year separation, null semantics, canonical table declarations, the missingness fixtures, and the execution contract itself.
+
+With the exact G1 raw archives mounted under `data/raw/phase1/`, additionally run:
+
+```bash
+make verify-locked
+```
+
+`verify-locked` validates the 24 raw archive bytes, ZIP members, source-lock hashes, and G2 opaque-ID/hub/exact-segment invariants. Raw archives are intentionally not committed to Git.

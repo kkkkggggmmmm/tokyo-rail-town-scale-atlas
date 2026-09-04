@@ -91,3 +91,11 @@
 - Correction: The JR中央線快速 candidate omitted 高円寺・阿佐ヶ谷・荻窪・西荻窪. Move these four from auxiliary context into the 24-station primary segment before locking. Keep the eight stations served only by the 中央・総武緩行 context outside the primary segment.
 - Reconciliation: The current Tobu route page explicitly enumerates 39 named 池袋—寄居 station nodes, while a corporate overview reports an aggregate station count of 40. Record the discrepancy and use the operator's current route-specific enumeration for segment membership; the unexplained aggregate definition does not identify a missing node.
 - Consequence: G2 is PASS with 242 stations, 231 station groups, 10 confirmed hubs, 233 confirmed crosswalk rows, eight locked segments, and zero open reviews. G3 may consume this identity layer. Publication, ranking, final center geometry, and UI remain blocked.
+
+## DEC-0013 — Canonical reset and validation split
+
+- Date: 2026-09-04
+- Status: accepted
+- Decision: Treat GitHub `main@5c886415c66c1e829173716637234f5924919a7c` as the sole canonical restart baseline. The historical local commit `8ad4948` is unavailable from GitHub and must not be reconstructed from memory, chat history, or inferred output counts.
+- Rationale: raw archives and a local worktree are intentionally external to Git, and the unavailable local commit cannot establish reproducible ancestry. A clean clone must nevertheless verify all contracts that do not require raw bytes.
+- Consequence: `make verify-fast` is required for every change and runs in GitHub Actions. `make verify-locked` is additionally required for changes that consume or alter locked raw inputs, source locks, G2 identity artifacts, or later derived transformations. Raw-byte absence is never a reason to report full validation as passed.

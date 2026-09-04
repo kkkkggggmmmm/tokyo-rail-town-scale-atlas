@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 — 2026-09-04
+
+- Accepted GitHub `main@5c886415` as the canonical restart baseline after the unpushed historical local G3 commit `8ad4948` could not be retrieved from GitHub.
+- Added clone-safe fast validation in GitHub Actions and pinned its small dependency set.
+- Added `make verify-fast` and `make verify-locked`; the latter remains mandatory whenever exact external raw archives are available or transformed.
+- Added an S12 regression test: a duplicate record whose raw token is `0` remains `duplicate_on_other_record` with null numeric value, never `observed_zero`.
+- Kept G3, rankings, center polygons, and public UI blocked.
+
 ## 0.4.0 — 2026-08-31
 
 - Closed all 12 Phase 1 G2 identity/hub reviews with operator-official evidence; review history remains in the queue with zero open rows.

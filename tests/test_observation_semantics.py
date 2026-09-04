@@ -47,6 +47,11 @@ class S12SemanticsTest(unittest.TestCase):
         self.assertEqual(result.status, "duplicate_on_other_record")
         self.assertIsNone(result.numeric_value)
 
+    def test_duplicate_zero_is_not_an_observed_zero(self):
+        result = normalize_s12_count("0", existence_code="1", duplicate_code="2")
+        self.assertEqual(result.status, "duplicate_on_other_record")
+        self.assertIsNone(result.numeric_value)
+
     def test_station_absent_takes_precedence(self):
         result = normalize_s12_count("0", existence_code="4", duplicate_code="1")
         self.assertEqual(result.status, "station_absent")
