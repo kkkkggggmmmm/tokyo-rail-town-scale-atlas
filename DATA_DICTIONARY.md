@@ -1,8 +1,8 @@
 # Data Dictionary
 
 **Project:** `tokyo-rail-town-scale-atlas`
-**Dictionary version:** `0.3.0`
-**Status:** Phase 1 G2 identity PASS / G3 ready (not publication-ready)
+**Dictionary version:** `0.4.0`
+**Status:** Phase 1 G3 normalization PASS with scope-aware mesh-rollup and boundary-clip gates pending (not publication-ready)
 
 ## 1. Canonical grain
 
@@ -224,3 +224,36 @@ and `data/reference/PHASE1_IDENTITY_REGISTRY.yml`.
 The G2 Parquet stores `centroid_lon` / `centroid_lat` for lightweight review;
 the canonical SQL `centroid_wkb` field remains the geometry interchange target for a
 later promoted run.
+
+## 8. Phase 1 G3 local normalization artifacts
+
+G3 output is a reproducible local derivative, not a Git-tracked publication dataset and
+not a canonical `center` result. Its detailed run record is
+`docs/PHASE1_G3_NORMALIZATION_REPORT.md`; `make verify-g3` validates a locally regenerated
+run.
+
+| Artifact | Grain | Primary key | Important constraint |
+|---|---|---|---|
+| `economic_mesh_500m.parquet` | economic-census prefecture component × 500m mesh | `mesh_partition_observation_id` | `mesh_code` alone is deliberately non-unique at prefecture borders. |
+| `population_mesh_500m.parquet` | census prefecture component × 500m mesh | `mesh_partition_observation_id` | `HTKSYORI` controls suppression / aggregate-destination semantics. |
+| `station_access_observations.parquet` | confirmed station-line membership × S12 source feature | `(station_line_key, source_record_key)` | `allowed_score_domain=access`; it cannot feed `core_scale`. |
+| `land_price_points.parquet` | L01 standard-land point | `land_point_source_key` | `allowed_score_domain=validation`; it cannot feed `core_scale`. |
+
+### G3 common provenance and partition fields
+
+| Field | Meaning |
+|---|---|
+| `source_raw_record_key` | 原表に書かれたmesh code。県境では単独で一意ではない。 |
+| `source_record_key` | source family、都道府県成分、mesh codeを含む派生時の一意key。 |
+| `mesh_partition_observation_id` | `source family:prefecture partition:mesh code`。G3のmesh観測主キー。 |
+| `prefecture_partition_code` | e-Stat都道府県配布における寄与成分の都道府県コード。 |
+| `mesh_partition_count` / `mesh_partition_codes_json` | 取得範囲で同一mesh codeを持つ都道府県成分数と一覧。 |
+| `cross_partition_rollup_status` | `single_prefecture_component` または `requires_scope_aware_prefecture_component_sum`。 |
+| `partition_geometry_status` | G3ではfull 500m meshであり、都道府県境界clip済みと主張しない。 |
+| `<metric>_raw`, `<metric>_value`, `<metric>_status` | 原表token、正規化数値、観測状態の三組。空白・秘匿・非公開・duplicateを0にしない。 |
+| `source_reference_period`, `source_published_at`, `raw_recovered_at` | 調査基準時点、公表時点、今回のraw復旧時点。互いに置換しない。 |
+
+都道府県meshの同一`mesh_code`は、e-Statの提供仕様上、各都道府県の寄与分である。
+全mesh値へ合算するには、公式行政界に対する表示域・10km buffer・TX例外のclipを先に
+監査する必要がある。したがってG3の`analysis_eligible`は成分の取得範囲フラグであって、
+full mesh surfaceへの採用許可ではない。

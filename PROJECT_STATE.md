@@ -3,27 +3,29 @@
 ```yaml
 project_id: tokyo-rail-town-scale-atlas
 repository_candidate: tokyo-rail-town-scale-atlas
-state_version: 0.5.0
-updated_at: 2026-09-04
+state_version: 0.6.0
+updated_at: 2026-09-05
 phase: 1
-phase_name: pilot-metric-normalization-ready
-phase_status: G2_PASS_G3_READY
+phase_name: pilot-metric-normalization
+phase_status: G3_NORMALIZATION_PASS_SCOPE_GATES_PENDING
 identity_gate: PASS_2026-08-31
-next_gate: G3_MESH_MISSINGNESS_NORMALIZATION
+normalization_gate: PASS_2026-09-05_WITH_SCOPE_GATES
+next_gate: G3_1_OFFICIAL_ADMIN_BOUNDARY_AUDIT_AND_SCOPE_AWARE_MESH_ROLLUP
 canonical_baseline:
   branch: main
-  commit: 5c886415c66c1e829173716637234f5924919a7c
-  accepted_at: 2026-09-04
+  commit: 8cd4ce08db4717296d50a6e49d020b7c3c670fdd
+  accepted_at: 2026-09-05
   local_g3_commit_8ad4948: unavailable_not_canonical
 execution_spine:
   fast_ci: R0_CONFIGURED_2026-09-04
   locked_input_validation: REQUIRED_OUTSIDE_GIT
+  g3_local_derivative_validation: REQUIRED_AFTER_NORMALIZATION
 release_status: NOT_PUBLISHABLE
 ranking_status: PROHIBITED_IN_PHASE_1
 ui_status: PROHIBITED_IN_PHASE_1
 remote_repository_status: PUBLIC_MAIN_SYNCED
 remote_repository_url: https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas
-official_correction_recheck: PASS_2026-08-30
+official_correction_recheck: LIVE_CATALOG_AND_BYTE_LOCK_RECONFIRMED_2026-09-05
 ```
 
 ## Owner intent
@@ -60,26 +62,30 @@ official_correction_recheck: PASS_2026-08-30
 | Phase 1 G0/G1 source acquisition | Complete; 24 archives, 91 members, SHA-256 locked | `docs/PHASE1_G0_G1_REPORT.md`, `data/manifests/source_lock.phase1.yml` |
 | Phase 1 G2 identity and exact segments | Complete; 242 stations, 231 station groups, 10 confirmed hubs, 233 crosswalk rows, 8 locked segments, 0 open reviews | `docs/PHASE1_G2_IDENTITY_REPORT.md`, `data/reference/PHASE1_G2_ADJUDICATIONS.yml`, `data/manifests/identity.phase1.yml` |
 | R0 canonical reset | Complete; GitHub baseline, clone-safe CI, and raw-input validation split fixed | `decisions/DECISION_REGISTER.md`, `.github/workflows/fast-validation.yml`, `Makefile` |
+| Live official recheck and raw recovery | Complete with a stated correction-log limitation; 24 recovery archives match the existing byte lock | `docs/OFFICIAL_RECHECK_2026-09-05.md`, `data/manifests/source_lock.phase1.yml` |
+| Phase 1 G3 normalization | Complete as local, review-only derivatives; 76,488 economic components, 91,595 population components, 254 Access observations, 6,836 L01 points | `scripts/normalize_phase1_g3.py`, `scripts/validate_phase1_g3.py`, `docs/PHASE1_G3_NORMALIZATION_REPORT.md` |
 
 ## Phase 0 decision
 
 **GO to Phase 1, with gates.** All five source families are obtainable and their usage terms are identifiable. Missingness can be represented without zero-imputation. The N02 source codes are not accepted as durable canonical IDs; the alias-registry design is therefore mandatory before acquisition is promoted into canonical tables.
 
-## Phase 1 gates remaining after G2
+## Phase 1 gates remaining after G3
 
-1. G3: normalize mesh tables, official mesh geometry, S12 codes, and L01 points while preserving missingness.
+1. G3.1: audit an official administrative-boundary source, then clip the 1都3県＋10km/TX scope and perform an explicit scope-aware rollup of e-Stat prefecture mesh components.
 2. G4–G6: compare center challengers, adjudicate Golden Evals, and record a method-selection decision.
 
 ## Current blockers and non-blockers
 
-- **Resolved external work:** public canonical repository is [kkkkggggmmmm/tokyo-rail-town-scale-atlas](https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas); `main` contains the Phase 1 G2 adjudication and confirmed identity artifact set.
+- **Resolved external work:** public canonical repository is [kkkkggggmmmm/tokyo-rail-town-scale-atlas](https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas); `main@8cd4ce0` contains the R0 canonical reset and confirmed G2 identity artifact set.
 - **Resolved source audit:** official catalog, correction, terms, update, and definition pages were rechecked and hashed on 2026-08-30. The 500m JGD2011 population input is pinned to e-Stat `T001141`; `T001192` is explicitly excluded because it is the age-class table.
-- **Resolved acquisition:** 24 official ZIP archives (38,883,077 bytes) passed byte-size/CRC/path checks and are recorded in `data/manifests/source_lock.phase1.yml`; originals are read-only outside Git.
+- **Resolved acquisition:** 24 official ZIP archives (38,883,077 bytes) passed byte-size/CRC/path checks and are recorded in `data/manifests/source_lock.phase1.yml`; 2026-09-05 raw recovery reproduced those exact bytes. Originals are read-only outside Git.
 - **Resolved G2 gate:** all 12 identity/hub reviews are reason-coded and resolved. Nine existing hubs plus 朝霞台—北朝霞 are confirmed from official transfer evidence; 浅草（銀座線—TX）remains separate and the manual 町田 case resolves to the existing hub.
 - **Resolved service scope:** all eight exact segments are locked. JR中央線快速 was corrected from 20 to 24 primary stations before acceptance; all other candidate sequences were confirmed.
-- **Resolved execution baseline:** `main@5c886415` is the canonical restart point. The historical local commit `8ad4948` is unavailable from GitHub and is not a source of truth; its behavior may only be recovered through independently supplied bytes and validation.
+- **Resolved execution baseline:** `main@8cd4ce08` is the canonical restart point. The historical local commit `8ad4948` is unavailable from GitHub and is not a source of truth; its behavior may only be recovered through independently supplied bytes and validation.
 - **Execution rule:** fast CI validates clone-safe contracts. Any G3 or raw-input change additionally requires exact-byte `verify-locked` validation outside Git.
-- **Non-blocker:** no center transformation, ranking, final polygon, or public UI has been produced. G3 may consume the confirmed G2 crosswalk, while publication remains blocked.
+- **Resolved G3 input semantics:** prefecture-level e-Stat rows sharing a 500m `mesh_code` are official prefecture components, not duplicate rows. G3 preserves 366 economic and 476 population cross-prefecture mesh groups instead of dropping or prematurely summing them.
+- **Current blocker:** the raw bundle does not contain an audited official administrative-boundary polygon. Without it, a 10km boundary buffer and a whole-mesh rollup cannot be represented exactly. G3 therefore marks scope/geometry status but does not create a Core surface.
+- **Non-blocker:** no center transformation, ranking, final polygon, or public UI has been produced. G3 consumes the confirmed G2 crosswalk only for Access observations; publication remains blocked.
 - **Known risk:** 500 m Economic Census cells limit Core boundary precision. Enhanced layers may refine geometry later, but may not back-propagate into a supposedly nationwide Core score without a new decision.
 
 ## STOP conditions carried forward

@@ -99,3 +99,11 @@
 - Decision: Treat GitHub `main@5c886415c66c1e829173716637234f5924919a7c` as the sole canonical restart baseline. The historical local commit `8ad4948` is unavailable from GitHub and must not be reconstructed from memory, chat history, or inferred output counts.
 - Rationale: raw archives and a local worktree are intentionally external to Git, and the unavailable local commit cannot establish reproducible ancestry. A clean clone must nevertheless verify all contracts that do not require raw bytes.
 - Consequence: `make verify-fast` is required for every change and runs in GitHub Actions. `make verify-locked` is additionally required for changes that consume or alter locked raw inputs, source locks, G2 identity artifacts, or later derived transformations. Raw-byte absence is never a reason to report full validation as passed.
+
+## DEC-0014 — Prefecture-mesh component preservation and scope-aware rollup gate
+
+- Date: 2026-09-05
+- Status: accepted
+- Decision: Treat each e-Stat prefecture-download row as a `prefecture partition × mesh` observation. When the same fourth-level 500m `mesh_code` appears in more than one prefecture download, retain all components; do not deduplicate by mesh code, select a preferred prefecture, or create a whole-mesh sum before an audited administrative-boundary scope clip exists.
+- Rationale: e-Stat's official [provider-unit note](https://www.e-stat.go.jp/pdf/gis/teikyo_mesh_chigai.pdf) states that prefecture downloads contain only that prefecture's contribution for a cross-prefecture mesh, while a first-level regional result contains the full mesh. It explicitly says the same principle applies to Economic Census establishment results. The locked raw bundle contains 366 economic and 476 population mesh codes with multiple prefecture components.
+- Consequence: G3 uses `mesh_partition_observation_id = source family:prefecture partition:mesh code`, preserves raw token/status/provenance, and marks cross-border groups `requires_scope_aware_prefecture_component_sum`. `data/derived/*mesh*.parquet` is not a whole-mesh Core surface. G3.1 must audit an official administrative-boundary source and validate scope-aware clip/rollup before candidate activity extraction, score calculation, or center geometry begins.

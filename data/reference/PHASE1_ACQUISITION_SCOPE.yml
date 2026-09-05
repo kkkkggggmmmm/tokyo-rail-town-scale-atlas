@@ -33,8 +33,9 @@ analysis_extent:
     - {code: "22", name_ja: 静岡県, scope_reason: adjacent_10km_buffer}
   partition_note: >-
     e-Statの公開単位が都道府県zipのため、隣接県は10km edge bufferを完全に覆う
-    保守的な取得範囲である。G3で公式mesh geometryにより10km境界へtrimし、
-    県全域を表示集計へ混入させない。
+    保守的な取得範囲である。県境をまたぐ同一mesh codeは都道府県別の寄与成分であり、
+    G3.1で監査済みの公式行政界に対してscope-awareにclip/rollupするまで、full mesh値や
+    10km境界への正確なtrimを主張しない。県全域を表示集計へ混入させない。
 
 artifacts:
   - artifact_id: n02-25-gml
