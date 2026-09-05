@@ -43,11 +43,26 @@ Phase 1 may acquire the fixed pilot sources, build crosswalks, run candidate ext
 
 ## Required checks before commit
 
-Run:
+Run the clone-safe validation on every change:
 
 ```bash
-python scripts/validate_phase0.py
+make verify-fast
 ```
+
+`verify-fast` must remain runnable from a clean Git clone. It validates the
+canonical contracts and synthetic missingness fixtures but intentionally does
+not claim that external raw archives were verified.
+
+When a change touches source acquisition, locked raw inputs, G2 identity, or a
+later transformation that consumes those inputs, mount the exact locked raw
+bundle and additionally run:
+
+```bash
+make verify-locked
+```
+
+Do not weaken or skip `verify-locked` because raw inputs are absent from Git;
+they are deliberately external and must match the source-lock hashes.
 
 For later phases, add tests that separately report:
 
@@ -55,12 +70,8 @@ For later phases, add tests that separately report:
 - Safety constraints: no null-to-zero conversion, no ridership leakage into CoreScale, no duplicate center count per line
 - Cost/latency: ETL runtime and artifact size
 
-The Phase 1 identity candidate set must also pass:
-
-```bash
-python scripts/validate_phase1_lock.py
-python scripts/validate_phase1_identity.py
-```
+The repository CI runs only `verify-fast`. Full locked-input validation is a
+required local or controlled-runner gate, not a best-effort CI check.
 
 ## STOP conditions
 

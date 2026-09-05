@@ -60,6 +60,9 @@ def validate_required_files() -> None:
         "scripts/acquire_phase1_sources.py",
         "scripts/record_official_recheck.py",
         "scripts/validate_phase1_lock.py",
+        "requirements-ci.txt",
+        "Makefile",
+        ".github/workflows/fast-validation.yml",
     ]
     missing = [item for item in required if not (ROOT / item).is_file()]
     require(not missing, f"Missing required files: {missing}")
@@ -220,6 +223,23 @@ def validate_missingness_fixture() -> None:
         require(actual_numeric == expected_numeric, f"Bad numeric value for fixture row: {row}")
 
 
+def validate_execution_spine() -> None:
+    """Keep clone-safe CI separate from raw-input validation by contract."""
+    makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
+    workflow = (ROOT / ".github/workflows/fast-validation.yml").read_text(
+        encoding="utf-8"
+    )
+    requirements = (ROOT / "requirements-ci.txt").read_text(encoding="utf-8")
+    require("verify-fast:" in makefile, "Missing fast validation target")
+    require("verify-locked:" in makefile, "Missing locked-input validation target")
+    require("scripts/validate_phase0.py" in makefile, "Fast target lost Phase 0 validation")
+    require("scripts/validate_phase1_lock.py" in makefile, "Locked target lost source lock validation")
+    require("scripts/validate_phase1_identity.py" in makefile, "Locked target lost G2 validation")
+    require("requirements-ci.txt" in workflow, "CI does not install pinned requirements")
+    require("make verify-fast" in workflow, "CI does not run clone-safe validation")
+    require("PyYAML==" in requirements and "pyarrow==" in requirements, "CI requirements are not pinned")
+
+
 def run_unit_tests() -> None:
     suite = unittest.defaultTestLoader.discover(str(ROOT / "tests"), pattern="test_*.py")
     stream = io.StringIO()
@@ -238,6 +258,7 @@ def main() -> int:
         ("canonical schema", validate_schema),
         ("pilot map", validate_map),
         ("missingness fixture", validate_missingness_fixture),
+        ("execution spine", validate_execution_spine),
         ("unit tests", run_unit_tests),
     ]
     for name, function in checks:

@@ -3,13 +3,21 @@
 ```yaml
 project_id: tokyo-rail-town-scale-atlas
 repository_candidate: tokyo-rail-town-scale-atlas
-state_version: 0.4.0
-updated_at: 2026-08-31
+state_version: 0.5.0
+updated_at: 2026-09-04
 phase: 1
 phase_name: pilot-metric-normalization-ready
 phase_status: G2_PASS_G3_READY
 identity_gate: PASS_2026-08-31
 next_gate: G3_MESH_MISSINGNESS_NORMALIZATION
+canonical_baseline:
+  branch: main
+  commit: 5c886415c66c1e829173716637234f5924919a7c
+  accepted_at: 2026-09-04
+  local_g3_commit_8ad4948: unavailable_not_canonical
+execution_spine:
+  fast_ci: R0_CONFIGURED_2026-09-04
+  locked_input_validation: REQUIRED_OUTSIDE_GIT
 release_status: NOT_PUBLISHABLE
 ranking_status: PROHIBITED_IN_PHASE_1
 ui_status: PROHIBITED_IN_PHASE_1
@@ -51,6 +59,7 @@ official_correction_recheck: PASS_2026-08-30
 | Official correction/distribution recheck | Complete; acquisition-day recheck remains mandatory | `docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md` |
 | Phase 1 G0/G1 source acquisition | Complete; 24 archives, 91 members, SHA-256 locked | `docs/PHASE1_G0_G1_REPORT.md`, `data/manifests/source_lock.phase1.yml` |
 | Phase 1 G2 identity and exact segments | Complete; 242 stations, 231 station groups, 10 confirmed hubs, 233 crosswalk rows, 8 locked segments, 0 open reviews | `docs/PHASE1_G2_IDENTITY_REPORT.md`, `data/reference/PHASE1_G2_ADJUDICATIONS.yml`, `data/manifests/identity.phase1.yml` |
+| R0 canonical reset | Complete; GitHub baseline, clone-safe CI, and raw-input validation split fixed | `decisions/DECISION_REGISTER.md`, `.github/workflows/fast-validation.yml`, `Makefile` |
 
 ## Phase 0 decision
 
@@ -68,6 +77,8 @@ official_correction_recheck: PASS_2026-08-30
 - **Resolved acquisition:** 24 official ZIP archives (38,883,077 bytes) passed byte-size/CRC/path checks and are recorded in `data/manifests/source_lock.phase1.yml`; originals are read-only outside Git.
 - **Resolved G2 gate:** all 12 identity/hub reviews are reason-coded and resolved. Nine existing hubs plus 朝霞台—北朝霞 are confirmed from official transfer evidence; 浅草（銀座線—TX）remains separate and the manual 町田 case resolves to the existing hub.
 - **Resolved service scope:** all eight exact segments are locked. JR中央線快速 was corrected from 20 to 24 primary stations before acceptance; all other candidate sequences were confirmed.
+- **Resolved execution baseline:** `main@5c886415` is the canonical restart point. The historical local commit `8ad4948` is unavailable from GitHub and is not a source of truth; its behavior may only be recovered through independently supplied bytes and validation.
+- **Execution rule:** fast CI validates clone-safe contracts. Any G3 or raw-input change additionally requires exact-byte `verify-locked` validation outside Git.
 - **Non-blocker:** no center transformation, ranking, final polygon, or public UI has been produced. G3 may consume the confirmed G2 crosswalk, while publication remains blocked.
 - **Known risk:** 500 m Economic Census cells limit Core boundary precision. Enhanced layers may refine geometry later, but may not back-propagate into a supposedly nationwide Core score without a new decision.
 
