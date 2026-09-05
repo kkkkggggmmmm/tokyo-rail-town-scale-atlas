@@ -138,7 +138,11 @@ and final center geometry remain blocked; see `docs/PHASE1_G3_NORMALIZATION_REPO
 ## G3.1 — Official boundary audit and scope-aware mesh rollup
 
 **Status: REQUIRED BEFORE G4.** The official e-Stat provider-unit note establishes that
-same-code prefecture mesh rows are components, not duplicate full-mesh values.
+same-code prefecture mesh rows are components, not duplicate full-mesh values. As of
+2026-09-05, the N03 source audit is complete but the gate is
+`BLOCKED_PENDING_GSI_USE_DETERMINATION`; see
+`docs/PHASE1_G3_1_BOUNDARY_AUDIT.md`. No N03 raw, clip, or rollup may be generated
+until that intended-use determination is recorded.
 
 ### Work
 

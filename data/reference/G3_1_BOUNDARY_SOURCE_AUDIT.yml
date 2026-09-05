@@ -1,0 +1,100 @@
+audit_version: "0.1.0"
+project_id: tokyo-rail-town-scale-atlas
+phase: 1
+gate: G3.1
+audited_at: "2026-09-05"
+audit_status: BLOCKED_PENDING_GSI_USE_DETERMINATION
+
+# This is an audit record, not an acquisition authorization. No N03 archive,
+# N03-derived geometry, or N03-derived component inclusion table is in the raw
+# lock or Git at this status.
+selected_candidate:
+  source_id: ksj_n03_2026
+  family: N03
+  title_ja: 国土数値情報 行政区域データ 2026年版
+  publisher: 国土交通省
+  official_catalog_url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-2026.html
+  catalog_download_filename: N03-20260101_GML.zip
+  source_release_id: N03-20260101
+  availability: catalog_lists_nationwide_gml_shapefile_and_geojson
+  geographic_coverage: nationwide
+  spatial_unit: municipal_or_ward_administrative_area_polygon
+  geometry: polygon
+  crs: JGD2011_geographic_EPSG_6668
+  temporal:
+    reference_date_or_period: "2026-01-01"
+    publication_date_or_period: "2026-04"
+    publication_precision: month
+    retrieved_at: null
+  selection_fields:
+    prefecture_name: N03_001
+    local_government_code: N03_007
+    prefecture_code_derivation: first_two_digits_of_N03_007
+  known_geometry_qualifications:
+    - 一部の市区町村には原典由来の暫定境界がある。
+    - 東京都千代田区・中央区・港区の境界および中央防波堤埋立地には2026年版の修正案内がある。
+    - 本gateでは市区町村境界を中心地境界として使わず、表示域・解析bufferの外郭だけに使う。
+
+license_and_reuse:
+  catalog_license:
+    name: Creative Commons Attribution 4.0 International
+    catalog_statement: オープンデータ（CC_BY_4.0）
+    catalog_evidence_url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-2026.html
+    attribution_required: true
+    modification_notice_required: true
+  underlying_gsi_result:
+    source_materials:
+      - 国土地理院 数値地図（国土基本情報）
+      - 国土地理院 地理院タイル
+    catalog_notice: >-
+      N03個別ページは、二次利用時に国土地理院への申請等が必要になる場合があると明記する。
+    gsi_procedure_url: https://www.gsi.go.jp/LAW/2930-index.html
+    project_operation_requiring_determination: >-
+      行政区域ポリゴンをdissolve・buffer・intersectionして、公開予定プロダクトの
+      解析scope、mesh componentの採否、および将来の地図レイヤーに用いること。
+    determination_status: PENDING_OWNER_GSI_PROCEDURE_OR_WRITTEN_CONFIRMATION
+    use_conditions_resolved: false
+
+raw_acquisition:
+  permitted_now: false
+  source_lock_status: not_added
+  reason: >-
+    CC BY表示だけでは、予定しているN03由来の加工済みgeometry・vector的成果物に
+    国土地理院の複製/使用手続が必要かを本プロジェクト単独で判定できない。
+  required_evidence_before_acquisition:
+    - 国土地理院の利用手続ナビまたは書面回答に基づく、予定利用の申請要否判断。
+    - 申請が必要な場合は承認番号、対象成果、配布範囲、表示条件。
+    - 申請不要な場合は判定根拠、出典表示、加工表示の文言。
+  forbidden_until_resolved:
+    - N03 archive acquisition into data/raw/phase1
+    - N03-derived scope geometry generation
+    - N03-derived mesh component inclusion or rollup output
+    - N03-derived public tile, GeoJSON, or map publication
+
+evidence:
+  - url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-2026.html
+    checked_at: "2026-09-05"
+    facts:
+      - 2026年版は2026-01-01時点の全国行政区域面データとして掲載されている。
+      - JGD2011（B,L）、GML・Shape・GeoJSONを提供すると記載されている。
+      - CC BY 4.0表示と、国土地理院への二次利用申請が必要になる場合がある旨が併記されている。
+  - url: https://nlftp.mlit.go.jp/ksj/other/agreement.html
+    checked_at: "2026-09-05"
+    facts:
+      - 利用時は出典を記載し、加工時は加工した旨も記載する。
+      - 個別法令または原典提供者の利用条件がある場合はそれに従う。
+  - url: https://www.gsi.go.jp/LAW/2930-index.html
+    checked_at: "2026-09-05"
+    facts:
+      - 国土地理院は申請が必要な場合と出典表示だけで利用できる場合を区別している。
+      - ベクトル成果の配布・加工利用には複製または使用の手続が関係し得る。
+
+decision_boundary:
+  permitted_now:
+    - 監査記録、source manifest、scope/rollup contract、validator、synthetic testのGit登録。
+    - N03を読まずに動く将来実装のインターフェース設計。
+  prohibited_now:
+    - 実データを用いたclip、buffer、intersection、rollup、Core surface、center extraction。
+  next_external_action: >-
+    Ownerが国土地理院の「地図の利用手続ナビ」または審査窓口で、N03-20260101を
+    解析scopeおよび公開予定の地図成果へ加工・利用する場合の申請要否を確定する。

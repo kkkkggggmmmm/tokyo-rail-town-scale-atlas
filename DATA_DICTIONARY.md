@@ -1,8 +1,8 @@
 # Data Dictionary
 
 **Project:** `tokyo-rail-town-scale-atlas`
-**Dictionary version:** `0.4.0`
-**Status:** Phase 1 G3 normalization PASS with scope-aware mesh-rollup and boundary-clip gates pending (not publication-ready)
+**Dictionary version:** `0.5.0`
+**Status:** Phase 1 G3 normalization PASS; G3.1 scope-rollup contract fixed but N03 use determination pending (not publication-ready)
 
 ## 1. Canonical grain
 
@@ -257,3 +257,20 @@ run.
 全mesh値へ合算するには、公式行政界に対する表示域・10km buffer・TX例外のclipを先に
 監査する必要がある。したがってG3の`analysis_eligible`は成分の取得範囲フラグであって、
 full mesh surfaceへの採用許可ではない。
+
+## 9. G3.1 scope-aware rollup contract (not yet executable)
+
+`data/reference/G3_1_SCOPE_ROLLUP_CONTRACT.yml` は、N03の利用条件が公式に確定した後だけ
+実行できる将来のrollup仕様である。現時点ではN03 archiveや派生geometryを保持しない。
+
+| Field / rule | Meaning |
+|---|---|
+| `component_support` | `full mesh polygon ∩ matching prefecture N03 polygon`。full meshを都道府県成分のgeometryと偽称しない。 |
+| `scope_mesh_aggregate` | 承認済みscope内に完全に入るcomponentだけの合計。scope外の寄与を除くのでfull mesh値とは呼ばない。 |
+| `excluded_partial_component_ids_json` | scopeに一部だけ重なるcomponent。面積比で数値を配分せず、理由付きで保存する。 |
+| `scope_mesh_aggregate_status` | 全included componentが`observed`または`observed_zero`のときだけ数値合計可。秘匿・未公表・aggregation destinationはCore不可。 |
+| TX geometry | N02路線geometryによる5km回廊。station centroidの円や直線接続は不可。 |
+
+N03のカタログはCC BY 4.0を表示するが、国土地理院原典の二次利用手続が必要となる場合を
+明記している。`G3_1_BOUNDARY_SOURCE_AUDIT.yml` の`use_conditions_resolved`が`true`になるまで、
+この節はデータ処理の権限ではなく停止条件である。

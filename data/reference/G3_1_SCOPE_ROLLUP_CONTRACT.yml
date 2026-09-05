@@ -1,0 +1,114 @@
+contract_version: "0.1.0"
+project_id: tokyo-rail-town-scale-atlas
+phase: 1
+gate: G3.1
+status: NOT_EXECUTABLE_PENDING_GSI_USE_DETERMINATION
+boundary_source_audit: data/reference/G3_1_BOUNDARY_SOURCE_AUDIT.yml
+
+# This contract fixes the future computation before source acquisition. It does
+# not authorize N03 processing and it does not create a Core surface.
+scope_geometry:
+  source_crs: EPSG:6668
+  working_crs: EPSG:6677
+  working_crs_name: JGD2011 / Japan Plane Rectangular CS IX
+  display_domain:
+    type: dissolved_prefecture_polygon
+    prefecture_codes: ["11", "12", "13", "14"]
+    prefecture_names_ja: [埼玉県, 千葉県, 東京都, 神奈川県]
+    inclusion: all_N03_municipal_polygons_with_matching_N03_007_prefix
+  analysis_buffer:
+    type: outer_buffer_of_display_domain
+    distance_m: 10000
+    inclusion: display_domain_union_plus_outer_10000m_buffer
+    publication_role: analysis_only_not_initial_display_aggregate
+  tx_exception:
+    pilot_corridor_id: pc_tsukuba_express
+    type: railway_geometry_corridor
+    distance_m: 5000
+    path_source: N02-25_confirmed_primary_segment_route_geometry
+    required_station_sequence_registry: data/reference/PHASE1_IDENTITY_REGISTRY.yml
+    prohibition: station_centroid_circles_or_straight_lines_between_station_centroids_are_not_a_substitute
+    publication_role: pilot_only_not_initial_display_aggregate
+  precision_controls:
+    planar_buffer_validation: compare_EPSG_6677_buffer_distance_with_geodesic_control_samples_before_promotion
+    maximum_accepted_distance_error_m: 5
+    topology_policy: preserve_source_polygons_and_record_any_repair_operation_with_reason
+
+component_geometry:
+  source_grain: prefecture_partition_x_fourth_level_500m_mesh
+  construction: full_mesh_polygon_intersection_official_prefecture_polygon
+  rule: >-
+    The e-Stat row is a prefecture contribution, so the true spatial support for
+    scope classification is mesh polygon ∩ matching official prefecture polygon,
+    never the full mesh polygon alone.
+  required_predicates:
+    fully_inside_scope: component_polygon_covered_by_scope_geometry
+    partial_scope_overlap: component_polygon_intersects_scope_geometry_and_is_not_covered_by_scope_geometry
+    outside_scope: component_polygon_disjoint_from_scope_geometry
+
+rollup_policy:
+  aggregate_name: scope_mesh_aggregate
+  forbidden_names:
+    - full_mesh_value_when_only_a_scope_subset_of_prefecture_components_is_included
+    - exact_trimmed_component_value
+  operation_order:
+    - Build the display-domain union from official N03 polygons.
+    - Build the 10km analysis buffer and the N02-derived TX 5km corridor.
+    - Build each component support as mesh ∩ prefecture polygon.
+    - Classify every component as display, buffer, TX, partial, or outside by geometry predicate.
+    - Retain every original component row and its classification in the audit table.
+    - Sum only components fully covered by the approved scope and eligible under metric-status propagation.
+  inclusion_rules:
+    display_domain_component:
+      eligibility: prefecture_partition_code_in_[11,12,13,14]
+      expected_coverage: fully_inside_display_domain
+    default_buffer_component:
+      eligibility: component_polygon_fully_inside_display_domain_or_10km_buffer
+    tx_exception_component:
+      eligibility: component_polygon_fully_inside_tx_5km_corridor
+    partial_component:
+      eligibility: never_allocate_or_fractionally_scale
+      core_surface_action: exclude_from_numeric_sum_and_emit_reason
+    outside_component:
+      eligibility: exclude_from_numeric_sum_and_emit_reason
+  double_count_rule: >-
+    A component may be tagged by more than one scope rule, but its
+    mesh_partition_observation_id is included at most once in a given
+    scope_mesh_aggregate. The output stores its ordered component ID list.
+  status_propagation:
+    numeric_sum_allowed_only_when_all_included_component_statuses:
+      - observed
+      - observed_zero
+    aggregation_destination: retain_raw_status_and_mark_not_core_eligible
+    suppressed_or_unavailable: retain_raw_status_and_mark_incomplete_not_core_eligible
+    numeric_zero_rule: zero_is_valid_only_for_observed_zero
+  required_output_fields:
+    - mesh_code
+    - source_family
+    - scope_id
+    - included_component_ids_json
+    - excluded_partial_component_ids_json
+    - excluded_outside_component_ids_json
+    - metric_raw_component_statuses_json
+    - scope_mesh_aggregate_value
+    - scope_mesh_aggregate_status
+    - boundary_source_release_id
+    - boundary_reference_date
+    - scope_contract_version
+
+promotion_gate:
+  all_must_hold:
+    - boundary_source_audit.use_conditions_resolved_is_true
+    - raw_N03_archive_has_source_lock_hash_and_member_index
+    - N03_polygon_selection_is_reproducibly_tested_for_all_scope_prefectures
+    - N02_TX_route_geometry_is_resolved_without_centroid_proxy
+    - every_component_has_one_or_more_auditable_scope_classifications
+    - no_partial_component_is_fractionally_allocated
+    - no_suppressed_or_aggregation_destination_value_enters_Core_numeric_sum
+    - pre_and_post_rollup_component_counts_and_metric_statuses_reconcile
+  prohibited_until_all_hold:
+    - candidate_activity_surface
+    - center_extraction
+    - CoreScale
+    - ranking
+    - public_UI

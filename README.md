@@ -2,9 +2,9 @@
 
 東京圏の駅を入口に、駅へ接続する **commercial center（商業中心地）** の規模・タイプ・交通力・推定信頼度を分離して推定するプロジェクトです。
 
-## Current status: R0 canonical reset complete / Phase 1 G2 PASS / G3 normalization PASS with scope gates pending
+## Current status: G3 normalization PASS / G3.1 N03 boundary audit complete, use-determination gate blocked
 
-Phase 0（正本定義・取得可能性監査）、G0/G1（公式ページ再確認・24アーカイブ原本ロック）、G2（station/group/hub/line identity）、G3（mesh/S12/L01正規化）を完了しました。G3では都道府県ZIPにおける県境meshを「重複」として捨てず、行政界clipが監査されるまで都道府県成分として保持します。次の実装ゲートは公式行政界データの監査とscope-aware mesh rollupです。最終ランキング、中心地の確定ポリゴン、公開UIは依然として作成していません。
+Phase 0（正本定義・取得可能性監査）、G0/G1（公式ページ再確認・24アーカイブ原本ロック）、G2（station/group/hub/line identity）、G3（mesh/S12/L01正規化）を完了しました。G3.1では公式N03行政界の粒度・時点・許諾を再監査し、国土地理院の二次利用手続が必要か未確定であることを記録しました。そのためN03の取得、行政界clip、scope-aware mesh rollupは意図的に停止しています。最終ランキング、中心地の確定ポリゴン、公開UIは依然として作成していません。
 
 - [Phase 0 audit report](docs/PHASE0_AUDIT_REPORT.md)
 - [Source manifest](SOURCES.yml)
@@ -27,6 +27,9 @@ Phase 0（正本定義・取得可能性監査）、G0/G1（公式ページ再�
 - [Phase 1 G2 identity report](docs/PHASE1_G2_IDENTITY_REPORT.md)
 - [Phase 1 identity manifest](data/manifests/identity.phase1.yml)
 - [Phase 1 G3 normalization report](docs/PHASE1_G3_NORMALIZATION_REPORT.md)
+- [Phase 1 G3.1 boundary audit and stop gate](docs/PHASE1_G3_1_BOUNDARY_AUDIT.md)
+- [G3.1 boundary source audit](data/reference/G3_1_BOUNDARY_SOURCE_AUDIT.yml)
+- [G3.1 scope-rollup contract](data/reference/G3_1_SCOPE_ROLLUP_CONTRACT.yml)
 
 ## Canonical principles
 
@@ -79,3 +82,12 @@ make verify-g3
 
 It verifies mesh-partition identity, missingness, and the Access/validation domain
 boundaries while keeping administrative-boundary clip and whole-mesh rollup blocked.
+
+The license/use preflight can be checked separately with:
+
+```bash
+make verify-g3-1
+```
+
+It validates that N03 is still blocked until the intended secondary use has an
+official determination. It does not download or process N03.
