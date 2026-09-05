@@ -1,7 +1,7 @@
-manifest_version: "0.2.0"
+manifest_version: "0.3.0"
 project_id: tokyo-rail-town-scale-atlas
 audited_at: "2026-08-30"
-manifest_scope: phase_0_audit_plus_phase_1_g0_g1_source_lock
+manifest_scope: phase_0_audit_plus_phase_1_g0_g1_source_lock_and_g3_1_boundary_audit
 official_recheck:
   checked_at: "2026-08-30"
   scope: >-
@@ -485,4 +485,26 @@ phase_1_g3_normalization:
     s12_allowed_score_domain: access
     l01_allowed_score_domain: validation
     scores_rankings_centers_or_ui_generated: false
-  next_gate: G3_1_OFFICIAL_ADMIN_BOUNDARY_AUDIT_AND_SCOPE_AWARE_MESH_ROLLUP
+  next_gate: G3_1_OWNER_GSI_USE_DETERMINATION_THEN_BOUNDARY_ACQUISITION_AND_SCOPE_AWARE_ROLLUP
+
+phase_1_g3_1_boundary_source_audit:
+  status: BLOCKED_PENDING_GSI_USE_DETERMINATION
+  audit: data/reference/G3_1_BOUNDARY_SOURCE_AUDIT.yml
+  scope_rollup_contract: data/reference/G3_1_SCOPE_ROLLUP_CONTRACT.yml
+  selected_candidate:
+    source_id: ksj_n03_2026
+    family: N03
+    official_catalog_url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-2026.html
+    source_release_id: N03-20260101
+    reference_date_or_period: "2026-01-01"
+    publication_date_or_period: "2026-04"
+    geometry: polygon
+    crs: JGD2011_geographic_EPSG_6668
+  license_gate:
+    catalog_license: Creative Commons Attribution 4.0 International
+    catalog_reports_possible_gsi_secondary_use_procedure: true
+    intended_use_determination_required: true
+    raw_acquisition_permitted_now: false
+  rule: >-
+    N03由来のraw、scope polygon、mesh component classification、rollup、および地図成果は、
+    国土地理院の利用手続で予定利用の申請要否が確定するまで生成・取得・公開しない。

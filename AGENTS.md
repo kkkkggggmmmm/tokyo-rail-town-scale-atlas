@@ -27,6 +27,7 @@ When canonical sources conflict, stop and record the conflict before modifying d
 - PLATEAU, POI, and human-flow data remain Enhanced until a recorded decision promotes them.
 - Raw-source values are immutable. Manual changes live in an override/decision layer with reason and provenance.
 - e-Stat prefecture mesh rows that share a `mesh_code` are prefecture-specific components, not disposable duplicates. Do not pick one or sum them into a whole mesh until an audited, authorized scope clip is available.
+- N03-derived polygons, component classifications, and rollups are prohibited while `data/reference/G3_1_BOUNDARY_SOURCE_AUDIT.yml` has `license_and_reuse.underlying_gsi_result.use_conditions_resolved: false`. Do not acquire N03 merely because its catalog displays CC BY 4.0; the recorded GSI secondary-use determination is a hard gate.
 
 ## ID and missingness guardrails
 
@@ -76,6 +77,15 @@ mesh identity, raw-token/status semantics, S12's Access-only boundary, L01's
 validation-only boundary, and the unresolved administrative-clip gate are all
 preserved.
 
+The G3.1 boundary-source preflight is clone-safe and also runs in `verify-fast`:
+
+```bash
+make verify-g3-1
+```
+
+It verifies that the license/use determination and no-allocation contract remain
+in force; a passing preflight is not permission to download or process N03.
+
 For later phases, add tests that separately report:
 
 - Primary outcome: Golden Eval agreement and boundary quality
@@ -95,4 +105,5 @@ Stop rather than improvise when any of the following is true:
 - reference and publication dates are conflated;
 - a non-comparable source is proposed for Core;
 - a prefecture-mesh component is treated as a full mesh before scope-aware rollup;
+- an N03-derived geometry or component rollup is attempted before the recorded GSI use determination;
 - a requested change exceeds the current phase or write scope.

@@ -51,7 +51,10 @@ def validate_required_files() -> None:
         "docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md",
         "docs/PHASE1_EXECUTION_PLAN.md",
         "docs/PHASE1_G0_G1_REPORT.md",
+        "docs/PHASE1_G3_1_BOUNDARY_AUDIT.md",
         "data/reference/PHASE1_ACQUISITION_SCOPE.yml",
+        "data/reference/G3_1_BOUNDARY_SOURCE_AUDIT.yml",
+        "data/reference/G3_1_SCOPE_ROLLUP_CONTRACT.yml",
         "data/manifests/source_lock.phase1.yml",
         "data/manifests/archive_members.phase1.parquet",
         "data/manifests/acquisition_log.phase1.jsonl",
@@ -60,6 +63,7 @@ def validate_required_files() -> None:
         "scripts/acquire_phase1_sources.py",
         "scripts/record_official_recheck.py",
         "scripts/validate_phase1_lock.py",
+        "scripts/validate_phase1_g3_1_boundary_gate.py",
         "requirements-ci.txt",
         "Makefile",
         ".github/workflows/fast-validation.yml",
@@ -108,6 +112,23 @@ def validate_sources() -> None:
     require(economic["temporal"]["detailed_mesh_distribution_start"] == "2025-01-23", "Economic Census distribution event missing")
     population = next(source for source in sources if source["family"] == "POPULATION_CENSUS_MESH")
     require(population["temporal"]["prefectural_download_distribution_start"] == "2025-10-09", "Census distribution event missing")
+
+
+def validate_g3_1_boundary_audit() -> None:
+    """Keep the N03 license gate separate from the five Phase-0 source families."""
+    audit = load_yaml("data/reference/G3_1_BOUNDARY_SOURCE_AUDIT.yml")
+    contract = load_yaml("data/reference/G3_1_SCOPE_ROLLUP_CONTRACT.yml")
+    require(audit["audit_status"] == "BLOCKED_PENDING_GSI_USE_DETERMINATION", "N03 use gate drift")
+    candidate = audit["selected_candidate"]
+    require(candidate["family"] == "N03", "G3.1 candidate must be N03")
+    require(candidate["temporal"]["reference_date_or_period"] == "2026-01-01", "N03 date contract drift")
+    require(audit["license_and_reuse"]["underlying_gsi_result"]["use_conditions_resolved"] is False, "N03 gate cannot be self-approved")
+    require(audit["raw_acquisition"]["permitted_now"] is False, "N03 raw acquisition must remain blocked")
+    require(contract["status"] == "NOT_EXECUTABLE_PENDING_GSI_USE_DETERMINATION", "Scope rollup became executable prematurely")
+    require(contract["scope_geometry"]["display_domain"]["prefecture_codes"] == ["11", "12", "13", "14"], "Display scope drift")
+    require(contract["scope_geometry"]["analysis_buffer"]["distance_m"] == 10000, "Scope buffer drift")
+    require(contract["scope_geometry"]["tx_exception"]["distance_m"] == 5000, "TX scope drift")
+    require(contract["rollup_policy"]["inclusion_rules"]["partial_component"]["eligibility"] == "never_allocate_or_fractionally_scale", "Partial allocation is forbidden")
 
 
 def validate_pilot() -> None:
@@ -232,7 +253,9 @@ def validate_execution_spine() -> None:
     requirements = (ROOT / "requirements-ci.txt").read_text(encoding="utf-8")
     require("verify-fast:" in makefile, "Missing fast validation target")
     require("verify-locked:" in makefile, "Missing locked-input validation target")
+    require("verify-g3-1:" in makefile, "Missing G3.1 boundary-gate target")
     require("scripts/validate_phase0.py" in makefile, "Fast target lost Phase 0 validation")
+    require("scripts/validate_phase1_g3_1_boundary_gate.py" in makefile, "Fast target lost G3.1 stop-gate validation")
     require("scripts/validate_phase1_lock.py" in makefile, "Locked target lost source lock validation")
     require("scripts/validate_phase1_identity.py" in makefile, "Locked target lost G2 validation")
     require("requirements-ci.txt" in workflow, "CI does not install pinned requirements")
@@ -252,6 +275,7 @@ def main() -> int:
     checks = [
         ("required files", validate_required_files),
         ("source manifest", validate_sources),
+        ("G3.1 boundary-use gate", validate_g3_1_boundary_audit),
         ("pilot scope", validate_pilot),
         ("golden registry", validate_golden),
         ("identity policy fixture", validate_identity_fixture),

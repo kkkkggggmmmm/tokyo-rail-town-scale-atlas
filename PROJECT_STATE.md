@@ -3,14 +3,14 @@
 ```yaml
 project_id: tokyo-rail-town-scale-atlas
 repository_candidate: tokyo-rail-town-scale-atlas
-state_version: 0.6.0
+state_version: 0.7.0
 updated_at: 2026-09-05
 phase: 1
 phase_name: pilot-metric-normalization
-phase_status: G3_NORMALIZATION_PASS_SCOPE_GATES_PENDING
+phase_status: G3_1_BOUNDARY_SOURCE_AUDITED_USE_DETERMINATION_PENDING
 identity_gate: PASS_2026-08-31
 normalization_gate: PASS_2026-09-05_WITH_SCOPE_GATES
-next_gate: G3_1_OFFICIAL_ADMIN_BOUNDARY_AUDIT_AND_SCOPE_AWARE_MESH_ROLLUP
+next_gate: G3_1_OWNER_GSI_USE_DETERMINATION_THEN_BOUNDARY_ACQUISITION_AND_SCOPE_AWARE_ROLLUP
 canonical_baseline:
   branch: main
   commit: 8cd4ce08db4717296d50a6e49d020b7c3c670fdd
@@ -64,14 +64,15 @@ official_correction_recheck: LIVE_CATALOG_AND_BYTE_LOCK_RECONFIRMED_2026-09-05
 | R0 canonical reset | Complete; GitHub baseline, clone-safe CI, and raw-input validation split fixed | `decisions/DECISION_REGISTER.md`, `.github/workflows/fast-validation.yml`, `Makefile` |
 | Live official recheck and raw recovery | Complete with a stated correction-log limitation; 24 recovery archives match the existing byte lock | `docs/OFFICIAL_RECHECK_2026-09-05.md`, `data/manifests/source_lock.phase1.yml` |
 | Phase 1 G3 normalization | Complete as local, review-only derivatives; 76,488 economic components, 91,595 population components, 254 Access observations, 6,836 L01 points | `scripts/normalize_phase1_g3.py`, `scripts/validate_phase1_g3.py`, `docs/PHASE1_G3_NORMALIZATION_REPORT.md` |
+| Phase 1 G3.1 N03 boundary audit | Complete as a stop-gated audit; source granularity/time are suitable but intended GSI secondary-use determination is pending | `docs/PHASE1_G3_1_BOUNDARY_AUDIT.md`, `data/reference/G3_1_BOUNDARY_SOURCE_AUDIT.yml`, `data/reference/G3_1_SCOPE_ROLLUP_CONTRACT.yml` |
 
 ## Phase 0 decision
 
 **GO to Phase 1, with gates.** All five source families are obtainable and their usage terms are identifiable. Missingness can be represented without zero-imputation. The N02 source codes are not accepted as durable canonical IDs; the alias-registry design is therefore mandatory before acquisition is promoted into canonical tables.
 
-## Phase 1 gates remaining after G3
+## Phase 1 gates remaining after G3.1 audit
 
-1. G3.1: audit an official administrative-boundary source, then clip the 1都3県＋10km/TX scope and perform an explicit scope-aware rollup of e-Stat prefecture mesh components.
+1. G3.1: obtain and record an official determination for the intended N03 secondary use, then acquire and lock the boundary source, clip the 1都3県＋10km/TX scope, and perform an explicit scope-aware rollup of e-Stat prefecture mesh components.
 2. G4–G6: compare center challengers, adjudicate Golden Evals, and record a method-selection decision.
 
 ## Current blockers and non-blockers
@@ -84,7 +85,7 @@ official_correction_recheck: LIVE_CATALOG_AND_BYTE_LOCK_RECONFIRMED_2026-09-05
 - **Resolved execution baseline:** `main@8cd4ce08` is the canonical restart point. The historical local commit `8ad4948` is unavailable from GitHub and is not a source of truth; its behavior may only be recovered through independently supplied bytes and validation.
 - **Execution rule:** fast CI validates clone-safe contracts. Any G3 or raw-input change additionally requires exact-byte `verify-locked` validation outside Git.
 - **Resolved G3 input semantics:** prefecture-level e-Stat rows sharing a 500m `mesh_code` are official prefecture components, not duplicate rows. G3 preserves 366 economic and 476 population cross-prefecture mesh groups instead of dropping or prematurely summing them.
-- **Current blocker:** the raw bundle does not contain an audited official administrative-boundary polygon. Without it, a 10km boundary buffer and a whole-mesh rollup cannot be represented exactly. G3 therefore marks scope/geometry status but does not create a Core surface.
+- **Current blocker:** N03 2026 is a suitable official boundary source, but its catalog warns that secondary use of the GSI-derived source may require a procedure. The project cannot self-determine whether the planned processed scope/vector use is exempt. Until the Owner records the official outcome, N03 is not acquired and no boundary buffer, component clip, or Core surface is generated.
 - **Non-blocker:** no center transformation, ranking, final polygon, or public UI has been produced. G3 consumes the confirmed G2 crosswalk only for Access observations; publication remains blocked.
 - **Known risk:** 500 m Economic Census cells limit Core boundary precision. Enhanced layers may refine geometry later, but may not back-propagate into a supposedly nationwide Core score without a new decision.
 

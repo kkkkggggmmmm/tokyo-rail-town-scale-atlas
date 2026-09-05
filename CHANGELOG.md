@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.0 — 2026-09-05
+
+- Audited the official N03 2026 administrative-boundary source for G3.1 and selected it as the technical boundary candidate for the 1都3県 union, 10km buffer, and TX corridor.
+- Recorded the N03 CC BY 4.0 declaration together with its explicit GSI secondary-use caveat. Because the planned processed-vector/map use cannot be self-classified safely, N03 acquisition, clip/rollup, Core surface generation, and publication remain blocked pending an Owner-recorded official determination.
+- Added a non-executable scope-rollup contract: component support is `mesh ∩ prefecture`, partial components cannot be area-weighted, TX cannot use a centroid proxy, and unavailable/aggregation-destination values cannot enter a Core sum.
+- Added `make verify-g3-1` and clone-safe tests that prevent the pending N03 gate from being silently bypassed.
+
 ## 0.6.0 — 2026-09-05
 
 - Recovered all 24 locked Phase 1 archives from their official URLs and revalidated their 91 ZIP members against the existing SHA-256 source lock.
