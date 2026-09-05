@@ -17,7 +17,8 @@ flowchart TD
     G0["G0: terms + release lock"] --> G1["G1: immutable acquisition"]
     G1 --> G2["G2: station/line identity"]
     G2 --> G3["G3: mesh + missingness"]
-    G3 --> G4["G4: center challengers"]
+    G3 --> G31["G3.1: scope clip + rollup"]
+    G31 --> G4["G4: center challengers"]
     G4 --> G5["G5: Golden adjudication"]
     G5 --> G6["G6: selection + decision"]
 ```
@@ -104,8 +105,9 @@ match is auto-selected without a queue record.
 
 ## G3 — Mesh normalization and missingness
 
-**Status: READY.** G3 may consume the confirmed G2 station-line crosswalk. Publication,
-ranking, and final center geometry remain blocked by later gates.
+**Status: PASS WITH SCOPE GATES (2026-09-05).** G3 consumed the confirmed G2
+station-line crosswalk and generated local review-only derivatives. Publication, ranking,
+and final center geometry remain blocked; see `docs/PHASE1_G3_NORMALIZATION_REPORT.md`.
 
 ### Work
 
@@ -113,7 +115,8 @@ ranking, and final center geometry remain blocked by later gates.
 - Decode 2020 Census totals and suppression relationships.
 - Normalize S12 existence/duplicate codes before numeric parsing.
 - Normalize post-correction L01 points without spatially filling absent points.
-- Materialize the 1都3県 + 10km extent and TX 5km pilot exception flag.
+- Record the 1都3県 source components and TX 5km station-centroid candidate flag without
+  claiming an exact whole-mesh clip.
 - Test source totals at prefecture/partition level where official control totals exist.
 
 ### Outputs
@@ -131,6 +134,33 @@ ranking, and final center geometry remain blocked by later gates.
 - suppressed sources and aggregation destinations do not double count;
 - every observation has source/reference/publication/retrieval provenance;
 - Core metric allowlist contains no S12, L01, POI, PLATEAU, or human-flow feature.
+
+## G3.1 — Official boundary audit and scope-aware mesh rollup
+
+**Status: REQUIRED BEFORE G4.** The official e-Stat provider-unit note establishes that
+same-code prefecture mesh rows are components, not duplicate full-mesh values.
+
+### Work
+
+- Audit an official administrative-boundary source for license, reference date, geometry,
+  CRS, update cycle, and permitted derivative use.
+- Define the exact display 1都3県 polygon, 10km analysis buffer, and TX exception geometry.
+- Clip those approved geometries against the mesh component logic, then sum only the
+  eligible prefecture components for a whole-mesh candidate surface.
+- Reconcile pre-/post-rollup counts and all suppressed/aggregation-destination cases.
+- Freeze a manifest stating which cells are full, partial, excluded, or confidence-reduced.
+
+### Pass criteria
+
+- no component is dropped or counted twice;
+- every whole-mesh value has a declared component set and scope rule;
+- the 10km/TX inclusion rule is geometric rather than centroid approximation;
+- missingness and suppression statuses remain distinguishable after rollup.
+
+### STOP
+
+No official boundary source with resolved use conditions, or an inability to map source
+components to the approved scope without inventing allocation assumptions.
 
 ## G4 — Center extraction challengers
 
@@ -224,8 +254,9 @@ quietly modify the Golden Baseline.
 |---|---|---|---|
 | WP1 source lock | G0 | acquisition manifest | license/provenance review |
 | WP2 identity | WP1 | station-line crosswalk | ambiguous ID review |
-| WP3 metric normalization | WP1 | observation tables | missingness/control totals |
-| WP4 extraction challengers | WP2–3 | candidate centers | topology/stability review |
+| WP3 metric normalization | WP1 | partition observation tables | missingness/control totals |
+| WP3.1 scope-aware rollup | WP3 | approved Core candidate surface | boundary/component audit |
+| WP4 extraction challengers | WP2–3.1 | candidate centers | topology/stability review |
 | WP5 Golden adjudication | registry freeze | reference judgments | two-reviewer agreement |
 | WP6 selection | WP4–5 | Phase 2 decision memo | owner acceptance |
 

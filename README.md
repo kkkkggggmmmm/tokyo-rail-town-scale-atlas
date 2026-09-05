@@ -2,9 +2,9 @@
 
 東京圏の駅を入口に、駅へ接続する **commercial center（商業中心地）** の規模・タイプ・交通力・推定信頼度を分離して推定するプロジェクトです。
 
-## Current status: R0 canonical reset complete / Phase 1 G2 PASS / G3 ready
+## Current status: R0 canonical reset complete / Phase 1 G2 PASS / G3 normalization PASS with scope gates pending
 
-Phase 0（正本定義・取得可能性監査）、G0/G1（公式ページ再確認・24アーカイブ原本ロック）、G2（station/group/hub/line identity）を完了しました。2026-09-04にGitHub `main@5c886415` を再開基準として固定し、cloneだけで検証可能なCIと、raw archiveが必要な完全検証を分離しました。G3のmesh/S12/L01正規化が次の実装ゲートです。最終ランキング、中心地の確定ポリゴン、公開UIは依然として作成していません。
+Phase 0（正本定義・取得可能性監査）、G0/G1（公式ページ再確認・24アーカイブ原本ロック）、G2（station/group/hub/line identity）、G3（mesh/S12/L01正規化）を完了しました。G3では都道府県ZIPにおける県境meshを「重複」として捨てず、行政界clipが監査されるまで都道府県成分として保持します。次の実装ゲートは公式行政界データの監査とscope-aware mesh rollupです。最終ランキング、中心地の確定ポリゴン、公開UIは依然として作成していません。
 
 - [Phase 0 audit report](docs/PHASE0_AUDIT_REPORT.md)
 - [Source manifest](SOURCES.yml)
@@ -20,11 +20,13 @@ Phase 0（正本定義・取得可能性監査）、G0/G1（公式ページ再�
 - [Phase 1 source lock](data/manifests/source_lock.phase1.yml)
 - [Official page hash recheck](data/manifests/official_recheck.phase1.yml)
 - [Official correction/distribution recheck — 2026-08-30](docs/OFFICIAL_CORRECTION_RECHECK_2026-08-30.md)
+- [Official recheck — 2026-09-05](docs/OFFICIAL_RECHECK_2026-09-05.md)
 - [Phase 1 identity rules](data/reference/PHASE1_IDENTITY_RULES.yml)
 - [Phase 1 G2 adjudications](data/reference/PHASE1_G2_ADJUDICATIONS.yml)
 - [Phase 1 identity registry](data/reference/PHASE1_IDENTITY_REGISTRY.yml)
 - [Phase 1 G2 identity report](docs/PHASE1_G2_IDENTITY_REPORT.md)
 - [Phase 1 identity manifest](data/manifests/identity.phase1.yml)
+- [Phase 1 G3 normalization report](docs/PHASE1_G3_NORMALIZATION_REPORT.md)
 
 ## Canonical principles
 
@@ -68,3 +70,12 @@ make verify-locked
 ```
 
 `verify-locked` validates the 24 raw archive bytes, ZIP members, source-lock hashes, and G2 opaque-ID/hub/exact-segment invariants. Raw archives are intentionally not committed to Git.
+
+After G3 normalization has regenerated the local derivatives, run:
+
+```bash
+make verify-g3
+```
+
+It verifies mesh-partition identity, missingness, and the Access/validation domain
+boundaries while keeping administrative-boundary clip and whole-mesh rollup blocked.

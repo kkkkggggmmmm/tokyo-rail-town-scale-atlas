@@ -22,7 +22,8 @@
 
 e-Statは都道府県ZIPが最小の取得単位のため、表示4都県（11・12・13・14）に加えて、
 10km edge bufferとTX検証を覆う08・09・10・19・22を取得した。隣接県の県全域を
-表示集計へ入れることはせず、G3で公式mesh geometryにより境界へtrimする。範囲の正本は
+表示集計へ入れることはせず、公式行政界を監査した後にG3.1でscope-awareにclip/rollupする。
+都道府県ZIPの同じmesh codeは都道府県成分であり、mesh geometryだけで全値へ一本化しない。範囲の正本は
 [`PHASE1_ACQUISITION_SCOPE.yml`](../data/reference/PHASE1_ACQUISITION_SCOPE.yml) である。
 
 ## 完全性
@@ -43,6 +44,9 @@ e-Statは都道府県ZIPが最小の取得単位のため、表示4都県（11�
   年齢階級表であり、`resident_population` 入力としては除外する。
 - 配布開始日（e-Stat 2025-10-09等）は、調査基準日・公表日を置き換えない。
 - 欠損・秘匿・合算先・非公表は原表tokenを保持し、0へ変換する処理はまだ存在しない。
+- 2026-09-05の追加確認で、[e-Statの提供単位説明](https://www.e-stat.go.jp/pdf/gis/teikyo_mesh_chigai.pdf)は
+  都道府県境界をまたぐmeshについて都道府県成分だけを収録すると明記していることを確認した。
+  このため、同じmesh codeを重複削除せず、G3.1で行政界に対するscope-aware rollupを行う。
 
 参照した公式ページは [N02カタログ](https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N02-2025.html)、
 [S12カタログ](https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-S12-2024.html)、

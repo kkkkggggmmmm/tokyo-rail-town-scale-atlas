@@ -420,6 +420,7 @@ phase_1_acquisition:
   archive_member_count: 91
   archive_bytes: 38883077
   locked_at: "2026-08-30T10:20:22Z"
+  byte_revalidated_at: "2026-09-05"
   source_encoding_note: >-
     e-Stat T001163/T001141 prefectural tables are delivered as CP932 text inside ZIPs;
     N02/S12/L01 retain their official UTF-8/Shift-JIS variants and per-member detection.
@@ -459,3 +460,29 @@ phase_1_identity:
     unresolved_matches_are_queued_not_forced: true
     exact_segments_have_order_and_source_hashes: true
     distance_is_operating_km: false
+
+phase_1_g3_normalization:
+  status: PASS_WITH_SCOPE_AWARE_MESH_ROLLUP_AND_BOUNDARY_CLIP_PENDING
+  implementation: scripts/normalize_phase1_g3.py
+  validation: scripts/validate_phase1_g3.py
+  report: docs/PHASE1_G3_NORMALIZATION_REPORT.md
+  official_recheck: docs/OFFICIAL_RECHECK_2026-09-05.md
+  official_recheck_registry: data/reference/OFFICIAL_RECHECK_2026-09-05.yml
+  local_outputs:
+    - data/derived/economic_mesh_500m.parquet
+    - data/derived/population_mesh_500m.parquet
+    - data/derived/station_access_observations.parquet
+    - data/derived/land_price_points.parquet
+  mesh_provider_unit_rule:
+    source: https://www.e-stat.go.jp/pdf/gis/teikyo_mesh_chigai.pdf
+    rule: >-
+      都道府県配布で同じ4次mesh codeが複数県に現れる場合、各行は当該県の寄与成分である。
+      同一mesh codeを重複削除せず、公式行政界によるscope clipを監査するまで全mesh値へ合算しない。
+    observed_cross_partition_meshes:
+      economic_census_t001163: 366
+      population_census_t001141: 476
+  score_separation:
+    s12_allowed_score_domain: access
+    l01_allowed_score_domain: validation
+    scores_rankings_centers_or_ui_generated: false
+  next_gate: G3_1_OFFICIAL_ADMIN_BOUNDARY_AUDIT_AND_SCOPE_AWARE_MESH_ROLLUP

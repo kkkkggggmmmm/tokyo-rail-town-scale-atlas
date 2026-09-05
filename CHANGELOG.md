@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.0 — 2026-09-05
+
+- Recovered all 24 locked Phase 1 archives from their official URLs and revalidated their 91 ZIP members against the existing SHA-256 source lock.
+- Rechecked current official catalog, terms, table-definition, and correction evidence. The post-2026-04-24 Tokyo L01 archive still matches the locked bytes; the current correction-log text was not treated as proof that no future/unlisted correction exists.
+- Added G3 normalizers for 2021 Economic Census mesh, 2020 Census mesh, S12 Access observations, and L01 validation points, with raw token, status, reference period, publication period, and archive provenance retained.
+- Recorded the official e-Stat rule that the same mesh code in two prefecture downloads is two prefecture-specific components, not a duplicate. G3 preserves those components and blocks whole-mesh rollup until official boundary clipping is audited.
+- Added `make verify-g3` and G3-specific checks for component identity, missingness, GeoParquet metadata, S12 Access-only use, L01 validation-only use, and the unresolved boundary gate.
+- Kept candidate surfaces, center polygons, scores, rankings, and public UI blocked.
+
 ## 0.5.0 — 2026-09-04
 
 - Accepted GitHub `main@5c886415` as the canonical restart baseline after the unpushed historical local G3 commit `8ad4948` could not be retrieved from GitHub.

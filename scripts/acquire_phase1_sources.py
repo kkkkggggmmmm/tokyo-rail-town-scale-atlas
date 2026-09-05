@@ -67,7 +67,15 @@ def acquire_one(spec: dict, force: bool) -> dict[str, object]:
     parsed = urlparse(spec["url"])
     if parsed.hostname not in ALLOWED_HOSTS:
         raise ValueError(f"Unapproved download host: {spec['url']}")
-    with tempfile.TemporaryDirectory(prefix="phase1-acquire-", dir=str(local.parent)) as temp_dir:
+    # Keep interrupted download remnants outside ``archives``.  The lock
+    # validator treats every ZIP below that directory as an asserted raw
+    # artifact, so staging there turns an interrupted transfer into a false
+    # source-lock mismatch.  Quarantine is intentionally excluded from the
+    # asserted input set and can preserve failure evidence for inspection.
+    staging_root = ROOT / "data/raw/phase1/quarantine/staging"
+    assert_raw_path(staging_root)
+    staging_root.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="phase1-acquire-", dir=str(staging_root)) as temp_dir:
         temp_root = Path(temp_dir)
         part = temp_root / local.name
         header_part = temp_root / headers.name

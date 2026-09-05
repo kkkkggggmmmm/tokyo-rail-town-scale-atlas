@@ -1,0 +1,40 @@
+recheck_version: 0.1.0
+project_id: tokyo-rail-town-scale-atlas
+checked_at: "2026-09-05"
+status: PASS_WITH_CORRECTION_LOG_LIMITATION
+scope: live_catalog_terms_definition_and_locked_byte_recovery
+evidence:
+  - evidence_id: n02_catalog
+    url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N02-2025.html
+    conclusion: N02-25 remains the recorded 2025 railway release with a 2025-12-31 reference date.
+  - evidence_id: s12_catalog
+    url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-S12-2024.html
+    conclusion: The current ridership catalog continues to document non-public stations and source-data timing caveats.
+  - evidence_id: l01_catalog
+    url: https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-L01-2026.html
+    conclusion: L01-26 remains the current 2026 land-price release with a 2026-01-01 reference date.
+  - evidence_id: ksj_correction_log
+    url: https://nlftp.mlit.go.jp/ksj_error.html
+    conclusion: The page was reviewed, but a text search of its current rendering is not treated as proof that no later or non-text-visible L01 correction exists.
+  - evidence_id: estat_updates
+    url: https://www.e-stat.go.jp/help/data-definition-information/update-information
+    conclusion: Current update information continues to distinguish 2021/2020 observation periods from later mesh distribution events.
+  - evidence_id: estat_terms
+    url: https://www.e-stat.go.jp/terms-of-use
+    conclusion: Attribution and modification-notice requirements remain compatible with the provenance contract.
+  - evidence_id: mesh_provider_unit
+    url: https://www.e-stat.go.jp/pdf/gis/teikyo_mesh_chigai.pdf
+    conclusion: Prefecture downloads retain only their prefecture contribution for a cross-prefecture mesh; whole-mesh values require component summation.
+byte_recovery:
+  source_lock: data/manifests/source_lock.phase1.yml
+  required_validation: make verify-locked
+  result: PASS
+  archive_count: 24
+  member_count: 91
+  meaning: Recovered official archive bytes match the established G1 lock; this does not replace a future retrieval-day correction audit.
+guardrails:
+  l01_post_correction_lock_remains_required: true
+  source_lock_rewritten: false
+  reference_publication_retrieval_dates_conflated: false
+  whole_mesh_rollup_before_boundary_audit: prohibited
+report: docs/OFFICIAL_RECHECK_2026-09-05.md

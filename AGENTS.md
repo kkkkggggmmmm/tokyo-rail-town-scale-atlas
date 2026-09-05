@@ -26,6 +26,7 @@ When canonical sources conflict, stop and record the conflict before modifying d
 - Core inputs must be region-wide and methodologically comparable.
 - PLATEAU, POI, and human-flow data remain Enhanced until a recorded decision promotes them.
 - Raw-source values are immutable. Manual changes live in an override/decision layer with reason and provenance.
+- e-Stat prefecture mesh rows that share a `mesh_code` are prefecture-specific components, not disposable duplicates. Do not pick one or sum them into a whole mesh until an audited, authorized scope clip is available.
 
 ## ID and missingness guardrails
 
@@ -64,6 +65,17 @@ make verify-locked
 Do not weaken or skip `verify-locked` because raw inputs are absent from Git;
 they are deliberately external and must match the source-lock hashes.
 
+After generating local Phase 1 G3 derivatives, additionally run:
+
+```bash
+make verify-g3
+```
+
+`verify-g3` requires the regenerated local derivatives. It checks that partition
+mesh identity, raw-token/status semantics, S12's Access-only boundary, L01's
+validation-only boundary, and the unresolved administrative-clip gate are all
+preserved.
+
 For later phases, add tests that separately report:
 
 - Primary outcome: Golden Eval agreement and boundary quality
@@ -82,4 +94,5 @@ Stop rather than improvise when any of the following is true:
 - missing and zero cannot be distinguished;
 - reference and publication dates are conflated;
 - a non-comparable source is proposed for Core;
+- a prefecture-mesh component is treated as a full mesh before scope-aware rollup;
 - a requested change exceeds the current phase or write scope.
