@@ -1,5 +1,12 @@
 # Decision Register
 
+## OWNER-2026-09-06-N03 — N03 not adopted
+
+- Status: accepted Owner instruction, 「N03使わない確定でいいよ」.
+- Decision: N03 is excluded. The application-next-step and candidate-selection portions of DEC-0015 are superseded. Its prohibition on unaudited N03 processing remains protective historical evidence.
+- Scope: no replacement boundary source or whole-mesh rollup is automatically approved by this decision. Reconcile an N03-free component-support contract before real-data extraction.
+- Recovery: local unpushed checkpoints are unavailable after workspace maintenance. This branch adds an independent Golden Eval runner to recovered GitHub code without claiming restoration of those checkpoints.
+
 ## DEC-0001 — Computational unit
 
 - Date: 2026-08-30

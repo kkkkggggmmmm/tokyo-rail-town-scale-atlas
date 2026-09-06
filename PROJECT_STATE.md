@@ -1,5 +1,17 @@
 # PROJECT_STATE
 
+## Current work — 2026-09-06
+
+- **Owner decision: N03を使用しない。** Below, the N03 application route is a historical record, not the next task. No N03 acquisition, geometry, or scope rollup is authorized.
+- Working base: recovered GitHub `main@4ef1ee46a4f33482c13e1edb6daf725ec0189994`; branch `work/golden-eval-runner`. No canonical reset or acceptance of lost code is implied.
+- Workspace maintenance removed the local unpushed checkpoints previously reported as `defcdc0` and `d3d9185`. Current GitHub branches and the saved-file search do not contain those implementations. They are not claimed as present or reproduced.
+- Current authorized scope: an independent evaluation runner using the frozen registry and submitted candidate prediction files, plus synthetic tests. No locked raw inputs or G3 transformations are consumed or changed.
+- Real-data extraction remains blocked until an N03-free component-support contract and the implementation baseline are reconciled and required raw gates pass. Previously passed historical data checks below have not been repeated in this workspace.
+- Overall model acceptance, final rankings, final boundaries and public UI remain blocked. Candidate registry tags are not adjudicated type labels.
+- Validation: 16 new evaluation-runner tests passed, including a corrected free-text holdout leakage case. Required clone-safe validation and CLI evidence are recorded for this change; raw-input and real-center evaluation are not claimed. Build/browser QA does not apply to this non-UI work.
+
+## Historical state recovered from GitHub (2026-09-05)
+
 ```yaml
 project_id: tokyo-rail-town-scale-atlas
 repository_candidate: tokyo-rail-town-scale-atlas

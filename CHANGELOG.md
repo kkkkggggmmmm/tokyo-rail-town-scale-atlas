@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — 2026-09-06
+
+- Added an independent Golden Eval calibration runner: 12 hard and 12 soft comparisons, explicit metric contracts, fixed denominators, and source/model/prediction version evidence.
+- Added a 45-case calibration export that excludes holdout cases and mixed-split assertions. Overall acceptance and unconnected structural/boundary/type checks remain unevaluated.
+- Corrected the model text that suggested naming clusters after viewing holdout confusion; the frozen calibration-only rule takes precedence.
+- Recorded Owner's N03 non-adoption and the unavailable local checkpoints. No raw-data adapter, lost extraction implementation, final score, polygon or UI is recreated or released.
+
 ## 0.7.0 — 2026-09-05
 
 - Audited the official N03 2026 administrative-boundary source for G3.1 and selected it as the technical boundary candidate for the 1都3県 union, 10km buffer, and TX corridor.

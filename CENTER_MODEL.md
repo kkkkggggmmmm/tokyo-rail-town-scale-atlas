@@ -186,7 +186,7 @@ leave-one-feature-out results, and pairwise Golden Eval performance before accep
 ### Type
 
 Cluster size-residualized industry shares and permitted morphology features. Human reviewers
-name clusters only after inspecting holdout confusion. Candidate labels are urban mixed,
+name clusters using calibration cases only, then freeze names before inspecting holdout confusion. Candidate labels are urban mixed,
 shopping, food/night, business, tourism/leisure, local-life, and transport interchange.
 
 ### Access
@@ -257,3 +257,47 @@ Stop the pipeline before scoring when any of the following is true:
 5. A nonuniform POI/PLATEAU/human-flow layer is entering CoreScale.
 6. A fixed station radius is being written as the final center boundary.
 7. A center split/merge would overwrite prior identity or geometry history.
+
+## 13. Executable calibration checks
+
+`scripts/golden_eval.py` compares submitted candidate activity quantities against
+the frozen registry. It does not compute a score, normalize raw data, recover the
+lost extraction code, or accept a model. Run it independently of real-data ETL:
+
+```bash
+python -m scripts.golden_eval --calibration-packet --output data/qa/golden_calibration.json
+python -m scripts.golden_eval --predictions candidate_predictions.json --output data/qa/golden_result.json
+```
+
+The first command exports only the 45 calibration cases and constraints wholly
+within that split. Mixed holdout assertions are excluded entirely. The registry
+free-text case constraints and pair rationales are not copied into the machine
+packet, because even calibration narratives can name held-out neighbors. The registry
+itself remains unchanged. Do not use the full registry or holdout results to
+name clusters, select a method or tune thresholds.
+
+The second command accepts a JSON submission with `registry_sha256`,
+`model_run_id`, `model_version`, `model_artifact_sha256`, `metric_contracts`, and
+`predictions`. Declare **both** `commercial_mass` and `consumer_facing_mass`
+contracts, each with `definition`, `unit`, `reference_period`, and `source_refs`.
+These are declared candidate semantics, not independently verified provenance;
+neither relation is silently mapped to CoreScale, Access or raw employment.
+Every row has `golden_eval_id` and `metrics`; each supplied metric has exactly
+`value` and `status`. Missing metrics/rows remain unevaluated. Explicit measured
+zero uses `observed_zero`; unavailable observations have a null value and their
+original missing status. Duplicate/unknown IDs, holdout rows and per-row contract
+or run overrides are rejected.
+
+All 12 hard and 12 soft comparisons are **calibration**, not holdout evidence.
+Equality fails a strict larger-than comparison. The pass-rate denominator is
+the complete required set, including unevaluated pairs. Hard requires 12/12;
+soft requires at least 11/12 and all 12 evaluated. Each result records both input
+values/statuses. Registry, model artifact and submitted-file hashes distinguish
+which inputs were compared; a caller-supplied model hash alone is not proof of
+an independently frozen model or source legitimacy.
+
+Even with every pair passing, `acceptance_status` remains `NOT_EVALUATED`:
+structural checks, case-to-center identity, independent provenance, adjudicated
+reference polygons, type holdout and sensitivity evidence are not connected.
+Candidate `structural_tags` never become ground-truth types. CLI exit code 0
+means a report was written, not that the model passed acceptance.
