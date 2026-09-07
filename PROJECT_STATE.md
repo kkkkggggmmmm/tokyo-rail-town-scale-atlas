@@ -1,5 +1,14 @@
 # PROJECT_STATE
 
+## Reference infographics v0.2 — 2026-09-07
+
+- Owner requests data implementation and infographics. Added interactive reference-catalog charts: eight reference-feature counts, four prefecture counts, multiple-anchor-station count, candidate/station correspondence, and consistent per-route comparison bars. The three main navigation entries remain; charts are inside the comparison area.
+- All counts are computed at runtime from the existing public allowlist, with candidate-ID deduplication. The full list contains 44 distinct candidates despite 50 route memberships; 29 have multiple distinct anchor names. Prefecture counts are Tokyo 23, Kanagawa 7, Saitama 7, Chiba 7. Feature labels overlap and are not adjudicated statistical classifications.
+- Chart clicks filter the candidate list by feature, prefecture and anchor multiplicity; filters intersect and restore from the URL. Charts retain the selected route's whole-catalog denominator while the matching list is filtered. Detail diagrams are correspondence diagrams, not transfer or geographic evidence.
+- No measured commercial, ridership, population or land-price values have been added. The 24-archive lock still requires 15 unavailable archives (six economic and nine population); the saved nine-archive checkpoint is not a full pass. Required `verify-locked` was neither bypassed nor reported as passing. N03 remains excluded; the old gate wording below is historical.
+- Validation: `make verify-fast`, 10 JavaScript behavior tests, JavaScript syntax and diff whitespace checks PASS. Independent read-only review verified counts and 1,215 filter combinations; its one issue (a self-opening button in the detail diagram) was corrected. Static authored assets need no compile step. Browser and physical-phone QA remain NOT_CHECKED.
+- Source branch: `work/public-explorer-mvp`. Publication target is the existing public Site; exact deployed commit/version are recorded by the deployment service. Deployment status is recorded after publication succeeds.
+
 ## Public explorer MVP — 2026-09-07
 
 - Live public URL: https://tokyo-rail-town-atlas.dwdaai.chatgpt.site
