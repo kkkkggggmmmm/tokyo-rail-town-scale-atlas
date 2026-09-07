@@ -7,9 +7,9 @@
 - Chart clicks filter the candidate list by feature, prefecture and anchor multiplicity; filters intersect and restore from the URL. Charts retain the selected route's whole-catalog denominator while the matching list is filtered. Detail diagrams are correspondence diagrams, not transfer or geographic evidence.
 - No measured commercial, ridership, population or land-price values have been added. The 24-archive lock still requires 15 unavailable archives (six economic and nine population); the saved nine-archive checkpoint is not a full pass. Required `verify-locked` was neither bypassed nor reported as passing. N03 remains excluded; the old gate wording below is historical.
 - Validation: `make verify-fast`, 10 JavaScript behavior tests, JavaScript syntax and diff whitespace checks PASS. Independent read-only review verified counts and 1,215 filter combinations; its one issue (a self-opening button in the detail diagram) was corrected. Static authored assets need no compile step. Browser and physical-phone QA remain NOT_CHECKED.
-- Source branch: `work/public-explorer-mvp`. Publication target is the existing public Site; exact deployed commit/version are recorded by the deployment service. Deployment status is recorded after publication succeeds.
+- Source branch: `work/public-explorer-mvp`. Public version 2 deployed successfully as `appgdep_6a9f3fd518a08191b60d29fe5ae20270`, source commit `82863fba02ae5cb226750e63dae47c79e4784e1d`. Live URL: https://tokyo-rail-town-atlas.dwdaai.chatgpt.site . This receipt-only change does not alter the deployed assets.
 
-## Public explorer MVP — 2026-09-07
+## Public explorer MVP v0.1 — historical deployment, 2026-09-07
 
 - Live public URL: https://tokyo-rail-town-atlas.dwdaai.chatgpt.site
 - Deployment confirmed succeeded: `appgdep_6a9f3a82c6e0819180165666b17041cd`; saved version 1; deployed source `54932258de2ff4bf51b47bf7e31456d047ba1a12`. Public audience confirmed. This subsequent status-only commit does not change the four deployed public assets.
