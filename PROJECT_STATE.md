@@ -1,5 +1,16 @@
 # PROJECT_STATE
 
+## Public explorer MVP — 2026-09-07
+
+- Owner explicitly requests an overall refocus and MVP publication. This activates a public **reference-catalog explorer**, superseding the historical UI/publication prohibition only for this bounded output.
+- Product: interactive schematic route map, street/candidate details, route profiles, and comparison of 2–4 routes. Uses only the frozen Phase 0 pilot and calibration reference registries; 44 calibration candidates in 1都3県. Excludes GE045 (つくば) and all 15 holdouts.
+- Reference candidates are not extracted canonical centers. Features remain editorial hypotheses; commercial size, Access, confidence, geography, interval distances, and classes are not estimated. Schematic positions have no geographic or distance interpretation. Candidate counts describe catalog coverage, never total center counts or route quality.
+- No raw acquisition, G2 identity consumption/recalculation, mesh transformation, N03, source-lock changes, or blocked source-pilot draft promotion is included. Existing raw/identity/model gates remain in force for those workstreams.
+- GitHub remains canonical. Source-based prototype and source-transfer drafts remain preserved separately, not applied to this clean public branch.
+- Publication requires clone-safe checks, public-export validation, JS/asset checks, then a saved exact-source deployment. Browser/phone QA status must be reported separately.
+- Release status: READY_TO_PUBLISH_PUBLIC_EXPLORER_MVP. Required clone-safe checks, 3 public-payload checks, 5 JavaScript behavior checks, JavaScript syntax and local asset checks passed. Browser/phone QA: NOT_CHECKED. Statistical-scale product remains incomplete.
+
+
 ## Current work — 2026-09-06
 
 - **Owner decision: N03を使用しない。** Below, the N03 application route is a historical record, not the next task. No N03 acquisition, geometry, or scope rollup is authorized.

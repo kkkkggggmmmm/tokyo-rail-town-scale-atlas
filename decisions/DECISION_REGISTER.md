@@ -1,5 +1,15 @@
 # Decision Register
 
+## OWNER-2026-09-07-MVP — publish a bounded reference explorer
+
+- Accepted instruction: 「全体の構成を見直して目標や完成品を思い出して、一旦MVP公開までやってほしい」.
+- Publish the connected reference-catalog experience now: schematic route map → town guide → route profile → comparison. Existing pilot and calibration-only registries supply the reference content.
+- Keep numerical commercial scale, L0–L6 classes, actual center boundaries, traffic power and confidence uncomputed. Do not substitute evaluation tags or candidate coverage for these measurements.
+- Publish only 1都3県 calibration candidates (44). No holdout labels, comparative constraints, or expected model outputs enter the bundle. Reference membership is an evaluation selection, not a complete rail-service/center membership.
+- The public bundle contains no locked raw inputs, no G2 output conversion, and no statistical derivation. Existing mandatory raw checks are unchanged and remain blocking for source work.
+- This is an early explorer MVP, not completion of the original statistical atlas.
+
+
 ## OWNER-2026-09-06-N03 — N03 not adopted
 
 - Status: accepted Owner instruction, 「N03使わない確定でいいよ」.

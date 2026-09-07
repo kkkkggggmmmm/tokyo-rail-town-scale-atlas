@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0-explorer — 2026-09-07
+
+- Activated Owner-requested public reference explorer: 8 routes, 44 calibration candidates in 1都3県, schematic diagram, town/station search, town details, route profiles, 2–4 route comparison, and URL state/back navigation.
+- Published payload excludes 茨城 candidate GE045, all holdouts and adjudication constraints. Reference features are hypotheses; all scale values remain null.
+- No raw inputs, G2 conversion, N03, source re-acquisition or source-lock modifications. The blocked statistical workstream remains separate.
+- Validation: required verify-fast, 3 public data checks, 5 JavaScript behavior checks, JS syntax and static asset checks passed. Browser and physical-phone interaction QA not performed.
+
+
 ## Unreleased — 2026-09-06
 
 - Added an independent Golden Eval calibration runner: 12 hard and 12 soft comparisons, explicit metric contracts, fixed denominators, and source/model/prediction version evidence.
