@@ -1,0 +1,18 @@
+{
+  "source_id": "estat_econ2021_table9_3_cafes",
+  "title": "2021年経済センサス‐活動調査 表9-3 産業小分類別全事業所数（民営を選択）",
+  "landing_url": "https://www.e-stat.go.jp/dbview?sid=0004005673",
+  "download_url": "https://www.e-stat.go.jp/dbview/api_get_result?sid=0004005673",
+  "access_method": "POST using public table-display request, no API app ID; request saved cafe_request.json; no authenticated access",
+  "official_publication_date": "2023-06-27",
+  "reference_date": "2021-06-01",
+  "response_sha256": "2b364dd6aeeb92d949d69b81548db5c307b072ab7db7ff1fa6d704bfe3eb00ca",
+  "definition_url": "https://www.e-stat.go.jp/classifications/terms/10/03/7671",
+  "definition": "日本標準産業分類2013年改定767。飲料や簡易な食事を主とする喫茶店・珈琲店・カフェ。スナックバーは含まない。経営組織はうち民営、従業者規模は総数。",
+  "spatial_scope_note": "市区町村または政令市の区全体。駅周辺や商業中心地の件数ではない。政令市合計とその区を重複加算しない。",
+  "license": "e-Stat accepted terms; project existing source terms evidence reused",
+  "terms_url": "https://www.e-stat.go.jp/terms-of-use",
+  "symbols_note": "数値の行だけ表示承認。今回の表示応答には記号凡例が付いていないため、非数値記号は原文とnullを保存し、0へ置換していない。",
+  "normalized_at": "2026-09-08T12:41:49.032529+00:00",
+  "retrieved_date": "2026-09-08"
+}

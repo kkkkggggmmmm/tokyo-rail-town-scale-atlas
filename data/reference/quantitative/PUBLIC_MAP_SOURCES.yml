@@ -1,4 +1,4 @@
-version: '0.3'
+version: '0.4'
 checked_at: '2026-09-08'
 map:
   publisher: 国土地理院
@@ -27,3 +27,15 @@ public_statistics:
   economic_context: data/reference/quantitative/municipal_economy.json
   education_safety_context: data/reference/quantitative/education_safety.json
   original_bundle_checkpoint: libfile_167b01d57458819180d11aafb5569995
+  apparel_column: T001163064
+  supplemental_manifest: data/manifests/public_supplements.yml
+  supplemental_generator: scripts/build_public_supplements.py
+  supplemental_originals_checkpoint: libfile_05297e1693f88191b06a782927344ce6
+  student_metric: T001144046; residents enrolled in university or graduate school
+  student_reference_date: '2020-10-01'
+  commercial_district_table: '0004015880'
+  commercial_sales_reference_period: '2020-01-01/2020-12-31'
+  cafes_table: '0004005673'
+  cafes_industry: '767'
+  cafes_scope: municipality_or_designated_city_ward
+  additions_change_core_or_route_mean_rank: false

@@ -515,3 +515,11 @@ public_quantitative_extension:
   source_lock_reverified: true
   original_archives_count: 24
   note: "既存監査の日付を上書きせず、今回の公開用データ・地図・自治体指標の条件を別記録で保持する。"
+
+public_quantitative_extensions:
+  checked_at: '2026-09-08'
+  manifest: data/manifests/public_supplements.yml
+  publication_scope: public_statistics_with_exact_source_geography
+  data_dictionary: DATA_DICTIONARY.md
+  raw_verified: six_supplemental_files_exact_sha256
+  no_n03_or_center_assignment: true

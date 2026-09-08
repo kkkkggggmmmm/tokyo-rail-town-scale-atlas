@@ -1,0 +1,38 @@
+import {studentShare,filterDistricts,districtTotal,moneyLabel} from './supplements.mjs';
+const PREF={'11':'埼玉県','12':'千葉県','13':'東京都','14':'神奈川県'};
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=v=>Number.isFinite(v)?new Intl.NumberFormat('ja-JP',{maximumFractionDigits:1}).format(v):'—';
+const link=(url,label='公式データ')=>`<a class="source" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)} ↗</a>`;
+
+export function studentSection(data,students,station){
+ const components=students.meshContexts[station.meshCode]?.components||[];
+ return `<h2 class="section-label">学生が暮らす街か</h2><p class="scope-label">2020年10月1日・駅のある約500m区画の都県別公表分。ここに住む大学・大学院の在学者を数えています。大学へ通ってくる学生数は含みません。</p>${components.map(c=>{
+  const source=students.sources.find(x=>x.id===c.sourceId),share=studentShare(data,students,station,c.prefectureCode);
+  const combined=String(c.processingCode)==='1'||c.aggregationTarget||c.aggregatedSourceMeshCodes;
+  const count=Number.isFinite(c.university?.value)?num(c.university.value):'非公表・秘匿';
+  return `<h3 class="section-label">${esc(PREF[c.prefectureCode])}の公表分</h3><div class="metric-grid"><div class="metric"><span class="metric-label">大学・大学院在学者${combined?'（合算値）':''}</span><div class="metric-value">${count}<span class="unit">${Number.isFinite(c.university?.value)?'人':''}</span></div><small>居住地で集計 ${link(source?.url)}</small></div><div class="metric"><span class="metric-label">住民に占める割合</span><div class="metric-value ${share===null?'unavailable':''}">${share===null?'算定不可':num(share)}${share===null?'':'<span class="unit">%</span>'}</div><small>在学者数 ÷ 同じ区画の総人口</small></div></div>${share===null?'<p class="note">秘匿・合算・都県境・分母未取得などで同じ範囲の比率を確定できない場合、割合は表示しません。</p>':`<div class="student-share-bar" role="img" aria-label="住民のうち大学・大学院在学者 ${num(share)}%"><span style="width:${share}%"></span></div><p class="note">棒の全体が住民100%。色の部分が大学・大学院在学者です。</p>`}${combined?'<p class="scope-label">複数区画の合算対象です。この人数を単一区画の値として沿線比較には使いません。</p>':''}<details><summary>高校・短大などの在学者と定義</summary><p>短大・高専：${num(c.juniorCollege?.value)} 人／高校：${num(c.highSchool?.value)} 人。いずれも居住者です。</p><p>${esc(students.interpretation.definitionNote)} ${link(students.interpretation.definitionUrl,'国勢調査の学校区分')}</p></details>`;
+ }).join('')||'<p class="note">この区画の在学者数は未取得です。</p>'}`;
+}
+
+export function districtView(asset,{query='',prefecture='all'}={}){
+ return `<div class="section-heading"><div><div class="eyebrow">COMMERCIAL DISTRICT / SALES</div><h2>繁華街の商業規模を、売上で読む</h2><p>1都3県・公式商業集積地区 ${num(asset.districts.length)}地区。売上は2020年の年間額です。</p></div></div><p class="scope-label">GDPは「付加価値」、ここで表示するのは「売上」です。小売・飲食サービス・生活関連サービスの3業種を掲載しています。2020年はコロナ期のため、現在の売上とは異なります。</p><div class="data-search"><label>地区名・市区町村名<input id="district-query" type="search" value="${esc(query)}" placeholder="銀座、吉祥寺、新宿など" maxlength="80"></label><label>都県<select id="district-pref"><option value="all" ${prefecture==='all'?'selected':''}>1都3県すべて</option>${Object.entries(PREF).map(([code,name])=>`<option value="${code}" ${prefecture===code?'selected':''}>${name}</option>`).join('')}</select></label></div><p id="district-result-count" class="note" role="status"></p><div class="table-wrap"><table class="district-table"><thead><tr><th>公式商業地区名・所在地</th><th>小売売上<br>億円／2020年</th><th>飲食サービス売上<br>億円／2020年</th><th>生活関連サービス売上<br>億円／2020年</th><th>3業種売上計<br>億円／公表値の和</th><th>小売売場面積<br>㎡／2021年</th></tr></thead><tbody id="district-results"></tbody></table></div><button id="district-more" class="more-button">次の30地区を表示</button><p class="note">地区名は統計の原表に従います。駅ビルや商店街が別地区になる場合があります。例えば「新宿駅東口」は新宿全体ではありません。地区の境界を駅や本アプリの中心地に結び付けていないため、沿線の合計・総合評価には加えていません。</p><details class="card"><summary>売上の集計範囲・記号・出典</summary><p>3業種売上計は、3つの売上すべてが公表されている地区だけ計算しています。全産業の総売上ではありません。「秘匿」は公表が伏せられた値、「—」は該当数字なし・未公表などです。原表の0は百万円未満のため「単位未満」と表示し、これを含む合計に「約」を付けます。</p><p>飲食サービスは産業76・77。生活関連サービスは78・79のうち対象業種で、娯楽業80を含みません。小売売場面積は法人の小売業が対象で、オフィス面積ではありません。面積の基準日は2021年6月1日です。</p><p>総務省・経済産業省「令和3年経済センサス‐活動調査 立地環境特性編 第2表」を駅まちアトラスが加工。公表日2024年6月25日。${link(asset.source.url)} ${link(asset.source.definition_url,'集計定義')} ${link(asset.source.terms_url,'利用条件')}</p></details>`;
+}
+
+export function districtRows(asset,{query='',prefecture='all',limit=30}={}){
+ const rows=filterDistricts(asset.districts,{query,prefecture}),shown=rows.slice(0,limit);
+ const html=shown.map(d=>{
+  const m=d.metrics,total=districtTotal(d),rounded=['retail_sales_million_yen','food_service_sales_million_yen','personal_service_sales_million_yen'].some(k=>m[k].status==='below_rounding_unit');
+  const totalLabel=total===null?'—':total===0&&rounded?'単位未満':(rounded?'約 ':'')+moneyLabel({value:total,status:'observed'});
+  return `<tr><td><strong>${esc(d.name)}</strong><small>${esc(PREF[d.prefecture_code])} ${esc(d.municipality_name)}／地区 ${esc(d.source_district_id)}</small></td>${['retail_sales_million_yen','food_service_sales_million_yen','personal_service_sales_million_yen'].map(k=>`<td class="number-cell">${moneyLabel(m[k])}</td>`).join('')}<td class="number-cell"><b>${totalLabel}</b></td><td class="number-cell">${m.retail_sales_floor_sqm.status==='suppressed'?'秘匿':num(m.retail_sales_floor_sqm.value)}</td></tr>`;
+ }).join('')||'<tr><td colspan="6">該当する地区はありません。別の地区名・市区町村名で検索してください。</td></tr>';
+ return {html,total:rows.length,shown:shown.length};
+}
+
+export function cafeView(asset,{query=''}={}){
+ return `<div class="section-heading"><div><div class="eyebrow">CAFES / MUNICIPALITY</div><h2>喫茶店・カフェは、何店あるか</h2><p>2021年6月1日・民営事業所。市区町村・政令市の区全体の件数です。</p></div></div><p class="scope-label">この数字は自治体全体の喫茶店数です。駅周辺の店舗数とは区別して表示します。スナックバーは含みません。</p><div class="data-search"><label>市区町村名<input id="cafe-query" type="search" value="${esc(query)}" placeholder="新宿区、武蔵野市、横浜市など" maxlength="80"></label></div><p id="cafe-result-count" class="note" role="status"></p><div class="table-wrap"><table class="cafe-table"><thead><tr><th>集計地域</th><th>喫茶店数<br>店・2021年</th></tr></thead><tbody id="cafe-results"></tbody></table></div><button id="cafe-more" class="more-button">次の30地域を表示</button><p class="note">258地域のうち252地域で数値を確認済みです。数値を確定できない6地域は空欄のまま保存し、この一覧には含めていません。政令市の合計と各区は範囲が重なるため合算しません。</p><details class="card"><summary>喫茶店の定義・出典</summary><p>${esc(asset.source.definition)}</p><p>総務省・経済産業省「令和3年経済センサス‐活動調査 表9-3」を駅まちアトラスが加工。産業小分類767、経営組織「うち民営」、従業者規模「総数」を選択。公表日2023年6月27日。${link(asset.source.landing_url)} ${link(asset.source.definition_url,'産業分類')} ${link(asset.source.terms_url,'利用条件')}</p></details>`;
+}
+
+export function cafeRows(asset,{query='',limit=30}={}){
+ const q=query.trim().normalize('NFKC'),rows=asset.observations.filter(r=>r.approved_for_display&&Number.isFinite(r.value)&&(!q||(r.area_name+' '+PREF[r.area_code.slice(0,2)]).normalize('NFKC').includes(q))),shown=rows.slice(0,limit);
+ return {total:rows.length,shown:shown.length,html:shown.map(r=>`<tr><td><strong>${esc(r.area_name)}</strong><small>${esc(PREF[r.area_code.slice(0,2)])}／地域コード ${esc(r.area_code)}</small></td><td class="number-cell">${num(r.value)}</td></tr>`).join('')||'<tr><td colspan="2">数値を確認済みの地域に該当するものはありません。</td></tr>'};
+}

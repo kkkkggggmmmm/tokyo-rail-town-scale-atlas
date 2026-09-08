@@ -17,7 +17,7 @@ import sys
 from zipfile import ZipFile
 
 PUBLIC_PREFECTURES = {'11', '12', '13', '14'}
-METRICS = {'restaurants': 'T001163082', 'retail': 'T001163062', 'employees': 'T001163108'}
+METRICS = {'restaurants': 'T001163082', 'retail': 'T001163062', 'employees': 'T001163108', 'apparel': 'T001163064'}
 
 def mesh_code(lon, lat):
     """Inverse of the existing normalizer's fourth-level mesh bounds."""
@@ -167,7 +167,7 @@ def main():
         {'id':'economic','title':'令和3年経済センサス 500mメッシュ T001163','referenceDate':'2021-06-01',
         'url':'https://www.stat.go.jp/data/mesh/r3_w.html','definitionUrl':'https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001163.pdf',
         'termsUrl':'https://www.e-stat.go.jp/terms-of-use','metrics':METRICS,
-        'labels':{'restaurants':'飲食店事業所数（76飲食店）','retail':'小売業事業所数','employees':'全産業従業者数'},
+        'labels':{'restaurants':'飲食店事業所数（76飲食店）','retail':'小売業事業所数','employees':'全産業従業者数','apparel':'織物・衣服・身の回り品小売業事業所数'},
         'note':'飲食店はT001163082。宿泊業・飲食サービス業合計の080は使用しない。'},
         {'id':'population','title':'令和2年国勢調査 500mメッシュ T001141','referenceDate':'2020-10-01',
         'url':'https://www.stat.go.jp/data/mesh/r2_w.html','definitionUrl':'https://www.e-stat.go.jp/help/data-definition-information/downloaddata/T001141.pdf',

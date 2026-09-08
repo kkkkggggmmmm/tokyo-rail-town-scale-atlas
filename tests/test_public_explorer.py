@@ -37,6 +37,7 @@ class PublicExplorerTests(unittest.TestCase):
             self.assertEqual(artifact['sha256'],hashes[artifact['id']])
         econ=next(s for s in D['sources'] if s['id']=='economic')
         self.assertEqual(econ['metrics']['restaurants'],'T001163082')
+        self.assertEqual(econ['metrics']['apparel'],'T001163064')
         self.assertEqual(econ['referenceDate'],'2021-06-01')
         dup=0
         for s in D['stations']:
@@ -52,7 +53,7 @@ class PublicExplorerTests(unittest.TestCase):
             self.assertFalse(mesh['fullMeshRollup'])
             for c in mesh['economicComponents']:
                 self.assertIn(c['prefectureCode'],{'11','12','13','14'})
-                for k in ['restaurants','retail','employees']:
+                for k in ['restaurants','retail','employees','apparel']:
                     o=c[k]
                     if o['status'] not in ['observed','observed_zero']:self.assertIsNone(o['value'])
                     self.assertIn('raw',o)
@@ -77,6 +78,7 @@ class PublicExplorerTests(unittest.TestCase):
 
     def test_static_assets_are_allowlisted_and_chart_is_real_svg(self):
         expected={'index.html','style.css','app.mjs','data.json','context.json','route-comparison.svg',
+                  'students.json','cafes.json','commercial-districts.json','supplements.mjs','supplement-views.mjs',
                   'vendor/maplibre-gl.js','vendor/maplibre-gl.css','vendor/pmtiles.js','vendor/MAPLIBRE-LICENSE.txt','vendor/PMTILES-LICENSE.txt'}
         files={str(p.relative_to(ROOT/'dist')) for p in (ROOT/'dist').rglob('*') if p.is_file()}
         self.assertEqual(files,expected)

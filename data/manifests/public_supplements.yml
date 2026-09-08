@@ -1,0 +1,70 @@
+version: public-supplements-v1
+checked_at: '2026-09-08'
+n03_used: false
+scope: Additional public observations; no canonical center attribution, no cross-prefecture
+  rollup, no CoreScale or route mean-rank changes
+apparel_source: Existing locked T001163064 in source_lock.phase1.yml; no new archive
+student_publication_note: Table-specific publication date remains unconfirmed; 2022-07-27
+  is series announcement, 2025-10 distribution period, 2020-10-01 reference date.
+  They are not substituted.
+artifacts:
+- path: data/raw/supplements/cafe_result.json
+  sha256: 2b364dd6aeeb92d949d69b81548db5c307b072ab7db7ff1fa6d704bfe3eb00ca
+  byte_size: 72620
+  source_metadata: data/reference/quantitative/cafe_source.json
+  download_url: https://www.e-stat.go.jp/dbview/api_get_result?sid=0004005673
+  reference_date_or_period: '2021-06-01'
+  publication_date: '2023-06-27'
+  retrieved_date: '2026-09-08'
+  terms_url: https://www.e-stat.go.jp/terms-of-use
+  reuse_status: accepted_official_eStat_terms_with_attribution
+- path: data/raw/supplements/economic-commercial-districts-2021.xlsx
+  sha256: 44d36113accd458cc8c9c4d5538a187fe72903beaa75002fc705e9f300cc9bb8
+  byte_size: 1821059
+  source_metadata: data/reference/quantitative/commercial_district_source.json
+  download_url: https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040186981&fileKind=0
+  reference_date_or_period: sales 2020-01-01/2020-12-31; establishments/floor 2021-06-01
+  publication_date: '2024-06-25'
+  retrieved_date: '2026-09-08'
+  terms_url: https://www.e-stat.go.jp/terms-of-use
+  reuse_status: accepted_official_eStat_terms_with_attribution
+- path: data/raw/supplements/student/census-2020-T001144-H-11.zip
+  sha256: 2ca1f63ef3e0618528909aceba08167b754800827469482963219fd7658cb601
+  byte_size: 893399
+  source_metadata: data/reference/quantitative/student/source-11.json
+  download_url: https://www.e-stat.go.jp/gis/statmap-search/data?statsId=T001144&code=11&downloadType=2
+  reference_date_or_period: '2020-10-01'
+  publication_date: null
+  retrieved_date: '2026-09-08'
+  terms_url: https://www.e-stat.go.jp/terms-of-use
+  reuse_status: accepted_official_eStat_terms_with_attribution
+- path: data/raw/supplements/student/census-2020-T001144-H-12.zip
+  sha256: e174cbe6f418cf8667afefb392ae38ba554bcf0a988f8563d0fdcd1efbcf3069
+  byte_size: 1026871
+  source_metadata: data/reference/quantitative/student/source-12.json
+  download_url: https://www.e-stat.go.jp/gis/statmap-search/data?statsId=T001144&code=12&downloadType=2
+  reference_date_or_period: '2020-10-01'
+  publication_date: null
+  retrieved_date: '2026-09-08'
+  terms_url: https://www.e-stat.go.jp/terms-of-use
+  reuse_status: accepted_official_eStat_terms_with_attribution
+- path: data/raw/supplements/student/census-2020-T001144-H-13.zip
+  sha256: a6b60b60e8a95a2da7afbc9db9329259ad9eb43500787c67a9993249b0939942
+  byte_size: 634425
+  source_metadata: data/reference/quantitative/student/source-13.json
+  download_url: https://www.e-stat.go.jp/gis/statmap-search/data?statsId=T001144&code=13&downloadType=2
+  reference_date_or_period: '2020-10-01'
+  publication_date: null
+  retrieved_date: '2026-09-08'
+  terms_url: https://www.e-stat.go.jp/terms-of-use
+  reuse_status: accepted_official_eStat_terms_with_attribution
+- path: data/raw/supplements/student/census-2020-T001144-H-14.zip
+  sha256: 7de672bb35c26a8cfd92c5ee1b12c0eec55f7f90e6222cca6315624e3660a6e4
+  byte_size: 662222
+  source_metadata: data/reference/quantitative/student/source-14.json
+  download_url: https://www.e-stat.go.jp/gis/statmap-search/data?statsId=T001144&code=14&downloadType=2
+  reference_date_or_period: '2020-10-01'
+  publication_date: null
+  retrieved_date: '2026-09-08'
+  terms_url: https://www.e-stat.go.jp/terms-of-use
+  reuse_status: accepted_official_eStat_terms_with_attribution
