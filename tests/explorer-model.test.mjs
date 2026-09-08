@@ -9,8 +9,8 @@ test('shareable URL round-trips filters, sorting, columns, paging and 4 comparis
  assert.deepEqual(parse(serializeExplorerState(state)),state);
 });
 test('untrusted URL object prototype keys and unknown IDs cannot create invalid state',()=>{
- for(const key of ['constructor','toString','__proto__']){const s=parse('#theme='+key+'&sort='+key+'&cols='+key+'&pins=bad&view='+key);assert.equal(s.theme,'all');assert.equal(s.sort,'restaurants');assert.deepEqual(s.columns,THEMES.all.columns);assert.deepEqual(s.pins,[]);assert.doesNotThrow(()=>serializeExplorerState(s));}
- assert.equal(parse('#sort=ridership').sort,'restaurants');assert.equal(METRIC_DETAILS.ridership.sortable,false);
+ for(const key of ['constructor','toString','__proto__']){const s=parse('#theme='+key+'&sort='+key+'&cols='+key+'&pins=bad&view='+key);assert.equal(s.theme,'all');assert.equal(s.sort,'name');assert.deepEqual(s.columns,THEMES.all.columns);assert.deepEqual(s.pins,[]);assert.doesNotThrow(()=>serializeExplorerState(s));}
+ assert.equal(parse('#sort=ridership').sort,'name');assert.equal(METRIC_DETAILS.ridership.sortable,false);
 });
 test('pins deduplicate known records, reject unknown IDs and cap at four',()=>{
  const ids=data.stations.slice(0,6).map(s=>s.id);assert.deepEqual(normalizePins([ids[0],ids[0],'bad',...ids],data),ids.slice(0,4));
@@ -24,11 +24,11 @@ test('observed zero remains visible; suppressed values are null and always sort 
  const d=structuredClone(data),s=d.stations.find(s=>stationValue(d,students,s,'restaurants')!==null),mesh=d.meshContexts[s.meshCode],c=mesh.economicComponents[0];
  c.restaurants={value:0,status:'observed_zero',raw:'0'};assert.equal(stationValue(d,students,s,'restaurants'),0);
  c.restaurants={value:99999,status:'suppressed',raw:'X'};assert.equal(stationValue(d,students,s,'restaurants'),null);
- for(const dir of ['asc','desc']){const ss=filterStations(d,students,{...parse(''),dir});const i=ss.findIndex(s=>stationValue(d,students,s,'restaurants')===null);assert.ok(i>=0);assert.ok(ss.slice(i).every(s=>stationValue(d,students,s,'restaurants')===null));}
+ for(const dir of ['asc','desc']){const ss=filterStations(d,students,{...parse(''),sort:'restaurants',dir});const i=ss.findIndex(s=>stationValue(d,students,s,'restaurants')===null);assert.ok(i>=0);assert.ok(ss.slice(i).every(s=>stationValue(d,students,s,'restaurants')===null));}
 });
 test('availability filtering cannot hide every station when sorting by name or station order',()=>{
  for(const sort of ['name','order']){const s={...parse(''),sort,available:true};assert.equal(filterStations(data,students,s).length,data.stations.length);}
- const s={...parse(''),available:true};assert.ok(filterStations(data,students,s).every(x=>stationValue(data,students,x,'restaurants')!==null));
+ const s={...parse(''),sort:'restaurants',available:true};assert.ok(filterStations(data,students,s).every(x=>stationValue(data,students,x,'restaurants')!==null));
 });
 test('line order preserves the 24 Chuo records and TX public endpoint',()=>{
  const s={...parse(''),sort:'order',line:'pc_jr_chuo_rapid'};assert.deepEqual(filterStations(data,students,s).map(x=>x.id),data.routes.find(r=>r.id===s.line).stationIds);

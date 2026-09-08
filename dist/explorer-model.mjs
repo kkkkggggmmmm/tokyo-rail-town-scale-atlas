@@ -1,4 +1,6 @@
 import {studentCount,studentShare} from './supplements.mjs';
+// Camera parser stays local to keep the core state module free of circular imports.
+const camera=raw=>{if(!raw)return null;const a=raw.split(',').map(Number);return a.length===3&&a.every(Number.isFinite)&&a[0]>=-180&&a[0]<=180&&a[1]>=-85&&a[1]<=85&&a[2]>=7&&a[2]<=17?a:null;};
 
 export const METRIC_DETAILS={
  restaurants:{label:'飲食店数',short:'飲食',unit:'店',year:'2021年',scope:'駅所在500m区画・都県公表分',source:'economic',note:'産業76の飲食店。宿泊・持ち帰り配達専門業を含まない。',kind:'公表値'},
@@ -12,7 +14,7 @@ export const METRIC_DETAILS={
  ridership:{label:'1日あたりの駅利用',short:'駅利用',unit:'人/日',year:'2024年度',scope:'原資料の事業者別集計範囲',source:'access',note:'乗車・乗降や乗換の扱いが事業者ごとに異なる。合計・順位付けはしない。',kind:'公表値',sortable:false},
 };
 export const THEMES={
- all:{label:'すべて',icon:'▦',metric:'restaurants',columns:['restaurants','retail','employees','studentShare']},
+ all:{label:'街の規模',icon:'▦',metric:'restaurants',columns:['restaurants','retail','employees','studentShare']},
  food:{label:'飲食',icon:'♧',metric:'restaurants',columns:['restaurants','retail','employees']},
  shopping:{label:'買い物',icon:'◇',metric:'apparel',columns:['retail','apparel','restaurants']},
  work:{label:'仕事',icon:'▣',metric:'employees',columns:['employees','restaurants','retail']},
@@ -41,17 +43,19 @@ export function parseExplorerState(hash,data){
  const theme=Object.hasOwn(THEMES,p.get('theme'))?p.get('theme'):'all';
  const validColumns=(p.get('cols')||'').split(',').filter(k=>Object.hasOwn(METRIC_DETAILS,k));
  let compare=[...new Set((p.get('compare')||routes.slice(0,2).join(',')).split(','))].filter(id=>routes.includes(id)).slice(0,4);if(compare.length<2)compare=routes.slice(0,2);
- const sort=p.get('sort');
- return {view:['map','profile','compare','line','numbers','sources'].includes(p.get('view'))?p.get('view'):'map',detail:['stations','districts','cafes','context'].includes(p.get('detail'))?p.get('detail'):'districts',line:routes.includes(p.get('line'))?p.get('line'):p.get('view')==='line'?routes[0]:'all',station:ids.has(p.get('station'))?p.get('station'):'',q:(p.get('q')||'').slice(0,80),theme,pref:['11','12','13','14'].includes(p.get('pref'))?p.get('pref'):'all',sort:sort==='name'||sort==='order'||METRIC_DETAILS[sort]?.sortable!==false&&Object.hasOwn(METRIC_DETAILS,sort)?sort:THEMES[theme].metric,dir:p.get('dir')==='asc'?'asc':'desc',columns:validColumns.length?[...new Set(validColumns)]:THEMES[theme].columns,panel:p.get('panel')==='list'?'list':'map',page:Math.max(1,Math.min(100,Number.parseInt(p.get('page'),10)||1)),available:p.get('available')==='1',favorites:p.get('favorites')==='1',pins:normalizePins((p.get('pins')||'').split(','),data),compareMode:p.get('mode')==='lines'?'lines':'stations',compare,regionQuery:(p.get('rq')||'').slice(0,80),regionPref:['11','12','13','14'].includes(p.get('rp'))?p.get('rp'):'all'};
+ const sort=p.get('sort'),validMetric=k=>Object.hasOwn(METRIC_DETAILS,k)&&k!=='ridership';
+ const sortKey=sort==='name'||sort==='order'||validMetric(sort)?sort:theme==='all'?'name':THEMES[theme].metric;
+ return {view:['map','profile','compare','line','numbers','sources'].includes(p.get('view'))?p.get('view'):'map',detail:['stations','districts','cafes','context'].includes(p.get('detail'))?p.get('detail'):'districts',line:routes.includes(p.get('line'))?p.get('line'):p.get('view')==='line'?routes[0]:'all',station:ids.has(p.get('station'))?p.get('station'):'',q:(p.get('q')||'').slice(0,80),theme,pref:['11','12','13','14'].includes(p.get('pref'))?p.get('pref'):'all',sort:sortKey,dir:p.get('dir')==='asc'||(!p.has('dir')&&sortKey==='name')?'asc':'desc',columns:validColumns.length?[...new Set(validColumns)]:THEMES[theme].columns,panel:p.get('panel')==='list'?'list':'map',page:Math.max(1,Math.min(100,Number.parseInt(p.get('page'),10)||1)),available:p.get('available')==='1',favorites:p.get('favorites')==='1',pins:normalizePins((p.get('pins')||'').split(','),data),compareMode:p.get('mode')==='lines'?'lines':'stations',compare,mapMetric:validMetric(p.get('metric'))?p.get('metric'):'none',camera:camera(p.get('cam')),lineCamera:camera(p.get('lcam')),profileCamera:camera(p.get('pcam')),outline:p.get('outline')!=='0',benchmark:p.get('baseline')==='line'?'line':'all',from:Math.max(0,Number.parseInt(p.get('from'),10)||0),to:p.has('to')&&p.get('to')!==''?Math.max(0,Number.parseInt(p.get('to'),10)||0):null,regionQuery:(p.get('rq')||'').slice(0,80),regionPref:['11','12','13','14'].includes(p.get('rp'))?p.get('rp'):'all'};
 }
-export function serializeExplorerState(s){const p=new URLSearchParams({view:s.view,detail:s.detail,line:s.line,station:s.station,q:s.q,theme:s.theme,pref:s.pref,sort:s.sort,dir:s.dir,cols:s.columns.join(','),panel:s.panel,page:String(s.page),available:s.available?'1':'0',favorites:s.favorites?'1':'0',pins:s.pins.join(','),mode:s.compareMode,compare:s.compare.join(','),rq:s.regionQuery,rp:s.regionPref});return '#'+p.toString();}
+export function serializeExplorerState(s){const p=new URLSearchParams({view:s.view,detail:s.detail,line:s.line,station:s.station,q:s.q,theme:s.theme,pref:s.pref,sort:s.sort,dir:s.dir,cols:s.columns.join(','),panel:s.panel,page:String(s.page),available:s.available?'1':'0',favorites:s.favorites?'1':'0',pins:s.pins.join(','),mode:s.compareMode,compare:s.compare.join(','),rq:s.regionQuery,rp:s.regionPref,metric:s.mapMetric||'none',cam:(s.camera||[]).join(','),lcam:(s.lineCamera||[]).join(','),pcam:(s.profileCamera||[]).join(','),outline:s.outline===false?'0':'1',baseline:s.benchmark||'all',from:String(s.from||0),to:s.to===null||s.to===undefined?'':String(s.to)});return '#'+p.toString();}
 export function filterStations(data,students,state,favorites=[]){
  const terms=state.q.trim().normalize('NFKC').toLocaleLowerCase('ja').split(/\s+/).filter(Boolean),saved=new Set(favorites);
  const rows=data.stations.filter(s=>{
   if(state.line!=='all'&&!s.routeIds.includes(state.line))return false;
   if(state.pref!=='all'&&!stationPrefectures(data,s).includes(state.pref))return false;
   if(state.favorites&&!saved.has(s.id))return false;
-  if(state.available&&Object.hasOwn(METRIC_DETAILS,state.sort)&&stationValue(data,students,s,state.sort)==null)return false;
+  const availabilityKey=state.mapMetric&&state.mapMetric!=='none'?state.mapMetric:state.sort;
+  if(state.available&&Object.hasOwn(METRIC_DETAILS,availabilityKey)&&stationValue(data,students,s,availabilityKey)==null)return false;
   const text=[s.name,s.operator,...data.routes.filter(r=>s.routeIds.includes(r.id)).map(r=>r.name),...(s.officialRouteMemberships||[]).map(m=>m.route)].join(' ').normalize('NFKC').toLocaleLowerCase('ja');
   return terms.every(q=>text.includes(q));
  });
