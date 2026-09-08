@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500" role="img" aria-labelledby="title desc">
+<title id="title">東京圏8沿線・駅所在区画の商業と就業</title><desc id="desc">2021年経済センサス。駅を含む500m区画の都県別公表分の中央値。複数都県の区画と秘匿値を除外。8沿線の3指標を同じ縮尺で比較する。</desc>
+<rect width="1200" height="1500" fill="#f4f6ef"/><g font-family="Noto Sans JP, sans-serif">
+<text x="50" y="57" font-size="14" fill="#617465" font-weight="400">駅まちアトラス  /  DATA COMPARISON</text>
+<text x="50" y="106" font-size="36" fill="#274338" font-weight="700">沿線を、実数で比べる。</text>
+<text x="50" y="140" font-size="16" fill="#274338" font-weight="400">駅を含む約500m区画・都県公表分の中央値 ｜ 2021年経済センサス</text>
+<text x="50" y="170" font-size="14" fill="#617465" font-weight="400">同じ区画は沿線内で1回。繁華街全体の合計・駅から500m圏の集計ではありません。</text>
+<rect x="50" y="200" width="540" height="253" rx="12" fill="white" stroke="#d9e2d8"/><rect x="50" y="200" width="540" height="5" fill="#be6133"/>
+<text x="70" y="238" font-size="22" fill="#274338" font-weight="650">JR中央線快速</text>
+<text x="70" y="265" font-size="13" fill="#617465" font-weight="400">東京 — 高尾  /  24駅レコード・24区画</text>
+<text x="70" y="296" font-size="13" fill="#274338" font-weight="400">飲食店</text>
+<text x="315" y="296" font-size="13" fill="#274338" font-weight="400">124.5 店  [24/24区画]</text>
+<rect x="70" y="305" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="70" y="305" width="351.695" height="6" rx="3" fill="#be6133"/>
+<text x="70" y="339" font-size="13" fill="#274338" font-weight="400">小売事業所</text>
+<text x="315" y="339" font-size="13" fill="#274338" font-weight="400">99 事業所  [24/24区画]</text>
+<rect x="70" y="348" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="70" y="348" width="311.321" height="6" rx="3" fill="#be6133"/>
+<text x="70" y="382" font-size="13" fill="#274338" font-weight="400">全産業従業者</text>
+<text x="315" y="382" font-size="13" fill="#274338" font-weight="400">5,276 人  [24/24区画]</text>
+<rect x="70" y="391" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="70" y="391" width="87.810" height="6" rx="3" fill="#be6133"/>
+<text x="70" y="429" font-size="12" fill="#617465" font-weight="400">3指標の平均順位：2.7位 / 8沿線（小さいほど中央値が高い）</text>
+<rect x="610" y="200" width="540" height="253" rx="12" fill="white" stroke="#d9e2d8"/><rect x="610" y="200" width="540" height="5" fill="#318298"/>
+<text x="630" y="238" font-size="22" fill="#274338" font-weight="650">JR京浜東北・根岸線</text>
+<text x="630" y="265" font-size="13" fill="#617465" font-weight="400">大宮 — 大船  /  42駅レコード・42区画</text>
+<text x="630" y="296" font-size="13" fill="#274338" font-weight="400">飲食店</text>
+<text x="875" y="296" font-size="13" fill="#274338" font-weight="400">75.5 店  [42/42区画]</text>
+<rect x="630" y="305" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="630" y="305" width="213.277" height="6" rx="3" fill="#318298"/>
+<text x="630" y="339" font-size="13" fill="#274338" font-weight="400">小売事業所</text>
+<text x="875" y="339" font-size="13" fill="#274338" font-weight="400">73 事業所  [42/42区画]</text>
+<rect x="630" y="348" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="630" y="348" width="229.560" height="6" rx="3" fill="#318298"/>
+<text x="630" y="382" font-size="13" fill="#274338" font-weight="400">全産業従業者</text>
+<text x="875" y="382" font-size="13" fill="#274338" font-weight="400">7,557 人  [42/42区画]</text>
+<rect x="630" y="391" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="630" y="391" width="125.774" height="6" rx="3" fill="#318298"/>
+<text x="630" y="429" font-size="12" fill="#617465" font-weight="400">3指標の平均順位：3.0位 / 8沿線（小さいほど中央値が高い）</text>
+<rect x="50" y="475" width="540" height="253" rx="12" fill="white" stroke="#d9e2d8"/><rect x="50" y="475" width="540" height="5" fill="#a88623"/>
+<text x="70" y="513" font-size="22" fill="#274338" font-weight="650">JR総武線各駅停車</text>
+<text x="70" y="540" font-size="13" fill="#617465" font-weight="400">御茶ノ水 — 千葉  /  21駅レコード・21区画</text>
+<text x="70" y="571" font-size="13" fill="#274338" font-weight="400">飲食店</text>
+<text x="315" y="571" font-size="13" fill="#274338" font-weight="400">63 店  [21/21区画]</text>
+<rect x="70" y="580" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="70" y="580" width="177.966" height="6" rx="3" fill="#a88623"/>
+<text x="70" y="614" font-size="13" fill="#274338" font-weight="400">小売事業所</text>
+<text x="315" y="614" font-size="13" fill="#274338" font-weight="400">60 事業所  [21/21区画]</text>
+<rect x="70" y="623" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="70" y="623" width="188.679" height="6" rx="3" fill="#a88623"/>
+<text x="70" y="657" font-size="13" fill="#274338" font-weight="400">全産業従業者</text>
+<text x="315" y="657" font-size="13" fill="#274338" font-weight="400">7,145 人  [21/21区画]</text>
+<rect x="70" y="666" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="70" y="666" width="118.917" height="6" rx="3" fill="#a88623"/>
+<text x="70" y="704" font-size="12" fill="#617465" font-weight="400">3指標の平均順位：4.3位 / 8沿線（小さいほど中央値が高い）</text>
+<rect x="610" y="475" width="540" height="253" rx="12" fill="white" stroke="#d9e2d8"/><rect x="610" y="475" width="540" height="5" fill="#3972a6"/>
+<text x="630" y="513" font-size="22" fill="#274338" font-weight="650">小田急小田原線</text>
+<text x="630" y="540" font-size="13" fill="#617465" font-weight="400">新宿 — 小田原  /  47駅レコード・47区画</text>
+<text x="630" y="571" font-size="13" fill="#274338" font-weight="400">飲食店</text>
+<text x="875" y="571" font-size="13" fill="#274338" font-weight="400">35.5 店  [44/47区画]</text>
+<rect x="630" y="580" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="630" y="580" width="100.282" height="6" rx="3" fill="#3972a6"/>
+<text x="630" y="614" font-size="13" fill="#274338" font-weight="400">小売事業所</text>
+<text x="875" y="614" font-size="13" fill="#274338" font-weight="400">36 事業所  [44/47区画]</text>
+<rect x="630" y="623" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="630" y="623" width="113.208" height="6" rx="3" fill="#3972a6"/>
+<text x="630" y="657" font-size="13" fill="#274338" font-weight="400">全産業従業者</text>
+<text x="875" y="657" font-size="13" fill="#274338" font-weight="400">1,429.5 人  [44/47区画]</text>
+<rect x="630" y="666" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="630" y="666" width="23.792" height="6" rx="3" fill="#3972a6"/>
+<text x="630" y="704" font-size="12" fill="#617465" font-weight="400">3指標の平均順位：6.7位 / 8沿線（小さいほど中央値が高い）</text>
+<rect x="50" y="750" width="540" height="253" rx="12" fill="white" stroke="#d9e2d8"/><rect x="50" y="750" width="540" height="5" fill="#705b99"/>
+<text x="70" y="788" font-size="22" fill="#274338" font-weight="650">東武東上線</text>
+<text x="70" y="815" font-size="13" fill="#617465" font-weight="400">池袋 — 寄居  /  39駅レコード・39区画</text>
+<text x="70" y="846" font-size="13" fill="#274338" font-weight="400">飲食店</text>
+<text x="315" y="846" font-size="13" fill="#274338" font-weight="400">26.5 店  [38/39区画]</text>
+<rect x="70" y="855" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="70" y="855" width="74.859" height="6" rx="3" fill="#705b99"/>
+<text x="70" y="889" font-size="13" fill="#274338" font-weight="400">小売事業所</text>
+<text x="315" y="889" font-size="13" fill="#274338" font-weight="400">27 事業所  [38/39区画]</text>
+<rect x="70" y="898" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="70" y="898" width="84.906" height="6" rx="3" fill="#705b99"/>
+<text x="70" y="932" font-size="13" fill="#274338" font-weight="400">全産業従業者</text>
+<text x="315" y="932" font-size="13" fill="#274338" font-weight="400">1,456.5 人  [38/39区画]</text>
+<rect x="70" y="941" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="70" y="941" width="24.241" height="6" rx="3" fill="#705b99"/>
+<text x="70" y="979" font-size="12" fill="#617465" font-weight="400">3指標の平均順位：7.0位 / 8沿線（小さいほど中央値が高い）</text>
+<rect x="610" y="750" width="540" height="253" rx="12" fill="white" stroke="#d9e2d8"/><rect x="610" y="750" width="540" height="5" fill="#c8872a"/>
+<text x="630" y="788" font-size="22" fill="#274338" font-weight="650">東京メトロ銀座線</text>
+<text x="630" y="815" font-size="13" fill="#617465" font-weight="400">渋谷 — 浅草  /  19駅レコード・19区画</text>
+<text x="630" y="846" font-size="13" fill="#274338" font-weight="400">飲食店</text>
+<text x="875" y="846" font-size="13" fill="#274338" font-weight="400">177 店  [19/19区画]</text>
+<rect x="630" y="855" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="630" y="855" width="500.000" height="6" rx="3" fill="#c8872a"/>
+<text x="630" y="889" font-size="13" fill="#274338" font-weight="400">小売事業所</text>
+<text x="875" y="889" font-size="13" fill="#274338" font-weight="400">159 事業所  [19/19区画]</text>
+<rect x="630" y="898" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="630" y="898" width="500.000" height="6" rx="3" fill="#c8872a"/>
+<text x="630" y="932" font-size="13" fill="#274338" font-weight="400">全産業従業者</text>
+<text x="875" y="932" font-size="13" fill="#274338" font-weight="400">30,042 人  [19/19区画]</text>
+<rect x="630" y="941" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="630" y="941" width="500.000" height="6" rx="3" fill="#c8872a"/>
+<text x="630" y="979" font-size="12" fill="#617465" font-weight="400">3指標の平均順位：1.0位 / 8沿線（小さいほど中央値が高い）</text>
+<rect x="50" y="1025" width="540" height="253" rx="12" fill="white" stroke="#d9e2d8"/><rect x="50" y="1025" width="540" height="5" fill="#b84c5a"/>
+<text x="70" y="1063" font-size="22" fill="#274338" font-weight="650">東急東横線</text>
+<text x="70" y="1090" font-size="13" fill="#617465" font-weight="400">渋谷 — 横浜  /  21駅レコード・21区画</text>
+<text x="70" y="1121" font-size="13" fill="#274338" font-weight="400">飲食店</text>
+<text x="315" y="1121" font-size="13" fill="#274338" font-weight="400">67 店  [21/21区画]</text>
+<rect x="70" y="1130" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="70" y="1130" width="189.266" height="6" rx="3" fill="#b84c5a"/>
+<text x="70" y="1164" font-size="13" fill="#274338" font-weight="400">小売事業所</text>
+<text x="315" y="1164" font-size="13" fill="#274338" font-weight="400">81 事業所  [21/21区画]</text>
+<rect x="70" y="1173" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="70" y="1173" width="254.717" height="6" rx="3" fill="#b84c5a"/>
+<text x="70" y="1207" font-size="13" fill="#274338" font-weight="400">全産業従業者</text>
+<text x="315" y="1207" font-size="13" fill="#274338" font-weight="400">2,800 人  [21/21区画]</text>
+<rect x="70" y="1216" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="70" y="1216" width="46.601" height="6" rx="3" fill="#b84c5a"/>
+<text x="70" y="1254" font-size="12" fill="#617465" font-weight="400">3指標の平均順位：4.0位 / 8沿線（小さいほど中央値が高い）</text>
+<rect x="610" y="1025" width="540" height="253" rx="12" fill="white" stroke="#d9e2d8"/><rect x="610" y="1025" width="540" height="5" fill="#367963"/>
+<text x="630" y="1063" font-size="22" fill="#274338" font-weight="650">つくばエクスプレス</text>
+<text x="630" y="1090" font-size="13" fill="#617465" font-weight="400">秋葉原 — 柏たなか  /  14駅レコード・14区画</text>
+<text x="630" y="1121" font-size="13" fill="#274338" font-weight="400">飲食店</text>
+<text x="875" y="1121" font-size="13" fill="#274338" font-weight="400">21 店  [14/14区画]</text>
+<rect x="630" y="1130" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="630" y="1130" width="59.322" height="6" rx="3" fill="#367963"/>
+<text x="630" y="1164" font-size="13" fill="#274338" font-weight="400">小売事業所</text>
+<text x="875" y="1164" font-size="13" fill="#274338" font-weight="400">24.5 事業所  [14/14区画]</text>
+<rect x="630" y="1173" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="630" y="1173" width="77.044" height="6" rx="3" fill="#367963"/>
+<text x="630" y="1207" font-size="13" fill="#274338" font-weight="400">全産業従業者</text>
+<text x="875" y="1207" font-size="13" fill="#274338" font-weight="400">1,961 人  [14/14区画]</text>
+<rect x="630" y="1216" width="500" height="6" rx="3" fill="#e8eee5"/><rect x="630" y="1216" width="32.638" height="6" rx="3" fill="#367963"/>
+<text x="630" y="1254" font-size="12" fill="#617465" font-weight="400">3指標の平均順位：7.3位 / 8沿線（小さいほど中央値が高い）</text>
+<text x="50" y="1340" font-size="13" fill="#274338" font-weight="400">出典：総務省・経済産業省「令和3年経済センサス」地域メッシュ統計。駅まちアトラスが加工。</text>
+<text x="50" y="1366" font-size="13" fill="#617465" font-weight="400">平均順位 = 飲食店・小売・従業者の中央値による8沿線内順位の平均（同値は同順位）。</text>
+<text x="50" y="1392" font-size="13" fill="#617465" font-weight="400">各指標の取得率90%以上で算定。教育・治安・売上・床面積・駅利用人数は含みません。</text>
+<text x="50" y="1418" font-size="13" fill="#617465" font-weight="400">区画・駅の位置、欠損、対象区間に影響される参考比較です。CoreScale・住みやすさ順位ではありません。</text>
+<a href="https://tokyo-rail-town-atlas.dwdaai.chatgpt.site"><text x="50" y="1464" font-size="14" fill="#274338" font-weight="400">tokyo-rail-town-atlas.dwdaai.chatgpt.site  ｜  v0.3 ・ 2026-09-08</text></a></g></svg>

@@ -1,207 +1,41 @@
-const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const FEATURES = ['買い物', '飲食・夜の街', 'オフィス', '日々の暮らし', '観光・余暇', '商店街', '大型商業施設', '計画的な街づくり'];
-const PREFECTURES = ['東京都', '神奈川県', '埼玉県', '千葉県'];
-const uniqueCases = cases => [...new Map(cases.map(c => [c.id, c])).values()];
+const PREFECTURES={'11':'埼玉県','12':'千葉県','13':'東京都','14':'神奈川県'};
+const COLORS={'pc_jr_chuo_rapid':'#be6133','pc_jr_sobu_local':'#a88623','pc_jr_keihin_tohoku_negishi':'#318298','pc_tokyu_toyoko':'#b84c5a','pc_odakyu_odawara':'#3972a6','pc_tobu_tojo':'#705b99','pc_tokyo_metro_ginza':'#c8872a','pc_tsukuba_express':'#367963'};
+const TITLES={restaurants:'飲食店数',retail:'小売事業所数',employees:'全産業の従業者数'};
+const UNITS={restaurants:'店',retail:'事業所',employees:'人'};
+const SOURCES={economic:'https://www.e-stat.go.jp/gis/statmap-search?type=1&toukeiCode=00200553&toukeiYear=2021&aggregateUnit=H',population:'https://www.e-stat.go.jp/gis/statmap-search?type=1&toukeiCode=00200521&toukeiYear=2020&aggregateUnit=H',rail:'https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N02-2025.html',access:'https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-S12-2024.html'};
+export const escapeHtml = v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+export const formatValue=v=>typeof v==='number'&&Number.isFinite(v)?new Intl.NumberFormat('ja-JP',{maximumFractionDigits:1}).format(v):'—';
+export function median(values){const a=values.filter(v=>typeof v==='number'&&Number.isFinite(v)).sort((a,b)=>a-b);return a.length?(a[Math.floor((a.length-1)/2)]+a[Math.ceil((a.length-1)/2)])/2:null;}
+export function parseState(hash,data){const p=new URLSearchParams(hash.replace(/^#/,'')),ids=data.routes.map(r=>r.id);let compare=[...new Set((p.get('compare')||ids.slice(0,2).join(',')).split(','))].filter(id=>ids.includes(id)).slice(0,4);if(compare.length<2)compare=ids.slice(0,2);return {view:['map','numbers','compare'].includes(p.get('view'))?p.get('view'):'map',line:ids.includes(p.get('line'))?p.get('line'):ids[0],station:data.stations.some(s=>s.id===p.get('station'))?p.get('station'):'',q:(p.get('q')||'').slice(0,80),compare};}
+export function routeStations(data,id){const r=data.routes.find(r=>r.id===id);if(!r)return[];const byId=new Map(data.stations.map(s=>[s.id,s]));return [...new Set(r.stationIds)].map(id=>byId.get(id)).filter(Boolean);}
+export function searchedStations(data,state){const q=state.q.trim().normalize('NFKC');return q?data.stations.filter(s=>(s.name+' '+s.operator).normalize('NFKC').includes(q)):routeStations(data,state.line);}
+export function stationMetric(data,station,key){const components=data.meshContexts[station.meshCode]?.economicComponents||[];if(components.length!==1||components[0].sourcePartitionCodes?.length!==1)return null;const obs=components[0][key];return typeof obs?.value==='number'&&Number.isFinite(obs.value)?obs.value:null;}
+export function routeSummary(data,id){const stations=routeStations(data,id),meshes=[...new Set(stations.map(s=>s.meshCode))];const samples=meshes.map(mesh=>stations.find(s=>s.meshCode===mesh));const metrics=Object.fromEntries(Object.keys(TITLES).map(key=>{const values=samples.map(s=>stationMetric(data,s,key)).filter(v=>v!==null);return[key,{median:median(values),count:values.length,total:meshes.length}]}));const access=stations.filter(s=>typeof s.ridership?.value==='number');return {id,stationCount:stations.length,meshCount:meshes.length,metrics,accessCount:access.length,accessMedian:median(access.map(s=>s.ridership.value)),routeCountMedian:median(stations.map(s=>s.officialRouteCount))};}
+export function evaluateRoutes(data){const rows=data.routes.map(r=>({...r,...routeSummary(data,r.id)}));for(const row of rows){row.ranks={};for(const key of Object.keys(TITLES)){const value=row.metrics[key].median;const others=rows.filter(r=>r.metrics[key].median!==null);row.ranks[key]=value===null?null:1+others.filter(r=>r.metrics[key].median>value).length;}const eligible=Object.values(row.metrics).every(m=>m.total>0&&m.count/m.total>=.9)&&rows.every(r=>Object.values(r.metrics).every(m=>m.median!==null));row.meanRank=eligible?Object.values(row.ranks).reduce((a,b)=>a+b,0)/3:null;}return rows;}
+function sourceLink(url,label='出典'){return `<a class="source" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)} ↗</a>`;}
+function statusLabel(status){return ({suppressed:'秘匿',not_published:'非公表',missing:'未取得',structural_zero:'公表上の0',observed_zero:'公表上の0',not_observed:'未取得',source_not_available:'未取得'})[status]||'数値なし';}
+function metric(label,value,unit,detail,url){return `<div class="metric"><span class="metric-label">${label}</span><div class="metric-value ${value===null?'unavailable':''}">${value===null?'未取得・非公表':formatValue(value)}${value===null?'':`<span class="unit">${unit}</span>`}</div><small>${detail}${url?sourceLink(url):''}</small></div>`;}
+function obsValue(obs){return typeof obs?.value==='number'?formatValue(obs.value):statusLabel(obs?.status);}
+function csvEscape(v){return '"'+String(v??'').replaceAll('"','""')+'"';}
+export function routeCsv(data,id){const headers=['駅ID','駅名','駅利用公表値','駅利用単位','駅利用年度','原資料の路線数','経済メッシュ','対象範囲','飲食店数','小売事業所数','全産業従業者数','経済統計時点'];return '\uFEFF'+[headers,...routeStations(data,id).map(s=>[s.id,s.name,s.ridership?.value,'人/日・事業者別基準',2024,s.officialRouteCount,s.meshCode,'駅を含む500m区画の都県別公表分（複数都県区画は集約なし）',...Object.keys(TITLES).map(k=>stationMetric(data,s,k)),'2021-06-01'])].map(r=>r.map(csvEscape).join(',')).join('\r\n');}
 
-// Counts describe the frozen reference catalog, never measured commercial activity.
-export function summarizeCases(cases) {
-  const towns = uniqueCases(cases);
-  const countLabels = (labels, field) => labels.map(label => ({label, count: towns.filter(c => c[field].includes(label)).length}));
-  return {
-    total: towns.length,
-    features: countLabels(FEATURES, 'features'),
-    prefectures: countLabels(PREFECTURES, 'prefectures'),
-    multipleStations: towns.filter(c => new Set(c.stations).size > 1).length,
-  };
-}
+export function mapStyle(){const source={type:'vector',url:'pmtiles://https://cyberjapandata.gsi.go.jp/xyz/optimal_bvmap-v1/optimal_bvmap-v1.pmtiles',attribution:'<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank">地理院タイル（加工）</a>'};const font=['NotoSansJP-Regular'];return {version:8,glyphs:'https://gsi-cyberjapan.github.io/optimal_bvmap/glyphs/{fontstack}/{range}.pbf',sources:{gsi:source},layers:[{id:'background',type:'background',paint:{'background-color':'#e2ece8'}},{id:'land',type:'fill',source:'gsi','source-layer':'AdmArea',paint:{'fill-color':'#f4f5ed'}},{id:'water',type:'fill',source:'gsi','source-layer':'WA',paint:{'fill-color':'#d9e8e6'}},{id:'coast',type:'line',source:'gsi','source-layer':'Cstline',paint:{'line-color':'#afc5bc','line-width':.7}},{id:'municipal-boundaries',type:'line',source:'gsi','source-layer':'AdmBdry',paint:{'line-color':'#a69591','line-width':['interpolate',['linear'],['zoom'],8,.6,14,1.3],'line-dasharray':[3,3]}},{id:'railways',type:'line',source:'gsi','source-layer':'RailCL',paint:{'line-color':'#677c73','line-width':['interpolate',['linear'],['zoom'],8,.8,12,1.4,16,2.3]}},{id:'station-segments',type:'line',source:'gsi','source-layer':'RailCL',minzoom:11,filter:['==',['get','vt_sngldbl'],'駅部分'],paint:{'line-color':'#435f51','line-width':5}},{id:'municipality-names',type:'symbol',source:'gsi','source-layer':'Anno',filter:['in',['get','vt_code'],['literal',[110,120,140]]],layout:{'text-field':['get','vt_text'],'text-font':font,'text-size':['interpolate',['linear'],['zoom'],8,11,13,15]},paint:{'text-color':'#777873','text-halo-color':'#f9faf5','text-halo-width':2}},{id:'station-names',type:'symbol',source:'gsi','source-layer':'Anno',minzoom:12,filter:['==',['get','vt_code'],422],layout:{'text-field':['get','vt_text'],'text-font':font,'text-size':11,'text-anchor':'top','text-offset':[0,.4]},paint:{'text-color':'#415d52','text-halo-color':'#fff','text-halo-width':2}}]};}
 
-export function infographicBase(data, state) {
-  return uniqueCases(state.line === 'all' ? data.cases : routeCases(data, state.line));
-}
-
-export function infographicCases(data, state) {
-  return infographicBase(data, state).filter(c =>
-    (!state.feature || c.features.includes(state.feature)) &&
-    (!state.prefecture || c.prefectures.includes(state.prefecture)) &&
-    (!state.relation || (new Set(c.stations).size > 1) === (state.relation === 'multiple'))
-  );
-}
-
-export function parseState(hash, data) {
-  const p = new URLSearchParams(hash.replace(/^#/, ''));
-  const routeIds = data.routes.map(r => r.id);
-  const compare = [...new Set((p.get('compare') || '').split(','))].filter(id => routeIds.includes(id)).slice(0, 4);
-  return {
-    view: ['map', 'profile', 'compare', 'insights'].includes(p.get('view')) ? p.get('view') : 'map',
-    line: [...routeIds, 'all'].includes(p.get('line')) ? p.get('line') : routeIds[0],
-    q: (p.get('q') || '').slice(0, 100),
-    town: data.cases.some(c => c.id === p.get('town')) ? p.get('town') : '',
-    compare: compare.length ? compare : [routeIds[0], routeIds[3]],
-    feature: FEATURES.includes(p.get('feature')) ? p.get('feature') : '',
-    prefecture: PREFECTURES.includes(p.get('prefecture')) ? p.get('prefecture') : '',
-    relation: ['multiple', 'single'].includes(p.get('relation')) ? p.get('relation') : '',
-  };
-}
-
-export function routeCases(data, id) {
-  const ids = data.routes.find(r => r.id === id)?.caseIds || [];
-  return [...new Set(ids)].map(key => data.cases.find(c => c.id === key)).filter(Boolean);
-}
-
-export function visibleCases(data, state) {
-  // Search is global, so an anchor station can find its town across route selections.
-  const base = state.q.trim() || state.line === 'all' ? data.cases : routeCases(data, state.line);
-  const query = state.q.normalize('NFKC').trim().toLocaleLowerCase('ja');
-  return base.filter(c => [c.name, ...c.stations].join(' ').normalize('NFKC').toLocaleLowerCase('ja').includes(query));
-}
-
-export function commonCases(data, routeIds) {
-  if (routeIds.length < 2) return [];
-  return data.cases.filter(c => routeIds.every(id => routeCases(data, id).some(x => x.id === c.id)));
-}
-
-let DATA, state, drag;
-const $ = selector => document.querySelector(selector);
-const route = id => DATA.routes.find(r => r.id === id);
-function navigate(patch, replace = false) {
-  const next = {...state, ...patch};
-  const p = new URLSearchParams({view: next.view, line: next.line, compare: next.compare.join(',')});
-  if (next.q) p.set('q', next.q);
-  if (next.town) p.set('town', next.town);
-  for (const key of ['feature', 'prefecture', 'relation']) if (next[key]) p.set(key, next[key]);
-  const url = '#' + p.toString();
-  if (replace) { history.replaceState(null, '', url); readAndRender(); }
-  else if (location.hash !== url) location.hash = url;
-}
-function readAndRender() { state = parseState(location.hash, DATA); render(); }
-function openTown(id) { navigate({town: id}); }
-function closeTown() { navigate({town: ''}); }
-function lineSelect() {
-  return `<div class="select-wrap"><label for="line-select">見る沿線</label><select id="line-select">${['map', 'insights'].includes(state.view) ? `<option value="all" ${state.line === 'all' ? 'selected' : ''}>8沿線を見渡す</option>` : ''}${DATA.routes.map(r => `<option value="${r.id}" ${state.line === r.id ? 'selected' : ''}>${esc(r.shortName)} · ${esc(r.start)}—${esc(r.end)}</option>`).join('')}</select></div>`;
-}
-function townButton(c, cls = '') {
-  return `<button class="${cls}" data-town="${c.id}"><strong>${esc(c.name)}</strong><small>${esc(c.features.slice(0, 2).join(' · ') || '街の特徴を確認')}</small></button>`;
-}
-function renderMap() {
-  const cities = visibleCases(DATA, state);
-  const citySet = new Set(cities.map(c => c.id));
-  const selectedLine = state.line === 'all' ? null : route(state.line);
-  const selectedRouteIds = state.q.trim() ? DATA.routes.filter(r => r.caseIds.some(id => citySet.has(id))).map(r => r.id) : selectedLine ? [selectedLine.id] : DATA.routes.map(r => r.id);
-  return `<div class="toolbar">${lineSelect()}<div class="search-wrap"><label class="sr-only" for="search">街・関連する駅名で検索</label><input id="search" type="search" placeholder="街・駅名を探す" autocomplete="off" value="${esc(state.q)}">${state.q ? '<button class="clear-search" id="clear-search" aria-label="検索を消す">×</button>' : ''}</div></div>
-  <div class="map-layout"><aside class="panel" aria-label="掲載している街"><div class="panel-top"><h2>${state.q ? '検索結果' : selectedLine ? esc(selectedLine.shortName) : '掲載している街'} <span class="muted">${cities.length}</span></h2><p>${state.q ? '街・関連する駅名で全候補を検索' : '一部の街を選んだ参考リスト'}</p></div>${cities.length ? `<ul class="town-list">${cities.map(c => `<li>${townButton(c)}</li>`).join('')}</ul>` : '<div class="empty"><p>該当する街が見つかりませんでした。</p><button id="reset-search">検索を消して戻る</button></div>'}</aside>
-  <section class="map-frame" aria-label="街候補を結ぶ路線概略図"><div class="map-top"><p>路線概略図 <span aria-hidden="true">／</span> 距離縮尺なし</p><div class="map-controls"><button id="zoom-in" aria-label="図を拡大">＋</button><button id="zoom-out" aria-label="図を縮小">−</button><button id="fit-map" class="fit">見渡す</button></div></div>
-  <svg class="map-canvas" id="route-map" viewBox="0 0 1650 1150" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="街候補の位置関係を示す概略図。各点を選択できます。">
-  <defs><pattern id="grid" width="35" height="35" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#dce4d8"/></pattern></defs><rect x="-10000" y="-10000" width="20000" height="20000" fill="url(#grid)"/>
-  ${DATA.routes.map(r => { const active = selectedRouteIds.includes(r.id), pts = routeCases(DATA, r.id); return `<polyline class="route-path" points="${pts.map(c => `${c.x},${c.y}`).join(' ')}" stroke="${r.color}" stroke-width="${active ? 5 : 2}" opacity="${active ? .8 : .1}"/>`; }).join('')}
-  ${DATA.cases.map(c => { const active = citySet.has(c.id); return `<g class="town-marker" data-town="${c.id}" transform="translate(${c.x} ${c.y})" ${active ? 'role="button" tabindex="0"' : 'aria-hidden="true" style="pointer-events:none"'} aria-label="${esc(c.name)}の詳細" opacity="${active ? 1 : .14}"><title>${esc(c.name)}</title><circle r="23" fill="transparent"/><circle class="dot" r="8" stroke="${selectedLine?.color || '#486a54'}" stroke-width="3" fill="#fff"/>${active ? `<text x="0" y="${c.id === 'GE023' ? 36 : -22}" text-anchor="middle">${esc(c.name)}</text>` : ''}</g>`; }).join('')}
-  </svg><div class="map-caption"><span><i class="legend-dot"></i>街候補 · 点の大きさは共通</span><span class="drag-hint">ドラッグで移動 · ＋／−で拡大縮小</span></div></section></div>
-  <div class="route-key" aria-label="路線の凡例">${DATA.routes.map(r => `<button data-map-line="${r.id}" style="--route:${r.color}"><i class="line-swatch"></i>${esc(r.shortName)}</button>`).join('')}</div>`;
-}
-function renderProfile() {
-  const r = route(state.line) || DATA.routes[0], cities = routeCases(DATA, r.id);
-  return `<div class="toolbar">${lineSelect()}</div><section class="profile-panel" style="--route:${r.color}"><div class="profile-head"><div><p class="eyebrow">LINE PROFILE</p><h2>${esc(r.shortName)}</h2><p>${esc(r.start)} → ${esc(r.end)}　のうち掲載した街</p></div><span class="count-pill"><b>${cities.length}</b>掲載候補</span></div><p class="reference-note">掲載候補だけを順に並べています。番号は駅番号ではなく、間隔も駅間距離を表しません。</p><ol class="profile-list">${cities.map((c, i) => `<li class="profile-row"><span class="seq" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span><button class="profile-town" data-town="${c.id}"><strong>${esc(c.name)} <span aria-hidden="true" style="display:inline">↗</span></strong><span>${esc(c.features.join(' · '))}</span></button><div class="scale-missing"><span>商業規模</span>未算定</div></li>`).join('')}</ol><p class="profile-footer">${esc(r.note)}</p></section>`;
-}
-function renderCompare() {
-  const common = commonCases(DATA, state.compare);
-  return `${insightNav()}<p class="compare-intro">2〜4沿線を選び、掲載した街の顔ぶれを見比べます。掲載数は調査候補の選び方によって異なり、街の多さ・沿線の充実度を表しません。</p><div class="compare-options" role="group" aria-label="比較する沿線（2〜4本）">${DATA.routes.map(r => `<label><input type="checkbox" value="${r.id}" ${state.compare.includes(r.id) ? 'checked' : ''} ${state.compare.length >= 4 && !state.compare.includes(r.id) ? 'disabled' : ''}><span>${esc(r.shortName)}</span></label>`).join('')}</div>${state.compare.length < 2 ? '<p class="notice" role="status">比較する沿線を、もう1本選んでください。</p>' : ''}<div class="compare-grid">${state.compare.map(id => { const r = route(id), cities = routeCases(DATA, id); return `<section class="compare-card" style="--route:${r.color}"><h2>${esc(r.shortName)}</h2><p class="endpoint">${esc(r.start)} — ${esc(r.end)}</p><p class="compare-count"><b>${cities.length}</b> このリストの掲載候補</p><ul class="mini-towns">${cities.map(c => `<li><button data-town="${c.id}">${esc(c.name)}</button></li>`).join('')}</ul><h3 class="comparison-heading">参考特徴の内訳</h3>${comparisonBars(cities)}<p class="reference-note">商業規模・中心地間の距離：未算定</p><button class="open-route" data-profile-line="${r.id}">この沿線をたどる →</button></section>`; }).join('')}</div>${state.compare.length >= 2 ? `<aside class="common"><p><strong>選んだ全沿線に共通して掲載する街</strong><br>${common.length ? common.map(c => `<button data-town="${c.id}">${esc(c.name)}</button>`).join(' ') : 'この候補リストにはありません。実際の接続関係を網羅した結果ではありません。'}</p></aside>` : ''}`;
-}
-function insightNav() {
-  return `<div class="insight-nav" aria-label="図と比較の表示"><button data-insights aria-pressed="${state.view === 'insights'}">候補データを図で見る</button><button data-view="compare" aria-pressed="${state.view === 'compare'}">沿線を並べて比較</button></div>`;
-}
-function countBars(summary, field, filterKey) {
-  return `<div class="count-bars">${summary[field].map(({label, count}) => `<button class="count-bar" data-filter-key="${filterKey}" data-filter-value="${esc(label)}" aria-pressed="${state[filterKey] === label}"><span class="bar-label">${esc(label)}</span><span class="bar-number"><b>${count}</b> / ${summary.total}候補</span><span class="bar-track" aria-hidden="true"><span style="width:${summary.total ? count / summary.total * 100 : 0}%"></span></span></button>`).join('')}</div>`;
-}
-function stationBridge(c, interactive = true) {
-  return `<div class="station-bridge"><ul aria-label="候補に登録された関連駅">${[...new Set(c.stations)].map(name => `<li>${esc(name)}</li>`).join('')}</ul><span class="bridge-caption">これらの駅と関連づけた街候補</span><${interactive ? `button data-town="${c.id}"` : 'div'} class="bridge-town">${esc(c.name)}<small>${interactive ? '街の詳細を見る →' : '調査対象の街候補'}</small></${interactive ? 'button' : 'div'}></div>`;
-}
-function comparisonBars(cities) {
-  const summary = summarizeCases(cities);
-  return `<div class="comparison-bars" aria-label="参考特徴ごとの掲載候補数">${summary.features.map(({label, count}) => `<div><span>${esc(label)}</span><b>${count} / ${summary.total}</b><span class="bar-track" aria-hidden="true"><span style="width:${summary.total ? count / summary.total * 100 : 0}%"></span></span></div>`).join('')}</div><p class="reference-note">分母はこの沿線の掲載候補数。複数の特徴を持つ街は各項目に含みます。</p>`;
-}
-function renderInfographics() {
-  const base = infographicBase(DATA, state), summary = summarizeCases(base), matches = infographicCases(DATA, state);
-  const example = matches.find(c => new Set(c.stations).size > 1) || matches[0];
-  const scope = state.line === 'all' ? '8沿線の掲載候補' : route(state.line).shortName + 'の掲載候補';
-  const activeFilters = [state.feature, state.prefecture, state.relation === 'multiple' ? '関連駅が複数' : state.relation === 'single' ? '関連駅が1つ' : ''].filter(Boolean);
-  return `${insightNav()}<div class="toolbar">${lineSelect()}<p class="infographic-intro">街の参考リストを集計しました。<br>図の項目を押すと、該当する街を確認できます。</p></div>
-    <section class="summary-banner" aria-label="集計対象"><div><p class="eyebrow">REFERENCE CATALOG</p><h2>${esc(scope)}</h2><p>同じ街が複数の沿線に載っていても、ここでは1候補として数えます。</p></div><div class="summary-total"><b>${summary.total}</b><span>重複を除いた街候補</span></div></section>
-    <div class="infographic-grid"><section class="info-card feature-card"><p class="figure-number">01 / 街の特徴</p><h2>どんな特徴が挙がっている？</h2><p class="chart-note">候補選定時の参考メモの内訳です。複数回答のため、件数の合計は${summary.total}を超えることがあります。</p>${countBars(summary, 'features', 'feature')}<p class="chart-footnote">棒の全幅 = 掲載候補${summary.total}件。商業規模・売上・人気の評価ではありません。</p></section>
-    <section class="info-card prefecture-card"><p class="figure-number">02 / 掲載エリア</p><h2>どの都県を見ている？</h2><p class="chart-note">この参考リストに掲載した街の件数です。都県内にある全中心地の数ではありません。</p>${countBars(summary, 'prefectures', 'prefecture')}<p class="chart-footnote">候補の選び方が件数に影響します。</p></section>
-    <section class="info-card station-card"><p class="figure-number">03 / 街と駅の関係</p><h2>ひとつの街に、複数の駅。</h2><p class="relation-total"><b>${summary.multipleStations}</b><span> / ${summary.total}候補に<br>複数の関連駅を登録</span></p><div class="waffle" aria-hidden="true">${Array.from({length:summary.total}, (_, i) => `<span class="${i < summary.multipleStations ? 'filled' : ''}"></span>`).join('')}</div><p class="chart-note">1マス = 1候補。塗りつぶしは関連駅が複数の候補です。駅の多さは街の大きさや交通力の評価ではありません。</p><div class="relation-filters"><button data-filter-key="relation" data-filter-value="multiple" aria-pressed="${state.relation === 'multiple'}">複数の駅がある候補</button><button data-filter-key="relation" data-filter-value="single" aria-pressed="${state.relation === 'single'}">駅が1つの候補</button></div></section></div>
-    <section class="matching-section" aria-labelledby="matching-title"><div class="matching-head"><div><p class="eyebrow">EXPLORE THE DATA</p><h2 id="matching-title">図のもとになった街を見る</h2><p role="status">${activeFilters.length ? esc(activeFilters.join(' × ')) : esc(scope)}：<strong>${matches.length}候補</strong></p></div>${activeFilters.length ? '<button id="clear-filters">絞り込みを解除</button>' : ''}</div><p class="chart-note">図は上で選んだ沿線の全候補を示し、以下のリストだけを条件の掛け合わせで絞り込みます。</p>${matches.length ? `<ul class="matching-towns">${matches.map(c => `<li>${townButton(c, 'matching-town')}</li>`).join('')}</ul>` : '<p class="empty">この組み合わせに該当する掲載候補はありません。絞り込みを解除して確認できます。</p>'}</section>
-    ${example ? `<section class="info-card connection-example"><div><p class="figure-number">駅名から街を探すために</p><h2>例えば、${esc(example.name)}では。</h2><p class="chart-note">候補に登録された駅名と街の対応を図にしました。駅の配置や乗換経路を示す図ではありません。</p><p class="chart-note">同一駅・改札内乗換の認定や、商業中心地の境界確定は含みません。</p></div>${stationBridge(example)}</section>` : ''}
-    <aside class="data-provenance"><strong>この図のデータ</strong><p>2026年8月30日に固定した街候補リストと代表沿線リスト。対象は1都3県の公開参考候補${DATA.cases.length}件です。棒やマスはこのリストの件数から計算しています。</p><p>商業統計・駅別乗降客数・人口・地価の数値は未接続です。商業規模、交通力、街の境界と推定の信頼度は、引き続き未算定・未評価です。</p></aside>`;
-}
-function renderDetail() {
-  const c = DATA.cases.find(x => x.id === state.town), dialog = $('#detail');
-  if (!c) { if (dialog.open) dialog.close(); return; }
-  $('#detail-content').innerHTML = `<div class="dialog-head"><p class="eyebrow">TOWN NOTE</p><button class="icon-button" id="close-town" aria-label="街の詳細を閉じる">×</button></div><p class="detail-region">${esc(c.prefectures.join('・'))} · 街候補</p><h2 id="detail-title">${esc(c.name)}</h2><p class="stations">関連する駅：${esc(c.stations.join(' ／ '))}</p><h3>この街を読む手がかり</h3><div class="tags">${c.features.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div><p class="reference-note">候補選定時の参考メモです。統計で確定した分類ではありません。</p><dl class="metric-grid"><div><dt>商業規模</dt><dd>未算定<small>お店・働く人の集積</small></dd></div><div><dt>交通力</dt><dd>未算定<small>駅の利用・結節性</small></dd></div><div><dt>中心地の境界</dt><dd>未確定<small>点は境界を示しません</small></dd></div><div><dt>推定の信頼度</dt><dd>未評価<small>低評価・0の意味ではありません</small></dd></div></dl><h3>駅名と街の対応</h3>${stationBridge(c, false)}<h3>掲載している沿線をたどる</h3><div class="detail-actions">${DATA.routes.filter(r => r.caseIds.includes(c.id)).map(r => `<button style="--route:${r.color}" data-profile-line="${r.id}">${esc(r.shortName)} →</button>`).join('')}</div><p class="reference-note">関連駅は同一駅・改札内乗換を意味しません。<br>参考リスト：2026年8月30日固定</p>`;
-  $('#close-town').onclick = closeTown;
-  if (!dialog.open) dialog.showModal();
-}
-function fitMap() {
-  const svg = $('#route-map'); if (!svg) return;
-  const cities = visibleCases(DATA, state); if (!cities.length) return;
-  const minX = Math.min(...cities.map(c => c.x)), maxX = Math.max(...cities.map(c => c.x));
-  const minY = Math.min(...cities.map(c => c.y)), maxY = Math.max(...cities.map(c => c.y));
-  const ratio = svg.clientWidth / svg.clientHeight || 1.5;
-  let w = Math.max(420, maxX - minX + 330), h = Math.max(320, maxY - minY + 240);
-  if (w / h > ratio) h = w / ratio; else w = h * ratio;
-  svg.setAttribute('viewBox', `${(minX + maxX - w) / 2} ${(minY + maxY - h) / 2} ${w} ${h}`);
-}
-function zoom(factor) {
-  const svg = $('#route-map'), b = svg.viewBox.baseVal;
-  const w = Math.min(4500, Math.max(220, b.width * factor)), h = w * b.height / b.width;
-  svg.setAttribute('viewBox', `${b.x + (b.width - w) / 2} ${b.y + (b.height - h) / 2} ${w} ${h}`);
-}
-function mapEvents() {
-  const svg = $('#route-map'); if (!svg) return;
-  $('#zoom-in').onclick = () => zoom(.75); $('#zoom-out').onclick = () => zoom(1.33); $('#fit-map').onclick = fitMap;
-  svg.addEventListener('pointerdown', e => { if (e.target.closest('[data-town]')) return; drag = {id:e.pointerId,x:e.clientX,y:e.clientY,box:svg.getAttribute('viewBox').split(' ').map(Number)}; svg.setPointerCapture(e.pointerId); });
-  svg.addEventListener('pointermove', e => { if (!drag || e.pointerId !== drag.id) return; const [x,y,w,h]=drag.box; svg.setAttribute('viewBox', `${x-(e.clientX-drag.x)*w/svg.clientWidth} ${y-(e.clientY-drag.y)*h/svg.clientHeight} ${w} ${h}`); });
-  svg.addEventListener('pointerup', () => {drag=null;}); svg.addEventListener('pointercancel', () => {drag=null;});
-  requestAnimationFrame(fitMap);
-}
-function render() {
-  const focused = document.activeElement?.id === 'search';
-  const cursor = focused ? document.activeElement.selectionStart : null;
-  const filterFocus = document.activeElement?.dataset.filterKey ? {...document.activeElement.dataset} : null;
-  $('#page-title').textContent = ({map:'次の街は、どんな街だろう。',profile:'沿線に並ぶ、街の顔ぶれ。',compare:'暮らしの舞台を、見比べる。',insights:'街の手がかりを、図で読む。'})[state.view];
-  document.querySelectorAll('.tabs [data-view]').forEach(b => b.setAttribute('aria-current', b.dataset.view === (state.view === 'insights' ? 'compare' : state.view) ? 'page' : 'false'));
-  $('#app').innerHTML = state.view === 'map' ? renderMap() : state.view === 'profile' ? renderProfile() : state.view === 'insights' ? renderInfographics() : renderCompare();
-  if ($('#line-select')) $('#line-select').onchange = e => navigate({line:e.target.value,q:'',feature:'',prefecture:'',relation:''});
-  if ($('#search')) $('#search').oninput = e => navigate({q:e.target.value}, true);
-  if ($('#clear-search')) $('#clear-search').onclick = () => navigate({q:''}, true);
-  if ($('#reset-search')) $('#reset-search').onclick = () => navigate({q:''}, true);
-  document.querySelectorAll('.compare-options input').forEach(input => { input.onchange = e => {const ids=e.target.checked?[...state.compare,input.value]:state.compare.filter(id=>id!==input.value);navigate({compare:ids});}; });
-  if (focused && $('#search')) { $('#search').focus(); if (cursor !== null) $('#search').setSelectionRange(cursor,cursor); }
-  if ($('#clear-filters')) $('#clear-filters').onclick = () => navigate({feature:'',prefecture:'',relation:''});
-  if (filterFocus) [...document.querySelectorAll('[data-filter-key]')].find(b => b.dataset.filterKey === filterFocus.filterKey && b.dataset.filterValue === filterFocus.filterValue)?.focus({preventScroll:true});
-  mapEvents(); renderDetail();
-}
-async function boot() {
-  try {
-    const response = await fetch('./data.json'); if (!response.ok) throw new Error('データを読み込めませんでした。');
-    DATA = await response.json();
-    if (DATA.cases.length !== 44 || DATA.routes.length !== 8) throw new Error('掲載データを確認できませんでした。');
-    window.addEventListener('hashchange', readAndRender);
-    window.addEventListener('resize', fitMap);
-    document.addEventListener('click', e => {
-      const town=e.target.closest('[data-town]'); if(town){openTown(town.dataset.town);return;}
-      const insights=e.target.closest('[data-insights]');if(insights){navigate({view:'insights',line:'all',q:'',town:'',feature:'',prefecture:'',relation:''});return;}
-      const filter=e.target.closest('[data-filter-key]');if(filter){const key=filter.dataset.filterKey; navigate({[key]:state[key] === filter.dataset.filterValue ? '' : filter.dataset.filterValue});return;}
-      const profile=e.target.closest('[data-profile-line]');if(profile){navigate({view:'profile',line:profile.dataset.profileLine,town:'',q:''});return;}
-      const map=e.target.closest('[data-map-line]');if(map){navigate({view:'map',line:map.dataset.mapLine,town:'',q:''});return;}
-      const view=e.target.closest('[data-view]');if(view)navigate({view:view.dataset.view,line:state.line==='all'&&view.dataset.view==='profile'?DATA.routes[0].id:state.line,town:'',q:''});
-    });
-    document.addEventListener('keydown', e => { const town=e.target.closest('.town-marker[data-town]');if(town&&['Enter',' '].includes(e.key)){e.preventDefault();openTown(town.dataset.town);} });
-    $('#detail').addEventListener('cancel', e => {e.preventDefault();closeTown();});
-    $('#about-button').onclick = $('#method-link').onclick = () => $('#about').showModal();
-    $('[data-close="about"]').onclick = () => $('#about').close();
-    readAndRender();
-  } catch (err) {
-    $('#app').innerHTML = `<div class="empty" role="alert"><p>${esc(err.message)}</p><button id="reload">もう一度読み込む</button></div>`;
-    $('#reload').onclick = () => location.reload();
-  }
-}
-if (typeof document !== 'undefined') boot();
+async function start(){const [data,context]=await Promise.all([fetch('./data.json').then(r=>{if(!r.ok)throw Error('統計データを取得できません');return r.json()}),fetch('./context.json').then(r=>{if(!r.ok)throw Error('地域データを取得できません');return r.json()})]);let state=parseState(location.hash,data),map=null,mapReady=false,mapFailed=false;const $=id=>document.getElementById(id);const routes=data.routes.map(r=>({...r,color:r.color||COLORS[r.id]||'#34745e'}));data.routes=routes;
+$('route-select').innerHTML=routes.map(r=>`<option value="${r.id}">${escapeHtml(r.name)}</option>`).join('');
+function change(patch){const next={...state,...patch};const p=new URLSearchParams({view:next.view,line:next.line,station:next.station,q:next.q,compare:next.compare.join(',')});const hash='#'+p.toString();if(location.hash===hash)render();else location.hash=hash;}
+function selectedStation(){return data.stations.find(s=>s.id===state.station)||searchedStations(data,state)[0]||routeStations(data,state.line)[0];}
+function selectStation(id,move=true){change({station:id});if(move&&mapReady){const s=data.stations.find(s=>s.id===id);if(s)map.flyTo({center:s.coordinates,zoom:13,duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:650});}}
+function stationDetails(s){if(!s)return '<p class="empty">駅を選択してください。</p>';const rid=s.ridership||{};const mesh=data.meshContexts[s.meshCode];const econ=mesh?.economicComponents||[],pop=mesh?.populationComponents||[];const schools=context.educationSafety?.cramSchools?.records?.filter(x=>x.stations.some(t=>t.name===s.name))||[];return `<div class="eyebrow">STATION / DATA</div><h1 class="station-title">${escapeHtml(s.name)}</h1><p class="station-meta">${escapeHtml(s.operator)} ${s.routeIds.map(id=>`<span class="pill">${escapeHtml(routes.find(r=>r.id===id)?.name||'')}</span>`).join('')}</p><div class="metric-grid">${metric('1日あたりの駅利用',typeof rid.value==='number'?rid.value:null,'人/日','2024年度・S12公表値',SOURCES.access)}${metric('接続する原資料上の路線',s.officialRouteCount??null,'路線','N02の同名近接駅群・2025年末',SOURCES.rail)}</div><details><summary>乗車・乗降の集計範囲を確認</summary><p>乗車のみ／乗降合計など、事業者で基準が異なります。当該事業者の駅全体の利用を路線別人数と解釈しないでください。重複・範囲を確定できない値は合算していません。</p>${(rid.observations||[]).map(o=>`<p>${formatValue(o.value??o.numeric_value)} 人/日・${escapeHtml(o.note||o.rawNote||'原資料の基準による')} <small>重複コード ${escapeHtml(o.duplicateCode??o.duplicate_code??'—')}／${escapeHtml(o.status??o.observation_status??'')}</small></p>`).join('')}<p>路線数は原資料の鉄道路線区分です。「中央線快速」等の運転系統数や直通先の数とは異なります。</p><p>${escapeHtml((s.officialRouteMemberships||[]).map(m=>typeof m==='string'?m:(m.route||m.name||JSON.stringify(m))).join('・'))}</p></details><h2 class="section-label">駅のある区画の商業・就業</h2><p class="scope-label">2021年6月1日・駅位置を含む約500m区画。都県ごとの公表分です。<br>繁華街全体の合計や、駅から500m圏の値ではありません。</p>${econ.length?econ.map(c=>`<h3 class="section-label">${escapeHtml(PREFECTURES[c.prefectureCode]||c.prefectureCode)}の公表分 <small>${escapeHtml(s.meshCode)}</small></h3><div class="metric-grid">${Object.keys(TITLES).map(k=>metric(TITLES[k],typeof c[k]?.value==='number'?c[k].value:null,UNITS[k],c[k]?.value===null?statusLabel(c[k]?.status):k==='restaurants'?'産業分類76・宿泊施設は含まない':k==='employees'?'全産業。オフィス専従者ではない':'小売業',SOURCES.economic)).join('')}</div>`).join(''):'<p class="muted">この区画の公表データを取得できていません。</p>'}<h2 class="section-label">周辺の居住人口</h2>${pop.map(c=>`<div class="inline-observation">${escapeHtml(PREFECTURES[c.prefectureCode]||c.prefectureCode)}の公表分　<strong>${obsValue(c)}</strong> 人<small>　2020年10月1日 ${sourceLink(SOURCES.population)}</small>${(c.aggregationTarget||c.aggregatedSourceMeshCodes||String(c.processingCode)==='2')?'<p class="note">秘匿・合算の対象。複数区画を合わせた値を含み、通常の単一区画として比較しません。</p>':''}</div>`).join('')||'<p class="muted">公表値未取得</p>'}<div class="detail-section"><h2 class="section-label" style="padding-top:0">教育・暮らし</h2><p class="note">中学受験率：未取得。同じ分母による受験者数が未確認です。</p>${schools.length?schools.map(x=>`<div class="inline-observation"><b>${escapeHtml(x.name)}</b>${sourceLink(x.sourceUrl,'公式校舎')}<br>${escapeHtml(x.address)}<small>　${escapeHtml(x.checkedAt)}確認</small></div>`).join(''):'<p class="note">この駅に対応する塾の確認記録は未収録です。</p>'}<p class="note">塾は確認済み校舎のみ。件数による教育水準の評価はしていません。</p><button data-view="numbers" class="text-button">自治体のGDP・犯罪統計も見る →</button></div><div class="detail-section"><p class="note">オフィス床面積／繁華街のGDP・総売上：範囲と出典を確定できる値が未取得のため、数値は掲載していません。</p></div>`;}
+function stationList(){const ss=searchedStations(data,state);return `<div class="section-heading"><div><h2>${state.q?'検索結果':'この沿線の駅'} <small>${ss.length}駅レコード</small></h2><p>駅名を押すと、地図と数値が切り替わります。同じ駅の別事業者は別レコードです。</p></div></div><div class="chips">${ss.map(s=>`<button class="station-chip" data-station="${s.id}" aria-pressed="${selectedStation()?.id===s.id}">${escapeHtml(s.name)}${ss.filter(x=>x.name===s.name).length>1?` <small>${escapeHtml(s.operator)}</small>`:''}</button>`).join('')||'<p class="empty">一致する駅がありません。</p>'}</div>`;}
+function contextCards(){const economy=context.economy?.records||[];const crime=context.educationSafety?.crime?.records||[];const schools=context.educationSafety?.cramSchools?.records||[];return `<div class="section-heading"><div><h2>自治体の経済・教育・防犯</h2><p>地域全体の数字と、駅周辺の数字を分けて読む。</p></div></div><div class="all-context">${economy.map(x=>`<article class="card"><span class="context-tag">${escapeHtml(x.geographyLabel||x.scopeLabel||x.municipality||x.geography||'自治体・町丁目')}</span><h3>${escapeHtml(x.metricLabel||x.metric||x.label)}</h3><div class="metric-value">${formatValue(x.value)}<span class="unit">${escapeHtml(x.unit)}</span></div><p class="note">${escapeHtml(x.periodLabel||x.referencePeriod||x.referenceDate||x.period||'')} ${sourceLink(x.sourceUrl||x.url)}</p><p class="note">${escapeHtml(x.displayNote||x.note||'自治体・町丁目の範囲の統計です。駅や繁華街の合計ではありません。')}</p><p class="note">${escapeHtml(x.attribution||'')}${sourceLink(x.termsUrl||x.sourceUrl,x.license||'利用条件')}</p></article>`).join('')}${crime.map(x=>`<article class="card"><span class="context-tag">${escapeHtml(x.geographyLabel)}</span><h3>${escapeHtml(x.metric)}</h3><div class="metric-value">${formatValue(x.value)}<span class="unit">件／年</span></div><p class="note">${escapeHtml(x.periodLabel)}・確定 ${sourceLink(x.sourceUrl)}</p><p class="note">${escapeHtml(x.displayNote)}</p><p class="note">${escapeHtml(context.educationSafety.sources.find(t=>t.id===x.sourceId)?.attribution||'神奈川県警察の公表値を基に駅まちアトラスが加工')}${sourceLink(context.educationSafety.sources.find(t=>t.id===x.sourceId)?.termsUrl||x.sourceUrl,'利用条件')}</p></article>`).join('')}<article class="card"><h3>中学受験率</h3><div class="metric-value unavailable">未取得</div><p class="note">${escapeHtml(context.educationSafety?.middleSchoolExamRate?.reason||'地域別の受験実人数・分母を確認できていません。')}</p></article><article class="card"><h3>主要な中学受験塾</h3><p class="note">校舎の存在を公式ページで確認した記録です。網羅的な校舎数や教育水準の順位ではありません。</p>${schools.map(x=>`<div class="inline-observation"><b>${escapeHtml(x.name)}</b>${sourceLink(x.sourceUrl,'公式')}<br><small>${escapeHtml(x.address)}／${escapeHtml(x.checkedAt)}確認</small></div>`).join('')}</article></div>`;}
+function numbersView(){const r=routes.find(r=>r.id===state.line),ss=searchedStations(data,state);return `<div class="section-heading"><div><h2>${state.q?'検索結果':escapeHtml(r.name)}の数値</h2><p>駅利用は2024年度、商業・就業は2021年。横にスクロールできます。</p></div><button id="download-csv" class="download-button">沿線CSV ↓</button></div><div class="table-wrap"><table><thead><tr><th>駅名・事業者</th><th>駅利用公表値<br>人／日</th><th>原資料の<br>接続路線数</th><th>飲食店数<br>店</th><th>小売事業所数<br>事業所</th><th>全産業従業者<br>人</th><th>区画コード</th></tr></thead><tbody>${ss.map(s=>`<tr><td><button data-open-station="${s.id}">${escapeHtml(s.name)}</button><small>${escapeHtml(s.operator)}</small></td><td class="number-cell">${formatValue(s.ridership?.value)}</td><td class="number-cell">${formatValue(s.officialRouteCount)}</td>${Object.keys(TITLES).map(k=>`<td class="number-cell">${formatValue(stationMetric(data,s,k))}</td>`).join('')}<td><small>${escapeHtml(s.meshCode)}</small></td></tr>`).join('')}</tbody></table></div><p class="note">商業・就業は「駅を含む約500m区画の都県別公表分」。複数都県にまたがる区画や秘匿値は、この一覧では「—」。詳細で公表分を個別に確認できます。駅利用は事業者による乗車／乗降の基準差があるため、単純な人数ランキングにはしていません。</p>${contextCards()}`;}
+function compareView(){const all=evaluateRoutes(data),chosen=all.filter(r=>state.compare.includes(r.id));const metricMax=Object.fromEntries(Object.keys(TITLES).map(k=>[k,Math.max(...all.map(r=>r.metrics[k].median||0),1)]));return `<div class="section-heading"><div><div class="eyebrow">LINE COMPARISON</div><h2>沿線を、実数で比べる</h2><p>2〜4沿線を選択。対象区間の駅がある区画を、重複させずに比較します。</p></div><a class="download-button" href="./route-comparison.svg" download>比較図を保存 ↓</a></div><div class="route-selectors">${routes.map(r=>`<button data-compare="${r.id}" style="--route-color:${r.color}" aria-pressed="${state.compare.includes(r.id)}">${escapeHtml(r.name)}</button>`).join('')}</div><p id="compare-feedback" role="status" class="note"></p><div class="table-wrap"><table><thead><tr><th>比較項目</th>${chosen.map(r=>`<th>${escapeHtml(r.name)}<br>${escapeHtml(routeStations(data,r.id)[0]?.name)} — ${escapeHtml(routeStations(data,r.id).at(-1)?.name)}</th>`).join('')}</tr></thead><tbody><tr><td>収録駅数</td>${chosen.map(r=>`<td>${r.stationCount} 駅レコード</td>`).join('')}</tr><tr><td>重複除去後の駅所在区画</td>${chosen.map(r=>`<td>${r.meshCount} 区画</td>`).join('')}</tr>${Object.keys(TITLES).map(k=>`<tr><td>${TITLES[k]}の中央値<small>2021年・${UNITS[k]}／区画公表分</small></td>${chosen.map(r=>`<td class="number-cell">${formatValue(r.metrics[k].median)}<small>${r.metrics[k].count} / ${r.metrics[k].total} 区画で数値取得</small></td>`).join('')}</tr>`).join('')}<tr><td>接続する原資料上の路線数・中央値<small>2025年末・路線／駅レコード</small></td>${chosen.map(r=>`<td>${formatValue(r.routeCountMedian)}</td>`).join('')}</tr><tr><td>駅利用人数の取得状況<small>事業者間の集計基準差があり、合算しません</small></td>${chosen.map(r=>`<td>${r.accessCount} / ${r.stationCount} 駅レコード</td>`).join('')}</tr></tbody></table></div><p class="scope-label">比べているのは「駅のある区画の環境」です。営業距離・繁華街面積・中心地の総量は、この表には含みません。路線によって対象区間の長さも異なります。</p><div class="section-heading"><div><h2>路線ごとの総合評価</h2><p>飲食・小売・就業の3指標を統合した、駅所在区画の比較です。</p></div></div><div class="compare-cards">${chosen.map(r=>{const best=Object.keys(TITLES).sort((a,b)=>(r.ranks[a]??99)-(r.ranks[b]??99))[0];return `<article class="card evaluation" style="--route-color:${r.color}"><h3>${escapeHtml(r.name)}</h3><div class="index-value">${r.meanRank===null?'算定保留':formatValue(r.meanRank)} <small>${r.meanRank===null?'':'位／8沿線・3指標の平均順位'}</small></div><p class="muted">小さいほど3指標の中央値が高い傾向。</p>${Object.keys(TITLES).map(k=>`<div class="bar-row"><div class="bar-label"><span>${TITLES[k]}</span><b>${formatValue(r.metrics[k].median)} ${UNITS[k]} <small>（${r.ranks[k]??'—'}位）</small></b></div><div class="bar"><span style="width:${Math.max(0,(r.metrics[k].median||0)/metricMax[k]*100)}%"></span></div></div>`).join('')}<p class="evaluation-copy">${r.ranks[best]!==null?`${TITLES[best]}の中央値は${formatValue(r.metrics[best].median)}${UNITS[best]}で、8沿線中${r.ranks[best]}位。`:''}駅利用人数は${r.accessCount}／${r.stationCount}駅レコードで確認済みです。</p><p class="note">教育・治安・オフィス面積・売上は共通条件のデータが不足しているため、この平均順位には含みません。${r.meanRank===null?'いずれかの指標で取得率90%未満、または8沿線の比較値が欠けているため、平均順位は算定保留です。':''}</p></article>`}).join('')}</div><details class="card"><summary>総合評価の計算式と限界</summary><p>①沿線の駅がある500m区画を重複除去。②都県公表分が1件の区画のみ採用し、飲食店数・小売事業所数・全産業従業者数の中央値をそれぞれ計算。③8沿線で大きい順に順位を付け、3つの順位を同じ重み（各1/3）で平均します。同値は同順位。すべての指標で取得率90%以上の場合に平均順位を表示します。</p><p>商業中心地の規模スコア（CoreScale）や居住地としての優劣を示す順位ではありません。駅位置とメッシュの切れ目、欠損、対象区間の違いに影響されます。0は公表上の0のみ、未取得・秘匿は除外して取得件数を表示しています。</p></details>`;}
+function bindContent(){document.querySelectorAll('[data-station]').forEach(b=>b.onclick=()=>selectStation(b.dataset.station));document.querySelectorAll('[data-open-station]').forEach(b=>b.onclick=()=>{change({view:'map',station:b.dataset.openStation});const s=data.stations.find(s=>s.id===b.dataset.openStation);if(mapReady)map.flyTo({center:s.coordinates,zoom:13});window.scrollTo({top:0,behavior:'auto'})});document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>change({view:b.dataset.view}));document.querySelectorAll('[data-compare]').forEach(b=>b.onclick=()=>{const id=b.dataset.compare,c=[...state.compare];if(c.includes(id)){if(c.length<=2){$('compare-feedback').textContent='比較する沿線は2つ以上選択してください。';return;}c.splice(c.indexOf(id),1)}else{if(c.length>=4){$('compare-feedback').textContent='比較は4沿線までです。選択中の沿線を1つ外してください。';return;}c.push(id)}change({compare:c})});if($('download-csv'))$('download-csv').onclick=()=>{const blob=new Blob([routeCsv(data,state.line)],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=state.line+'-observations.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};}
+function updateMap(){if(!mapReady)return;const selected=selectedStation(),ids=new Set(routeStations(data,state.line).map(s=>s.id));map.getSource('stations')?.setData({type:'FeatureCollection',features:data.stations.map(s=>({type:'Feature',geometry:{type:'Point',coordinates:s.coordinates},properties:{id:s.id,name:s.name,active:ids.has(s.id),selected:s.id===selected?.id,color:COLORS[state.line]||'#bd6233'}}))});}
+function fitRoute(){if(!mapReady)return;const ss=routeStations(data,state.line);if(!ss.length)return;const bounds=ss.reduce((b,s)=>b.extend(s.coordinates),new maplibregl.LngLatBounds());map.fitBounds(bounds,{padding:{top:70,bottom:45,left:40,right:40},maxZoom:13,duration:0});}
+function render(){state=parseState(location.hash,data);$('route-select').value=state.line;$('search').value=state.q;document.querySelectorAll('.main-nav [data-view]').forEach(b=>b.setAttribute('aria-current',b.dataset.view===state.view?'page':'false'));for(const view of ['map','numbers','compare'])$(view+'-view').hidden=state.view!==view;$('fit-map').hidden=state.view!=='map';$('search').closest('label').hidden=state.view==='compare';$('station-panel').innerHTML=stationDetails(selectedStation());$('map-station-list').innerHTML=stationList();if(state.view==='numbers')$('numbers').innerHTML=numbersView();if(state.view==='compare')$('compare').innerHTML=compareView();bindContent();updateMap();if(state.view==='map'&&map)setTimeout(()=>map.resize(),0);}
+$('route-select').onchange=e=>{change({line:e.target.value,q:'',station:''});setTimeout(fitRoute,50)};let searchTimer;$('search').oninput=e=>{const q=e.target.value;clearTimeout(searchTimer);searchTimer=setTimeout(()=>change({q,station:''}),220)};$('fit-map').onclick=fitRoute;window.addEventListener('hashchange',render);
+$('method-content').innerHTML=`<p>このアトラスは、公的統計で東京圏の駅と街を読む試行版です。地図は実際の座標で、自治体界・鉄道・駅を表示します。</p><h3>駅利用・路線数</h3><p>国土数値情報 S12（2024年度）とN02（2025年12月31日時点）を使用。乗車／乗降や乗換の扱いは事業者により異なります。重複コードを保持し、不明な合算を避けています。駅数や利用人数は街の規模スコアには使っていません。${sourceLink(SOURCES.access,'S12')}${sourceLink(SOURCES.rail,'N02')}</p><h3>飲食店・小売・従業者・人口</h3><p>2021年経済センサス地域メッシュと2020年国勢調査地域メッシュ。約500m区画の都県別公表分を保持しています。飲食店は産業分類76で、宿泊施設や持ち帰り・配達専門の分類とは区別します。従業者数は全産業で、オフィス床面積の代わりの数値ではありません。秘匿・欠損は0と区別します。${sourceLink(SOURCES.economic,'経済センサス')}${sourceLink(SOURCES.population,'国勢調査')}</p><h3>地域の経済・教育・治安</h3><p>自治体GDPは市全域の経済規模です。犯罪認知件数も自治体全体の件数で、人口補正をしていません。駅周辺の被害リスクをこの件数だけで順位付けしません。塾の掲載は公式ページで確認した校舎に限ります。私立中学への進学率を中学受験率と呼ぶことはしません。</p><h3>地図</h3><p>国土地理院の最適化ベクトルタイル（試験公開・PMTiles版、2026年4月1日データ）を加工して使用。地名・鉄道の表示に外部タイルを読み込みます。N03は使用していません。${sourceLink('https://github.com/gsi-cyberjapan/optimal_bvmap','地理院タイル仕様')}${sourceLink('https://www.gsi.go.jp/kikakuchousei/kikakuchousei40182.html','利用規約')}</p><h3>再現性と出典</h3><p>原資料24アーカイブを保存し、固定済みハッシュ・駅IDの一致検証を通過したデータを使用。原資料の調査時点、公表時点、取得日を分離しています。処理済み公開データと算定コードはGitHubで管理します。</p><p>${sourceLink('https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas/tree/work/public-explorer-mvp','コード・判断履歴')}</p><p class="note">駅まちアトラスによる加工。各機関がこのアプリや評価を作成・保証しているものではありません。</p>`;for(const id of ['method-open','footer-method'])$(id).onclick=()=>$('method').showModal();$('method-close').onclick=()=>$('method').close();$('method').onclick=e=>{if(e.target===$('method'))$('method').close()};
+render();try{if(!globalThis.maplibregl||!globalThis.pmtiles)throw Error('地図プログラムを読み込めません');const protocol=new pmtiles.Protocol();maplibregl.addProtocol('pmtiles',protocol.tile);map=new maplibregl.Map({container:'map',style:mapStyle(),center:[139.64,35.69],zoom:10,attributionControl:true,maxZoom:16.8,minZoom:7});map.addControl(new maplibregl.NavigationControl({showCompass:false}),'top-right');map.on('load',()=>{mapReady=true;map.addSource('stations',{type:'geojson',data:{type:'FeatureCollection',features:[]}});map.addLayer({id:'pilot-stations',type:'circle',source:'stations',paint:{'circle-radius':['case',['get','selected'],9,['get','active'],5,3],'circle-color':['case',['get','selected'],'#b84e24',['get','active'],['get','color'],'#a7b9af'],'circle-stroke-width':1.5,'circle-stroke-color':'#fff'}});map.addLayer({id:'pilot-labels',type:'symbol',source:'stations',minzoom:10,filter:['==',['get','active'],true],layout:{'text-field':['get','name'],'text-font':['NotoSansJP-Regular'],'text-size':12,'text-anchor':'left','text-offset':[.6,0]},paint:{'text-color':'#243f34','text-halo-color':'#fff','text-halo-width':2}});updateMap();if(state.station){const s=selectedStation();map.jumpTo({center:s.coordinates,zoom:13});}else fitRoute();if(!mapFailed)$('map-status').textContent='';});map.on('click','pilot-stations',e=>{if(e.features?.length)selectStation(e.features[0].properties.id,false)});map.on('mouseenter','pilot-stations',()=>map.getCanvas().style.cursor='pointer');map.on('mouseleave','pilot-stations',()=>map.getCanvas().style.cursor='');map.on('error',()=>{mapFailed=true;$('map-status').textContent='地図の一部を取得できません。下の駅一覧と「駅・街の数値」は利用できます。'});}catch(error){mapFailed=true;$('map-status').textContent='この環境では地図を表示できません。駅一覧と数値表をご利用ください。';}}
+if(typeof document!=='undefined')start().catch(error=>{document.getElementById('map-status').textContent=error.message;document.getElementById('station-panel').textContent='データを読み込めませんでした。時間をおいてページを再読み込みしてください。';});

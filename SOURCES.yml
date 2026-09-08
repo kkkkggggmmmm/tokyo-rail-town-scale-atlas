@@ -508,3 +508,10 @@ phase_1_g3_1_boundary_source_audit:
   rule: >-
     N03由来のraw、scope polygon、mesh component classification、rollup、および地図成果は、
     国土地理院の利用手続で予定利用の申請要否が確定するまで生成・取得・公開しない。
+
+public_quantitative_extension:
+  checked_at: "2026-09-08"
+  manifest: data/reference/quantitative/PUBLIC_MAP_SOURCES.yml
+  source_lock_reverified: true
+  original_archives_count: 24
+  note: "既存監査の日付を上書きせず、今回の公開用データ・地図・自治体指標の条件を別記録で保持する。"

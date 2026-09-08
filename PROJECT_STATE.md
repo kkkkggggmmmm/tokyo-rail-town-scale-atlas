@@ -1,5 +1,14 @@
 # PROJECT_STATE
 
+## Quantitative map implementation — 2026-09-08
+
+- Owner explicitly replaces the schematic/reference-tag product with a geographic map of municipalities, railways and stations, measured station/town indicators, education and safety context, and a route-level synthesis. The public output scope is expanded accordingly; the earlier reference-only UI restriction is superseded by this instruction. Unmeasured quantities remain unavailable rather than being invented.
+- The frozen original bundle has now been restored completely: 24 archives and 91 members pass `make verify-locked`, and G2's 242 stations / 233 crosswalk rows / eight segments / zero unresolved reviews pass. Current e-Stat terms retrieval and the first missing archive succeeded before a single no-retry recovery of the remaining inputs. The older incomplete-raw blocker below is historical.
+- N03 is still excluded. Geographic context uses the GSI optimal vector tiles under its published use terms; this does not approve N03 or a statistical component rollup. Canonical station identities remain the accepted G2 IDs.
+- Station-area statistics expose official 500m mesh observations with their prefecture partition, source year and raw/missing status. They are not center polygons or station sales. Cross-prefecture components are not summed. GDP, sales and office floor area are attached only to the exact region and definition supported by the source.
+- The former `買い物 2/7` style candidate-tag counts are withdrawn. A route synthesis must show the numerical evidence and coverage. It must not turn missing education, economic output or safety inputs into zero or a fabricated all-purpose score.
+- Source-specific unresolved terms, failed education/crime fetches, and inconsistent source values remain excluded individually. An unavailable requested indicator is described with its actual missing reason.
+
 ## Reference infographics v0.2 — 2026-09-07
 
 - Owner requests data implementation and infographics. Added interactive reference-catalog charts: eight reference-feature counts, four prefecture counts, multiple-anchor-station count, candidate/station correspondence, and consistent per-route comparison bars. The three main navigation entries remain; charts are inside the comparison area.
@@ -131,3 +140,11 @@ official_correction_recheck: LIVE_CATALOG_AND_BYTE_LOCK_RECONFIRMED_2026-09-05
 - Loss of zero/missing/suppressed distinction
 - Reference year presented as publication/model year
 - Enhanced/local-only data introduced into Core
+
+## v0.3 implementation receipt (pre-publication)
+
+- Implemented geographic GSI map and 226 canonical station records in eight locked public segments, with 210 S12 numeric observations / 16 duplicate-only nulls and 218 station-containing mesh contexts. Retained 220 economic and 221 population prefecture components; no boundary allocation or rollup.
+- Added approved 7 municipal/town economic observations, 2 municipal crime counts, and 7 verified school campuses. Unavailable exam rates, center GDP/sales and office floor area remain explicit missing values.
+- Route comparison uses displayed 2021 raw medians and `route_station_context_mean_rank_v1` (equal average of three within-eight-route ranks; >=90% coverage). It is not CoreScale or an overall residential/education/safety ranking. Transport is not a commercial-score input.
+- Reproducible generators: `scripts/build_public_quantitative.py` and `scripts/build_public_context.py`; public CSV export and downloadable SVG. Source/use records under `data/reference/quantitative/`; detailed receipt in `docs/QUANTITATIVE_MVP_2026-09-08.md`.
+- Full recovered original archive checkpoint: `libfile_167b01d57458819180d11aafb5569995` (24 archives); source lock unchanged. Required fast/locked/G3 checks and 9 JS behavior tests PASS. Browser and physical-device QA NOT_CHECKED. Publication receipt follows after deployment.

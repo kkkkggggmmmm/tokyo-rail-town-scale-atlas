@@ -274,3 +274,21 @@ full mesh surfaceへの採用許可ではない。
 N03のカタログはCC BY 4.0を表示するが、国土地理院原典の二次利用手続が必要となる場合を
 明記している。`G3_1_BOUNDARY_SOURCE_AUDIT.yml` の`use_conditions_resolved`が`true`になるまで、
 この節はデータ処理の権限ではなく停止条件である。
+
+## 10. 公開定量地図 v0.3（2026-09-08追加）
+
+|公開フィールド|単位・範囲・意味|
+|---|---|
+|`stations[].id` / `groupId`|確定済みG2 station/station_group IDを引き継ぐ。駅名から新規生成しない。|
+|`coordinates`|N02代表座標、`coordinateCRS`を保持。図上の任意配置ではない。|
+|`officialRouteCount`|N02同一駅群内の事業者・正式路線ペアのdistinct数。運転系統数ではない。|
+|`ridership.value`|S12 FY2024人/日。単一の非重複観測が確定する場合のみ。事業者・路線間の合計禁止。|
+|`meshContexts[code].economicComponents`|都県別公表成分を個別保持。`fullMeshRollup:false`。|
+|`restaurants`|T001163082、76飲食店の事業所数。080（宿泊業・飲食サービス業全体）とは異なる。|
+|`retail`|T001163062、小売業事業所数。|
+|`employees`|T001163108、全産業従業者数。オフィス従業者・床面積ではない。|
+|`populationComponents`|2020年人口。合算元/先・処理コードを保持し、合算値を単一区画人口としない。|
+|`route_station_context_mean_rank_v1`|沿線の駅所在区画の飲食・小売・就業中央値を8沿線内で順位付けし、1/3ずつ平均。取得率90%以上。CoreScaleとは別の参考比較。|
+|`context.economy` / `educationSafety`|自治体・町・個別校舎という資料の範囲を保持。駅域に割り付けず、沿線指数へ混入しない。|
+
+全数値は値・単位・調査時点・地域範囲・出典の組で表示する。中学受験率の欠損はnull。私立国立中学への進学率と同義にしない。

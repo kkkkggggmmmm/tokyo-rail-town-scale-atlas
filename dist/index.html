@@ -1,34 +1,10 @@
 <!doctype html>
-<html lang="ja">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#f6f5f0">
-  <meta name="description" content="代表8沿線・44の街候補を、路線概略図と沿線の並びで探索する駅まちアトラス。商業規模の統計評価に先立つ探索版。">
-  <title>駅まちアトラス｜沿線から街を読む</title>
-  <link rel="stylesheet" href="./style.css">
-</head>
-<body>
-  <a class="skip" href="#main">本文へ移動</a>
-  <header class="header">
-    <a class="brand" href="#" aria-label="駅まちアトラス ホーム"><span class="brand-mark" aria-hidden="true">駅</span><span>駅まちアトラス<small>TOKYO RAIL & TOWN</small></span></a>
-    <nav class="tabs" aria-label="主な画面"><button data-view="map" aria-current="page">路線図</button><button data-view="profile">沿線をたどる</button><button data-view="compare">図と沿線比較</button></nav>
-    <button class="about-button" id="about-button">このアトラスについて</button>
-  </header>
-  <main id="main" tabindex="-1">
-    <section class="intro"><div><p class="eyebrow">街から見る、東京圏の鉄道。</p><h1 id="page-title">次の街は、どんな街だろう。</h1></div><p class="release"><span>先行探索版</span> 8沿線 · 44の街候補<br><small>商業規模は未算定</small></p></section>
-    <p class="infographic-entry"><button data-insights>44候補のデータを図で見る <span aria-hidden="true">→</span></button></p>
-    <div id="app"><p class="loading" role="status">街のリストを読み込んでいます…</p></div>
-    <p class="data-note">掲載した街の参考ガイドです。路線図は概略配置で、距離・境界・街の大きさを表しません。<button id="method-link">データと見方</button></p>
-  </main>
-  <dialog id="detail" aria-labelledby="detail-title"><div id="detail-content"></div></dialog>
-  <dialog id="about" aria-labelledby="about-title">
-    <div class="dialog-head"><p class="eyebrow">ABOUT THE ATLAS</p><button class="icon-button" data-close="about" aria-label="説明を閉じる">×</button></div>
-    <h2 id="about-title">街の並びを、沿線から。</h2>
-    <p>目指すのは、どの沿線に、どの規模・タイプの街が、どのくらいの間隔で現れるかを見渡せるアトラスです。</p>
-    <p>この先行版では、選定済みの街候補から<strong>位置関係の概略、掲載した街の順序、参考となる特徴</strong>を探索できます。各沿線のすべての街を収録したものではありません。</p>
-    <dl class="method-list"><dt>路線図</dt><dd>読みやすさを優先した概略図です。点は街候補、線はリスト内のつながり。実際の地理座標・鉄道線形・乗換経路ではありません。全駅は表示していません。</dd><dt>街の特徴</dt><dd>初期の調査候補に付けた参考メモです。統計で確定した街タイプや、現在の営業状況・夜間人流の評価ではありません。</dd><dt>特徴の棒グラフ・都県別の件数</dt><dd>公開する44候補の参考メモを集計しています。同じ候補を重複して数えず、複数の特徴を持つ候補は各項目に含めます。棒の分母は選択した沿線の掲載候補数です。統計に基づく街タイプの構成比ではありません。</dd><dt>街と駅の対応</dt><dd>参考リストに登録された関連駅名を示します。駅数による規模評価、地理的配置や改札内乗換の認定ではありません。</dd><dt>掲載街数・共通する街</dt><dd>このリスト内だけの件数です。沿線全体の中心地数、充実度や順位の代わりには使えません。登録沿線も網羅的な利用可能路線ではありません。</dd><dt>規模・交通力・信頼度</dt><dd>すべて未算定です。店舗・従業者の集積から測る街の規模と、駅の利用者数から測る交通力は分けます。欠けた値を0や最低評価にしません。</dd><dt>公開範囲</dt><dd>東京・神奈川・埼玉・千葉の44候補。つくばエクスプレスは1都3県内の候補を掲載しています。</dd></dl>
-    <h3>データの時点と出典</h3><p>この画面が使用するのは<strong>2026年8月30日固定の候補・沿線リスト</strong>です。将来使用する商業統計は2021年、人口統計は2020年など、指標別に年次を明示します。現在、この画面にはそれらの統計値を組み込んでいません。</p>
-    <p><a href="https://github.com/kkkkggggmmmm/tokyo-rail-town-scale-atlas/tree/work/public-explorer-mvp" target="_blank" rel="noopener">データ・判断記録を見る ↗</a></p><p class="muted">先行探索版 v0.2 · 2026年9月7日<br>地理的な位置・距離や商業規模の比較は、今後の実装対象です。</p>
-  </dialog>
-  <script type="module" src="./app.mjs"></script>
-</body></html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#213f3b"><meta name="description" content="東京圏8沿線の駅を実際の地図と公的統計で比較。利用人数、飲食店、小売店、従業者、人口を、単位と年次を確かめながら読む駅まちアトラス。"><title>駅まちアトラス｜地図と数字で沿線を読む</title><link rel="stylesheet" href="./vendor/maplibre-gl.css"><link rel="stylesheet" href="./style.css"></head>
+<body><a class="skip" href="#content">本文へ</a><header class="header"><a class="brand" href="#view=map"><span class="brand-mark">駅</span><span>駅まちアトラス<small>東京圏を、地図と数字で。</small></span></a><button id="method-open" class="quiet">数値の読み方</button></header>
+<nav class="main-nav" aria-label="主な画面"><button data-view="map">地図</button><button data-view="numbers">駅・街の数値</button><button data-view="compare">沿線比較・総合評価</button></nav>
+<main id="content"><div class="toolbar"><label>沿線<select id="route-select" aria-label="沿線を選択"></select></label><label class="search-label">駅を探す<input id="search" type="search" placeholder="新宿、吉祥寺、横浜…" autocomplete="off"></label><button id="fit-map" class="quiet">沿線全体を表示</button></div>
+<section id="map-view" aria-label="自治体・鉄道・駅の地図"><div class="map-layout"><div class="map-wrap"><div id="map" role="region" aria-label="実際の位置に基づく駅の地図"></div><div class="map-key"><span class="dot"></span> 選択沿線のデータ掲載駅 <span class="gray-line"></span> 鉄道 <span class="boundary-line"></span> 自治体界</div><p id="map-status" role="status">地図を読み込んでいます</p></div><aside id="station-panel" aria-live="polite"></aside></div><div id="map-station-list"></div></section>
+<section id="numbers-view" hidden><div id="numbers"></div></section><section id="compare-view" hidden><div id="compare"></div></section>
+</main><footer><span>商業・就業 2021年／人口 2020年／駅利用 2024年度／駅位置 2025年末</span><span>8沿線・1都3県の試行版 v0.3 <button id="footer-method" class="text-button">出典と算定方法</button></span></footer>
+<dialog id="method"><div class="dialog-heading"><h2>数字が表す範囲</h2><button id="method-close" aria-label="説明を閉じる">閉じる ×</button></div><div id="method-content"></div></dialog>
+<script src="./vendor/maplibre-gl.js"></script><script src="./vendor/pmtiles.js"></script><script type="module" src="./app.mjs"></script></body></html>

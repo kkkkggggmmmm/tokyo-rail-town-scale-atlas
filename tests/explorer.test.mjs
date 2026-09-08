@@ -1,80 +1,40 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {test} from 'node:test';
-import {parseState, visibleCases, routeCases, commonCases, summarizeCases, infographicBase, infographicCases} from '../dist/app.mjs';
-const data = JSON.parse(readFileSync(new URL('../dist/data.json', import.meta.url)));
-
-test('unknown URLs and repeated routes cannot expand public scope', () => {
-  const state=parseState('#view=secret&line=N03&town=GE060&compare=bad,bad',data);
-  assert.equal(state.view,'map');assert.equal(state.town,'');assert.equal(state.line,data.routes[0].id);
-  assert.equal(state.compare.length,2);
+import {parseState,routeStations,searchedStations,stationMetric,routeSummary,evaluateRoutes,median,formatValue,routeCsv,mapStyle,escapeHtml} from '../dist/app.mjs';
+const data=JSON.parse(readFileSync(new URL('../dist/data.json',import.meta.url)));
+test('URL state restricts scope and preserves known station, search and four routes',()=>{
+ const bad=parseState('#view=bad&line=N03&station=GE060&compare=bad,bad',data);assert.equal(bad.view,'map');assert.equal(bad.station,'');assert.equal(bad.compare.length,2);
+ const good=parseState('#view=numbers&station='+data.stations[0].id+'&compare='+data.routes.map(r=>r.id).join(','),data);assert.equal(good.station,data.stations[0].id);assert.equal(good.compare.length,4);
 });
-test('station search works across the currently selected route and preserves empty results',()=>{
-  const state=parseState('',data);
-  assert.equal(visibleCases(data,{...state,q:'北朝霞'})[0].id,'GE037');
-  assert.equal(visibleCases(data,{...state,q:'存在しない駅'}).length,0);
-  assert.equal(visibleCases(data,{...state,line:'all'}).length,44);
+test('geographic pilot includes 24 Chuo stations and TX ends at 柏たなか',()=>{
+ const chuo=routeStations(data,'pc_jr_chuo_rapid');assert.equal(chuo.length,24);assert.equal(chuo[0].name,'東京');assert.equal(chuo.at(-1).name,'高尾');assert.equal(routeStations(data,'pc_tsukuba_express').at(-1).name,'柏たなか');
+ const state=parseState('',data);assert.ok(searchedStations(data,{...state,q:'横浜'}).some(s=>s.name==='横浜'));assert.equal(searchedStations(data,{...state,q:'存在しない駅'}).length,0);
 });
-test('profile order is reference order, never score order',()=>{
-  assert.deepEqual(routeCases(data,data.routes[0].id).map(c=>c.id),['GE001','GE002','GE003','GE004','GE005','GE006','GE007']);
-  assert.equal(routeCases(data,data.routes[7].id).length,4);
-  assert.equal(routeCases(data,'unknown').length,0);
+test('null and suppressed values cannot become zero or ranks',()=>{
+ assert.equal(formatValue(null),'—');assert.equal(formatValue(0),'0');assert.equal(median([null,undefined,0,10]),5);assert.equal(median([null]),null);
+ const d=structuredClone(data),s=d.stations[0],c=d.meshContexts[s.meshCode].economicComponents[0];c.restaurants={value:null,status:'suppressed',raw:'X'};assert.equal(stationMetric(d,s,'restaurants'),null);
 });
-test('common cases are intersection and deduplicated, not a sum of memberships',()=>{
-  assert.deepEqual(commonCases(data,[data.routes[0].id,data.routes[4].id]).map(c=>c.id),['GE002']);
-  assert.deepEqual(commonCases(data,[data.routes[0].id,data.routes[3].id]),[]);
+test('cross-prefecture components are not picked or added, including buffer-only components',()=>{
+ const d=structuredClone(data),s=d.stations[0],mesh=d.meshContexts[s.meshCode];mesh.economicComponents=[{prefectureCode:'13',sourcePartitionCodes:['13','14'],restaurants:{value:10}},{prefectureCode:'14',sourcePartitionCodes:['13','14'],restaurants:{value:20}}];assert.equal(stationMetric(d,s,'restaurants'),null);
+ mesh.economicComponents=[{prefectureCode:'13',sourcePartitionCodes:['13','19'],restaurants:{value:10}}];assert.equal(stationMetric(d,s,'restaurants'),null);
 });
-test('URL restores view, search, detail and up to four selected routes',()=>{
-  const state=parseState('#view=profile&line='+data.routes[4].id+'&town=GE002&q=新宿&compare='+data.routes.map(r=>r.id).join(','),data);
-  assert.equal(state.view,'profile');assert.equal(state.town,'GE002');assert.equal(state.q,'新宿');assert.equal(state.compare.length,4);
+test('same mesh through multiple stations counts once per line',()=>{
+ const d=structuredClone(data),route=d.routes[0],stations=routeStations(d,route.id);stations[1].meshCode=stations[0].meshCode;const summary=routeSummary(d,route.id);assert.equal(summary.stationCount,24);assert.equal(summary.meshCount,23);
 });
-
-test('infographics count unique candidates and allow overlapping reference tags', () => {
-  const summary = summarizeCases(data.cases);
-  assert.equal(summary.total,44);
-  assert.equal(summary.multipleStations,29);
-  assert.deepEqual(Object.fromEntries(summary.prefectures.map(x=>[x.label,x.count])), {'東京都':23,'神奈川県':7,'埼玉県':7,'千葉県':7});
-  assert.deepEqual(Object.fromEntries(summary.features.map(x=>[x.label,x.count])), {'買い物':16,'飲食・夜の街':22,'オフィス':10,'日々の暮らし':10,'観光・余暇':9,'商店街':8,'大型商業施設':4,'計画的な街づくり':1});
-  assert.ok(summary.features.reduce((sum,x)=>sum+x.count,0) > summary.total);
-  const routeMemberships = data.routes.flatMap(r=>routeCases(data,r.id));
-  assert.equal(routeMemberships.length,50);
-  assert.deepEqual(summarizeCases(routeMemberships),summary);
+test('S12 changes cannot influence commercial comparison',()=>{
+ const base=evaluateRoutes(data).map(r=>({meanRank:r.meanRank,ranks:r.ranks,metrics:r.metrics}));const d=structuredClone(data);d.stations.forEach(s=>s.ridership.value=999999999);assert.deepEqual(evaluateRoutes(d).map(r=>({meanRank:r.meanRank,ranks:r.ranks,metrics:r.metrics})),base);
 });
-
-test('duplicate tags and repeated station names do not inflate counts', () => {
-  const sample = {id:'test', features:['買い物','買い物'], prefectures:['東京都','東京都'], stations:['駅A','駅A']};
-  const summary = summarizeCases([sample,sample]);
-  assert.equal(summary.total,1);
-  assert.equal(summary.features.find(x=>x.label==='買い物').count,1);
-  assert.equal(summary.prefectures[0].count,1);
-  assert.equal(summary.multipleStations,0);
-  assert.deepEqual(summarizeCases([]).features.map(x=>x.count),Array(8).fill(0));
+test('average-rank equation is explicit and coverage under 90 percent withholds it',()=>{
+ for(const row of evaluateRoutes(data)){assert.equal(row.meanRank,Object.values(row.ranks).reduce((a,b)=>a+b,0)/3);}
+ const d=structuredClone(data);for(const s of routeStations(d,d.routes[0].id).slice(0,4)){d.meshContexts[s.meshCode].economicComponents[0].restaurants.value=null;}
+ assert.equal(evaluateRoutes(d)[0].meanRank,null);
 });
-
-test('chart filters restore from URL and intersect without changing chart denominator', () => {
-  const state = parseState('#view=insights&line=all&feature=買い物&prefecture=東京都&relation=multiple&town=GE002',data);
-  assert.equal(state.view,'insights');assert.equal(state.town,'GE002');
-  const expected = data.cases.filter(c=>c.features.includes('買い物') && c.prefectures.includes('東京都') && new Set(c.stations).size>1);
-  assert.deepEqual(infographicCases(data,state),expected);
-  assert.equal(summarizeCases(infographicBase(data,state)).total,44);
-  assert.ok(expected.length>0 && expected.length<44);
-  const impossible={...state,feature:'計画的な街づくり',prefecture:'神奈川県'};
-  assert.deepEqual(infographicCases(data,impossible),[]);
+test('transport CSV does not sum operators or replace missing counts',()=>{
+ const csv=routeCsv(data,'pc_tokyo_metro_ginza');assert.ok(csv.includes('2024'));assert.ok(csv.includes('2021-06-01'));assert.ok(csv.includes('人/日・事業者別基準'));assert.ok(csv.startsWith('\uFEFF'));assert.equal(escapeHtml('<img>'),'&lt;img&gt;');
 });
-
-test('route-specific chart denominators use only that reference route', () => {
-  for(const route of data.routes){
-    const state=parseState('#view=insights&line='+route.id,data);
-    const base=infographicBase(data,state), summary=summarizeCases(base);
-    assert.equal(summary.total,route.caseIds.length);
-    assert.ok(summary.features.every(x=>x.count<=summary.total));
-    assert.deepEqual(infographicCases(data,{...state,relation:'multiple'}).concat(infographicCases(data,{...state,relation:'single'})).map(c=>c.id).sort(),route.caseIds.toSorted());
-  }
-});
-
-test('unknown filter values cannot introduce nonpublic tags, areas or candidates', () => {
-  const state=parseState('#view=insights&line=all&feature=機密&prefecture=茨城県&relation=other&town=GE045',data);
-  assert.equal(state.feature,'');assert.equal(state.prefecture,'');assert.equal(state.relation,'');assert.equal(state.town,'');
-  assert.equal(infographicCases(data,state).length,44);
-  assert.ok(infographicCases(data,state).every(c=>c.scale===null && c.scaleStatus==='not_estimated'));
+test('map uses real vector municipalities and rails, no schematic or road/POI layers',()=>{
+ const style=mapStyle();assert.equal(style.version,8);assert.ok(style.sources.gsi.url.startsWith('pmtiles://https://cyberjapandata.gsi.go.jp/'));
+ const layers=new Set(style.layers.map(l=>l['source-layer']).filter(Boolean));assert.deepEqual(layers,new Set(['AdmArea','WA','Cstline','AdmBdry','RailCL','Anno']));
+ assert.ok(style.layers.some(l=>l.id==='municipality-names'));assert.ok(style.layers.some(l=>l.id==='station-names'));assert.ok(!JSON.stringify(style).includes('N03'));
 });
