@@ -29,7 +29,7 @@ test('new apparel/student observations do not change the existing three-indicato
  assert.deepEqual(evaluateRoutes(d),evaluateRoutes(data));
  const csv=routeCsv(data,'pc_odakyu_odawara',students);assert.ok(csv.includes('住民に占める割合_%'));assert.ok(csv.includes('2020-10-01'));assert.ok(csv.includes('衣服・身の回り品店数'));
  assert.equal(parseState('#view=numbers&detail=districts',data).detail,'districts');
- assert.equal(parseState('#detail=bad',data).detail,'stations');
+ assert.equal(parseState('#detail=bad',data).detail,'districts');
 });
 test('district sales are million-yen observations displayed in 100 million yen, not GDP',()=>{
  const ginza=districts.districts.find(d=>d.name==='銀座地域');assert.equal(districtTotal(ginza),998870);assert.equal(moneyLabel({value:998870,status:'observed'}),'9,988.7');
