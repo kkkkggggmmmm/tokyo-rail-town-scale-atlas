@@ -2,6 +2,8 @@
 
 ## Quantitative map implementation — 2026-09-08
 
+- **PUBLISHED v0.3**: https://tokyo-rail-town-atlas.dwdaai.chatgpt.site . Saved version 3 (`appgprj_6a9f389f781c8191b52856216aaa9b32~appgver_7fd0a547c83c81918df8d7cfe112c98e`) deployed successfully as `appgdep_6a9ff97dd5448191b9cfa67d0128e583` at 2026-09-08T12:03:20Z. Exact deployed source: `77fd9171670dab1ee26c3ff03a3655f527024b76`. This receipt-only commit does not change deployed assets.
+
 - Owner explicitly replaces the schematic/reference-tag product with a geographic map of municipalities, railways and stations, measured station/town indicators, education and safety context, and a route-level synthesis. The public output scope is expanded accordingly; the earlier reference-only UI restriction is superseded by this instruction. Unmeasured quantities remain unavailable rather than being invented.
 - The frozen original bundle has now been restored completely: 24 archives and 91 members pass `make verify-locked`, and G2's 242 stations / 233 crosswalk rows / eight segments / zero unresolved reviews pass. Current e-Stat terms retrieval and the first missing archive succeeded before a single no-retry recovery of the remaining inputs. The older incomplete-raw blocker below is historical.
 - N03 is still excluded. Geographic context uses the GSI optimal vector tiles under its published use terms; this does not approve N03 or a statistical component rollup. Canonical station identities remain the accepted G2 IDs.
@@ -141,10 +143,10 @@ official_correction_recheck: LIVE_CATALOG_AND_BYTE_LOCK_RECONFIRMED_2026-09-05
 - Reference year presented as publication/model year
 - Enhanced/local-only data introduced into Core
 
-## v0.3 implementation receipt (pre-publication)
+## v0.3 implementation receipt
 
 - Implemented geographic GSI map and 226 canonical station records in eight locked public segments, with 210 S12 numeric observations / 16 duplicate-only nulls and 218 station-containing mesh contexts. Retained 220 economic and 221 population prefecture components; no boundary allocation or rollup.
 - Added approved 7 municipal/town economic observations, 2 municipal crime counts, and 7 verified school campuses. Unavailable exam rates, center GDP/sales and office floor area remain explicit missing values.
 - Route comparison uses displayed 2021 raw medians and `route_station_context_mean_rank_v1` (equal average of three within-eight-route ranks; >=90% coverage). It is not CoreScale or an overall residential/education/safety ranking. Transport is not a commercial-score input.
 - Reproducible generators: `scripts/build_public_quantitative.py` and `scripts/build_public_context.py`; public CSV export and downloadable SVG. Source/use records under `data/reference/quantitative/`; detailed receipt in `docs/QUANTITATIVE_MVP_2026-09-08.md`.
-- Full recovered original archive checkpoint: `libfile_167b01d57458819180d11aafb5569995` (24 archives); source lock unchanged. Required fast/locked/G3 checks and 9 JS behavior tests PASS. Browser and physical-device QA NOT_CHECKED. Publication receipt follows after deployment.
+- Full recovered original archive checkpoint: `libfile_167b01d57458819180d11aafb5569995` (24 archives); source lock unchanged. Required fast/locked/G3 checks and 9 JS behavior tests PASS. Browser and physical-device QA NOT_CHECKED. Publication succeeded; exact receipt appears at the top of this file.
