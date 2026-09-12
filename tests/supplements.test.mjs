@@ -99,11 +99,11 @@ test('district header selection has independent shareable state and accessible a
  assert.ok(districtRows(districts,{query:'ない地区名',sort:'total'}).html.includes('colspan="7"'));
 });
 
-test('town navigation preserves source IDs and withholds unverified parent totals',()=>{
+test('table-defined totals preserve source IDs and keep whole-center coverage unverified',()=>{
  const known=new Set(districts.districts.map(d=>d.source_district_id)),assigned=[];
  for(const area of DISTRICT_AREAS){
   assert.match(area.id,/^browse_[a-f0-9]{32}$/);assert.equal(area.aggregationAllowed,false);
-  assert.equal(area.status,'boundary_and_membership_unverified');
+  assert.equal(area.status,'table_defined_selection');assert.equal(area.selectedDistrictSumAllowed,true);
   assert.ok(area.sourceDistrictIds.every(id=>known.has(id)));
   assigned.push(...area.sourceDistrictIds);
  }
@@ -113,9 +113,9 @@ test('town navigation preserves source IDs and withholds unverified parent total
  const shinjuku=DISTRICT_AREAS.find(a=>a.name==='新宿');
  assert.ok(areaDistricts(districts,shinjuku).some(d=>d.municipality_code==='13113'));
  const html=districtAreaView(districts,{areaId:shinjuku.id});
- assert.ok(html.includes('地域合計・順位は未算定'));assert.ok(html.includes('タカシマヤタイムズスクエア'));
+ assert.ok(html.includes('エリア合計・ランキング'));assert.ok(html.includes('地理的な街全域の総額ではありません'));assert.ok(html.includes('9,560.86'));assert.ok(html.includes('タカシマヤタイムズスクエア'));
  assert.ok(html.includes('新宿駅西口'));assert.ok(html.includes('3,753.39'));
- assert.ok(!html.includes('district-rank'));assert.ok(!html.includes('data-district-sort'));
+ assert.ok(html.includes('district-rank'));assert.equal((html.match(/data-district-sort=/g)||[]).length,5);
  assert.equal(filterAreas(districts,{query:'サンシャイン'}).at(0).name,'池袋');
  assert.equal(filterAreas(districts,{prefecture:'14'}).length,0);
  assert.ok(districtAreaView(districts,{prefecture:'14'}).includes('公表地区の全データを見る'));

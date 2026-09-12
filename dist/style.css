@@ -703,3 +703,20 @@ body[data-theme=food] .bubble-legend i{border-color:#d8803e;background:#f4b88666
 .area-choices button[aria-pressed=true]{background:#0964b9;border-color:#0964b9;color:#fff}
 .area-detail h3{font-size:1.4rem;margin:0}.area-detail .section-heading{align-items:center}.area-pending{display:inline-block;padding:7px 12px;border-radius:6px;background:#eef3f7;color:#496078;font-size:.875rem}
 .area-detail .district-table th small{display:block;font-weight:400}.district-modes{margin-bottom:22px}
+
+/* Region totals retain a readable area name while the metric columns scroll. */
+.area-ranking .district-rank{position:sticky;left:0;z-index:2;background:#fff;min-width:48px!important;width:48px!important;padding:10px 6px}
+.area-ranking .district-name{position:sticky;left:48px;z-index:2;background:#fff;min-width:150px;width:150px;padding:8px 10px;text-align:left}
+.area-ranking thead .district-rank,.area-ranking thead .district-name{background:#f1f6fc}
+.area-ranking .district-name button{width:100%;min-height:48px;padding:8px 2px;text-align:left;background:transparent;border:0;color:#155790;font-weight:700}
+.area-ranking .district-name button:focus-visible{outline:3px solid #0875dc;outline-offset:0}
+.area-ranking .district-name small,.area-ranking .number-cell small{display:block;font-size:.75rem;font-weight:400;color:#62758a;line-height:1.6;margin-top:5px}
+.area-ranking .area-selected>td,.area-ranking .area-selected>th{background:#edf6ff}
+.area-ranking .number-cell{min-width:158px;font-variant-numeric:tabular-nums}
+.area-detail{margin-top:26px;padding-top:20px;border-top:1px solid #dce6ee}
+.area-detail details>summary{min-height:44px;padding:10px 0;cursor:pointer;color:#155790}
+.area-missing{padding:14px 16px;background:#f5f7fa;border-radius:8px;margin:14px 0}.area-missing p,.area-missing ul{margin:6px 0;font-size:.875rem}
+.area-method{margin-top:22px}.area-method summary{min-height:44px;cursor:pointer}
+@media(max-width:800px){.area-ranking .district-name{min-width:126px;width:126px}.area-ranking .district-name button{font-size:.9375rem}.area-ranking .number-cell{min-width:142px;padding:12px 10px}.area-ranking thead th{padding:8px}.area-ranking .district-sort{font-size:.875rem}.area-detail h3{font-size:1.2rem}}
+
+#area-detail,#district-table-scroll{scroll-margin-top:90px}
