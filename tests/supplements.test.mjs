@@ -1,8 +1,9 @@
+import {DISTRICT_AREAS,areaDistricts,filterAreas} from '../dist/district-areas.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {test} from 'node:test';
 import {studentCount,studentShare,filterDistricts,districtTotal,moneyLabel,DISTRICT_METRICS,rankDistricts,districtSortPatch} from '../dist/supplements.mjs';
-import {studentSection,districtView,districtRows,cafeRows} from '../dist/supplement-views.mjs';
+import {studentSection,districtView,districtRows,districtAreaView,cafeRows} from '../dist/supplement-views.mjs';
 import {parseExplorerState,serializeExplorerState} from '../dist/explorer-model.mjs';
 import {evaluateRoutes,routeCsv,parseState} from '../dist/app.mjs';
 const load=name=>JSON.parse(readFileSync(new URL('../dist/'+name,import.meta.url)));
@@ -96,4 +97,30 @@ test('district header selection has independent shareable state and accessible a
  assert.equal((html.match(/aria-sort="ascending"/g)||[]).length,1);
  assert.ok(html.includes('id="district-sort-total"'));assert.ok(html.includes('3業種売上計を大きい順に並べ替え'));
  assert.ok(districtRows(districts,{query:'ない地区名',sort:'total'}).html.includes('colspan="7"'));
+});
+
+test('town navigation preserves source IDs and withholds unverified parent totals',()=>{
+ const known=new Set(districts.districts.map(d=>d.source_district_id)),assigned=[];
+ for(const area of DISTRICT_AREAS){
+  assert.match(area.id,/^browse_[a-f0-9]{32}$/);assert.equal(area.aggregationAllowed,false);
+  assert.equal(area.status,'boundary_and_membership_unverified');
+  assert.ok(area.sourceDistrictIds.every(id=>known.has(id)));
+  assigned.push(...area.sourceDistrictIds);
+ }
+ assert.equal(new Set(assigned).size,assigned.length);
+ const ginza=DISTRICT_AREAS.find(a=>a.name==='銀座');
+ assert.ok(areaDistricts(districts,ginza).some(d=>d.source_district_id==='13199002'));
+ const shinjuku=DISTRICT_AREAS.find(a=>a.name==='新宿');
+ assert.ok(areaDistricts(districts,shinjuku).some(d=>d.municipality_code==='13113'));
+ const html=districtAreaView(districts,{areaId:shinjuku.id});
+ assert.ok(html.includes('地域合計・順位は未算定'));assert.ok(html.includes('タカシマヤタイムズスクエア'));
+ assert.ok(html.includes('新宿駅西口'));assert.ok(html.includes('3,753.39'));
+ assert.ok(!html.includes('district-rank'));assert.ok(!html.includes('data-district-sort'));
+ assert.equal(filterAreas(districts,{query:'サンシャイン'}).at(0).name,'池袋');
+ assert.equal(filterAreas(districts,{prefecture:'14'}).length,0);
+ assert.ok(districtAreaView(districts,{prefecture:'14'}).includes('公表地区の全データを見る'));
+ const s=parseExplorerState('#view=numbers&dmode=source&area='+shinjuku.id+'&dsort=total',data);
+ assert.deepEqual(parseExplorerState(serializeExplorerState(s),data),s);
+ assert.equal(parseExplorerState('#view=numbers&area=bad&dmode=bad',data).districtMode,'areas');
+ assert.equal(parseExplorerState('#area=bad',data).districtArea,'');
 });

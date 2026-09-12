@@ -697,3 +697,9 @@ body[data-theme=food] .bubble-legend i{border-color:#d8803e;background:#f4b88666
 
 .district-table td.district-rank{min-width:64px;width:64px}.district-table td.district-name{min-width:240px}
 @media(max-width:800px){.district-table td.district-name{min-width:225px}}
+
+/* Town navigation keeps source districts as an explicit subordinate view. */
+.area-choices{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 24px}.area-choices button{min-height:44px;padding:9px 18px}
+.area-choices button[aria-pressed=true]{background:#0964b9;border-color:#0964b9;color:#fff}
+.area-detail h3{font-size:1.4rem;margin:0}.area-detail .section-heading{align-items:center}.area-pending{display:inline-block;padding:7px 12px;border-radius:6px;background:#eef3f7;color:#496078;font-size:.875rem}
+.area-detail .district-table th small{display:block;font-weight:400}.district-modes{margin-bottom:22px}
