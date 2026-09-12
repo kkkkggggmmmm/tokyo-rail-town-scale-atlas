@@ -2,6 +2,8 @@
 
 ## Commercial-district numeric rankings — 2026-09-12
 
+- **PUBLISHED v0.8**: https://tokyo-rail-town-atlas.dwdaai.chatgpt.site. Saved version 8 (`appgprj_6a9f389f781c8191b52856216aaa9b32~appgver_944a104c81a881919f3b1e66b220a8c1`), deployment `appgdep_6aa5cb84d4f481919febd1f23cd20efd` succeeded at 2026-09-12T22:00:49.682420+00:00. Exact deployed source `58d754dbdd4568d2b492dc6b29fa78204fb003ef`. The 20-file archive preserves all 19 public asset bytes and semantically identical hosting configuration. The initial local archive inspector expected the configuration at the repository root; it was corrected to the helper's normalized `dist/.openai/hosting.json` path and passed before deployment. This receipt-only commit changes no public assets.
+
 - Owner requests tap-to-sort numeric headers in the regional commercial-district table. All five numeric columns now select descending order on first tap, toggle ascending on repeat, and show the active direction. The source order can be restored.
 - Rankings apply to the full prefecture/query result before 30-row pagination. Same published values share competition rank (1, 1, 3); ranks follow the selected direction. Suppressed/unpublished values remain unranked at the end in both directions. Three-sector totals still require every sector, and below-rounding values keep their original label and source rounding semantics. No statistical values, definitions or source periods change.
 - Independent district sort/direction persist in the URL alongside filters. Header IDs, keyboard focus and horizontal table scroll survive rerender; the selected column is highlighted and exposes aria-sort. A narrow rank column and explicit district-name width preserve mobile readability.
