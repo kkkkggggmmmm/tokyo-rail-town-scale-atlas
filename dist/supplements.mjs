@@ -20,4 +20,26 @@ export function studentShare(data,studentData,station,prefectureCode){
 }
 export function filterDistricts(districts,{query='',prefecture='all'}={}){const q=query.trim().normalize('NFKC');return districts.filter(d=>(prefecture==='all'||d.prefecture_code===prefecture)&&(!q||(d.name+' '+d.municipality_name).normalize('NFKC').includes(q)));}
 export function districtTotal(district){const keys=['retail_sales_million_yen','food_service_sales_million_yen','personal_service_sales_million_yen'];const obs=keys.map(k=>district.metrics[k]);return obs.every(o=>o&&['observed','below_rounding_unit'].includes(o.status)&&Number.isFinite(o.value))?obs.reduce((s,o)=>s+o.value,0):null;}
+export const DISTRICT_METRICS={
+ retail_sales_million_yen:{label:'小売売上',unit:'億円／2020年'},
+ food_service_sales_million_yen:{label:'飲食サービス売上',unit:'億円／2020年'},
+ personal_service_sales_million_yen:{label:'生活関連サービス売上',unit:'億円／2020年'},
+ total:{label:'3業種売上計',unit:'億円／2020年・公表値の和'},
+ retail_sales_floor_sqm:{label:'小売売場面積',unit:'㎡／2021年'}
+};
+export function districtSortPatch(sort,dir,key){return Object.hasOwn(DISTRICT_METRICS,key)?{districtSort:key,districtDir:sort===key&&dir==='desc'?'asc':'desc'}:{districtSort:'source',districtDir:'desc'};}
+export function rankDistricts(districts,{query='',prefecture='all',sort='source',dir='desc'}={}){
+ const ranked=Object.hasOwn(DISTRICT_METRICS,sort);
+ const rows=filterDistricts(districts,{query,prefecture}).map(district=>{
+  const o=district.metrics[sort];
+  const value=!ranked?null:sort==='total'?districtTotal(district):o&&['observed','observed_zero','below_rounding_unit'].includes(o.status)&&Number.isFinite(o.value)?o.value:null;
+  return {district,value,rank:null};
+ });
+ if(ranked){
+  rows.sort((a,b)=>a.value===null?(b.value===null?0:1):b.value===null?-1:(dir==='asc'?1:-1)*(a.value-b.value));
+  let previous=null,rank=0;
+  rows.forEach((r,i)=>{if(r.value!==null){if(r.value!==previous)rank=i+1;r.rank=rank;previous=r.value;}});
+ }
+ return {rows,ranked,eligible:rows.filter(r=>r.value!==null).length};
+}
 export function moneyLabel(observation){if(!observation)return '—';if(observation.status==='below_rounding_unit')return '単位未満';if(!Number.isFinite(observation.value))return observation.status==='suppressed'?'秘匿':'—';return new Intl.NumberFormat('ja-JP',{maximumFractionDigits:2}).format(observation.value/100);}

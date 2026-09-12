@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {test} from 'node:test';
-import {studentCount,studentShare,filterDistricts,districtTotal,moneyLabel} from '../dist/supplements.mjs';
-import {studentSection,districtRows,cafeRows} from '../dist/supplement-views.mjs';
+import {studentCount,studentShare,filterDistricts,districtTotal,moneyLabel,DISTRICT_METRICS,rankDistricts,districtSortPatch} from '../dist/supplements.mjs';
+import {studentSection,districtView,districtRows,cafeRows} from '../dist/supplement-views.mjs';
+import {parseExplorerState,serializeExplorerState} from '../dist/explorer-model.mjs';
 import {evaluateRoutes,routeCsv,parseState} from '../dist/app.mjs';
 const load=name=>JSON.parse(readFileSync(new URL('../dist/'+name,import.meta.url)));
 const data=load('data.json'),students=load('students.json'),districts=load('commercial-districts.json'),cafes=load('cafes.json');
@@ -44,4 +45,55 @@ test('cafes preserve municipal scope, unknown rows excluded and paging/counts co
  assert.equal(cafeRows(cafes,{limit:300}).total,252);assert.equal(cafeRows(cafes,{limit:300}).shown,252);
  assert.equal(cafeRows(cafes,{limit:30}).shown,30);assert.equal(cafeRows(cafes,{query:'ない自治体'}).total,0);
  assert.equal(cafes.observations.find(r=>r.area_name==='武蔵野市').value,128);
+});
+
+test('district rankings cover the full filtered set before pagination for every numeric column',()=>{
+ const before=JSON.stringify(districts);
+ for(const sort of Object.keys(DISTRICT_METRICS)){
+  const filtered=filterDistricts(districts.districts,{prefecture:'13'});
+  const values=filtered.map(d=>sort==='total'?districtTotal(d):d.metrics[sort].value).filter(Number.isFinite);
+  for(const dir of ['asc','desc']){
+   const options={prefecture:'13',sort,dir},r=rankDistricts(districts.districts,options);
+   assert.equal(r.rows.length,filtered.length);assert.equal(r.eligible,values.length);
+   assert.equal(r.rows[0].value,dir==='asc'?Math.min(...values):Math.max(...values));
+   const first=districtRows(districts,{...options,limit:30}),more=districtRows(districts,{...options,limit:60});
+   assert.equal(first.shown,30);assert.equal(more.shown,60);assert.ok(more.html.startsWith(first.html));
+   assert.ok(first.html.includes(r.rows[0].district.source_district_id));
+   assert.ok(r.rows.slice(r.eligible).every(r=>r.rank===null&&r.value===null));
+  }
+ }
+ assert.equal(JSON.stringify(districts),before);
+ const q=rankDistricts(districts.districts,{prefecture:'13',query:'吉祥寺',sort:'total'});
+ assert.ok(q.rows.every(r=>r.district.prefecture_code==='13'&&r.district.name.includes('吉祥寺')));
+});
+test('district ranking retains ties and separates rounded values from missing observations',()=>{
+ const make=(id,value,status='observed')=>({name:id,prefecture_code:'13',municipality_name:'市',source_district_id:id,metrics:Object.fromEntries(['retail_sales_million_yen','food_service_sales_million_yen','personal_service_sales_million_yen','retail_sales_floor_sqm'].map(k=>[k,{value,status}]))});
+ const rows=[make('first',20),make('suppressed',999,'suppressed'),make('tie',20),make('small',5),make('rounded',0,'below_rounding_unit'),make('missing',null,'not_applicable')];
+ const desc=rankDistricts(rows,{sort:'retail_sales_million_yen'}).rows;
+ assert.deepEqual(desc.map(r=>r.district.name),['first','tie','small','rounded','suppressed','missing']);
+ assert.deepEqual(desc.map(r=>r.rank),[1,1,3,4,null,null]);
+ const asc=rankDistricts(rows,{sort:'retail_sales_million_yen',dir:'asc'}).rows;
+ assert.deepEqual(asc.map(r=>r.district.name),['rounded','small','first','tie','suppressed','missing']);
+ assert.deepEqual(asc.map(r=>r.rank),[1,2,3,3,null,null]);
+ assert.ok(districtRows({districts:rows},{sort:'retail_sales_million_yen',dir:'asc'}).html.includes('単位未満'));
+ const partial=make('partial',10);partial.metrics.food_service_sales_million_yen={status:'suppressed',value:null};
+ assert.equal(rankDistricts([partial],{sort:'total'}).rows[0].rank,null);
+ assert.deepEqual(rankDistricts(rows).rows.map(r=>r.district.name),rows.map(r=>r.name));
+});
+test('district header selection has independent shareable state and accessible active headers',()=>{
+ let s=parseExplorerState('#view=numbers&detail=districts&rp=13&rq=吉祥寺&sort=retail',data);
+ assert.equal(s.districtSort,'source');
+ s={...s,...districtSortPatch(s.districtSort,s.districtDir,'total')};
+ assert.equal(s.districtDir,'desc');
+ s={...s,...districtSortPatch(s.districtSort,s.districtDir,'total')};
+ assert.equal(s.districtDir,'asc');
+ const restored=parseExplorerState(serializeExplorerState(s),data);
+ assert.deepEqual(restored,s);assert.equal(restored.sort,'retail');assert.equal(restored.regionPref,'13');
+ assert.deepEqual(districtSortPatch('total','asc','retail_sales_floor_sqm'),{districtSort:'retail_sales_floor_sqm',districtDir:'desc'});
+ for(const key of ['constructor','__proto__','toString','bogus'])assert.equal(parseExplorerState('#dsort='+key+'&ddir=bad',data).districtSort,'source');
+ const html=districtView(districts,{sort:'total',dir:'asc'});
+ assert.equal((html.match(/class="district-sort"/g)||[]).length,5);
+ assert.equal((html.match(/aria-sort="ascending"/g)||[]).length,1);
+ assert.ok(html.includes('id="district-sort-total"'));assert.ok(html.includes('3業種売上計を大きい順に並べ替え'));
+ assert.ok(districtRows(districts,{query:'ない地区名',sort:'total'}).html.includes('colspan="7"'));
 });

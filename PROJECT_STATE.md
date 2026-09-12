@@ -1,5 +1,12 @@
 # PROJECT_STATE
 
+## Commercial-district numeric rankings — 2026-09-12
+
+- Owner requests tap-to-sort numeric headers in the regional commercial-district table. All five numeric columns now select descending order on first tap, toggle ascending on repeat, and show the active direction. The source order can be restored.
+- Rankings apply to the full prefecture/query result before 30-row pagination. Same published values share competition rank (1, 1, 3); ranks follow the selected direction. Suppressed/unpublished values remain unranked at the end in both directions. Three-sector totals still require every sector, and below-rounding values keep their original label and source rounding semantics. No statistical values, definitions or source periods change.
+- Independent district sort/direction persist in the URL alongside filters. Header IDs, keyboard focus and horizontal table scroll survive rerender; the selected column is highlighted and exposes aria-sort. A narrow rank column and explicit district-name width preserve mobile readability.
+- Validation: 18 JavaScript behavior checks PASS, including all five actual-data rankings before pagination, missing/rounded/tied synthetic values and independent URL/header state. `make verify-fast` PASS after restoring the existing pinned Python dependencies. Entry assets, module syntax, whitespace and byte-for-byte conservation of all five public JSON assets PASS. Read-only review identified an inherited first-column minimum width; the rank/name selectors were corrected once. Static authored assets need no build step. Browser and physical-device QA not requested; not performed. No raw-input, ID, N03 or source-lock changes; locked-source checks are not newly claimed.
+
 ## Food, shopping and student theme layout v0.7 — 2026-09-12
 
 - **PUBLISHED v0.7**: https://tokyo-rail-town-atlas.dwdaai.chatgpt.site. Saved version 7 (`appgprj_6a9f389f781c8191b52856216aaa9b32~appgver_e29925ea30488191911956d77ab399a6`), deployment `appgdep_6aa4efa59f3881918d88f7458d6a91bc` succeeded at 2026-09-12T06:22:40.919097+00:00. Exact deployed source `ccac0ff9ddfb320bfd6c5b2eef454a1979a1c6de`. All 19 public assets in the 20-file archive match pushed source bytes, and the packaged hosting configuration is semantically identical. This subsequent receipt-only commit changes no public assets.

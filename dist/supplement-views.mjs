@@ -1,4 +1,4 @@
-import {studentShare,filterDistricts,districtTotal,moneyLabel} from './supplements.mjs';
+import {studentShare,filterDistricts,districtTotal,moneyLabel,DISTRICT_METRICS,rankDistricts} from './supplements.mjs';
 const PREF={'11':'埼玉県','12':'千葉県','13':'東京都','14':'神奈川県'};
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=v=>Number.isFinite(v)?new Intl.NumberFormat('ja-JP',{maximumFractionDigits:1}).format(v):'—';
@@ -14,18 +14,23 @@ export function studentSection(data,students,station){
  }).join('')||'<p class="note">この区画の在学者数は未取得です。</p>'}`;
 }
 
-export function districtView(asset,{query='',prefecture='all'}={}){
- return `<div class="section-heading"><div><div class="eyebrow">COMMERCIAL DISTRICT / SALES</div><h2>繁華街の商業規模を、売上で読む</h2><p>1都3県・公式商業集積地区 ${num(asset.districts.length)}地区。売上は2020年の年間額です。</p></div></div><p class="scope-label">GDPは「付加価値」、ここで表示するのは「売上」です。小売・飲食サービス・生活関連サービスの3業種を掲載しています。2020年はコロナ期のため、現在の売上とは異なります。</p><div class="data-search"><label>地区名・市区町村名<input id="district-query" type="search" value="${esc(query)}" placeholder="銀座、吉祥寺、新宿など" maxlength="80"></label><label>都県<select id="district-pref"><option value="all" ${prefecture==='all'?'selected':''}>1都3県すべて</option>${Object.entries(PREF).map(([code,name])=>`<option value="${code}" ${prefecture===code?'selected':''}>${name}</option>`).join('')}</select></label></div><p id="district-result-count" class="note" role="status"></p><div class="table-wrap"><table class="district-table"><thead><tr><th>公式商業地区名・所在地</th><th>小売売上<br>億円／2020年</th><th>飲食サービス売上<br>億円／2020年</th><th>生活関連サービス売上<br>億円／2020年</th><th>3業種売上計<br>億円／公表値の和</th><th>小売売場面積<br>㎡／2021年</th></tr></thead><tbody id="district-results"></tbody></table></div><button id="district-more" class="more-button">次の30地区を表示</button><p class="note">地区名は統計の原表に従います。駅ビルや商店街が別地区になる場合があります。例えば「新宿駅東口」は新宿全体ではありません。地区の境界を駅や本アプリの中心地に結び付けていないため、沿線の合計・総合評価には加えていません。</p><details class="card"><summary>売上の集計範囲・記号・出典</summary><p>3業種売上計は、3つの売上すべてが公表されている地区だけ計算しています。全産業の総売上ではありません。「秘匿」は公表が伏せられた値、「—」は該当数字なし・未公表などです。原表の0は百万円未満のため「単位未満」と表示し、これを含む合計に「約」を付けます。</p><p>飲食サービスは産業76・77。生活関連サービスは78・79のうち対象業種で、娯楽業80を含みません。小売売場面積は法人の小売業が対象で、オフィス面積ではありません。面積の基準日は2021年6月1日です。</p><p>総務省・経済産業省「令和3年経済センサス‐活動調査 立地環境特性編 第2表」を駅まちアトラスが加工。公表日2024年6月25日。${link(asset.source.url)} ${link(asset.source.definition_url,'集計定義')} ${link(asset.source.terms_url,'利用条件')}</p></details>`;
+export function districtView(asset,{query='',prefecture='all',sort='source',dir='desc'}={}){
+ const ranked=Object.hasOwn(DISTRICT_METRICS,sort);
+ const headers=Object.entries(DISTRICT_METRICS).map(([key,m])=>{
+  const active=sort===key,next=active&&dir==='desc'?'小さい順':'大きい順';
+  return `<th scope="col" aria-sort="${active?(dir==='asc'?'ascending':'descending'):'none'}"><button type="button" class="district-sort" id="district-sort-${key}" data-district-sort="${key}" aria-label="${m.label}を${next}に並べ替え"><span>${m.label} <span class="sort-arrow" aria-hidden="true">${active?(dir==='asc'?'↑':'↓'):'↕'}</span><small>${m.unit}</small></span></button></th>`;
+ }).join('');
+ return `<div class="section-heading"><div><div class="eyebrow">COMMERCIAL DISTRICT / SALES</div><h2>繁華街の商業規模を、売上で読む</h2><p>1都3県・公式商業集積地区 ${num(asset.districts.length)}地区。売上は2020年の年間額です。</p></div></div><p class="scope-label">GDPは「付加価値」、ここで表示するのは「売上」です。小売・飲食サービス・生活関連サービスの3業種を掲載しています。2020年はコロナ期のため、現在の売上とは異なります。</p><div class="data-search"><label>地区名・市区町村名<input id="district-query" type="search" value="${esc(query)}" placeholder="銀座、吉祥寺、新宿など" maxlength="80"></label><label>都県<select id="district-pref"><option value="all" ${prefecture==='all'?'selected':''}>1都3県すべて</option>${Object.entries(PREF).map(([code,name])=>`<option value="${code}" ${prefecture===code?'selected':''}>${name}</option>`).join('')}</select></label></div><div class="district-sort-info"><p id="district-result-count" class="note" role="status" aria-live="polite"></p>${ranked?'<button type="button" data-district-sort="source">地域順に戻す</button>':''}</div><p id="district-sort-help" class="note">指標名をタップして大きい順に。もう一度タップすると小さい順に切り替わります。順位は選択中の都県・検索条件内で、同じ公表値は同順位です。秘匿・未公表は順位を付けず末尾に表示します。「単位未満」は原表の丸め値で並べます。</p><div class="table-wrap" id="district-table-scroll"><table class="district-table" aria-describedby="district-sort-help"><thead><tr>${ranked?'<th scope="col" class="district-rank">順位</th>':''}<th scope="col">公式商業地区名・所在地</th>${headers}</tr></thead><tbody id="district-results"></tbody></table></div><button id="district-more" class="more-button">次の30地区を表示</button><p class="note">地区名は統計の原表に従います。駅ビルや商店街が別地区になる場合があります。例えば「新宿駅東口」は新宿全体ではありません。地区の境界を駅や本アプリの中心地に結び付けていないため、沿線の合計・総合評価には加えていません。</p><details class="card"><summary>売上の集計範囲・記号・出典</summary><p>3業種売上計は、3つの売上すべてが公表されている地区だけ計算しています。全産業の総売上ではありません。「秘匿」は公表が伏せられた値、「—」は該当数字なし・未公表などです。原表の0は百万円未満のため「単位未満」と表示し、これを含む合計に「約」を付けます。</p><p>飲食サービスは産業76・77。生活関連サービスは78・79のうち対象業種で、娯楽業80を含みません。小売売場面積は法人の小売業が対象で、オフィス面積ではありません。面積の基準日は2021年6月1日です。</p><p>総務省・経済産業省「令和3年経済センサス‐活動調査 立地環境特性編 第2表」を駅まちアトラスが加工。公表日2024年6月25日。${link(asset.source.url)} ${link(asset.source.definition_url,'集計定義')} ${link(asset.source.terms_url,'利用条件')}</p></details>`;
 }
 
-export function districtRows(asset,{query='',prefecture='all',limit=30}={}){
- const rows=filterDistricts(asset.districts,{query,prefecture}),shown=rows.slice(0,limit);
- const html=shown.map(d=>{
+export function districtRows(asset,{query='',prefecture='all',limit=30,sort='source',dir='desc'}={}){
+ const {rows,ranked,eligible}=rankDistricts(asset.districts,{query,prefecture,sort,dir}),shown=rows.slice(0,limit);
+ const html=shown.map(({district:d,rank})=>{
   const m=d.metrics,total=districtTotal(d),rounded=['retail_sales_million_yen','food_service_sales_million_yen','personal_service_sales_million_yen'].some(k=>m[k].status==='below_rounding_unit');
   const totalLabel=total===null?'—':total===0&&rounded?'単位未満':(rounded?'約 ':'')+moneyLabel({value:total,status:'observed'});
-  return `<tr><td><strong>${esc(d.name)}</strong><small>${esc(PREF[d.prefecture_code])} ${esc(d.municipality_name)}／地区 ${esc(d.source_district_id)}</small></td>${['retail_sales_million_yen','food_service_sales_million_yen','personal_service_sales_million_yen'].map(k=>`<td class="number-cell">${moneyLabel(m[k])}</td>`).join('')}<td class="number-cell"><b>${totalLabel}</b></td><td class="number-cell">${m.retail_sales_floor_sqm.status==='suppressed'?'秘匿':num(m.retail_sales_floor_sqm.value)}</td></tr>`;
- }).join('')||'<tr><td colspan="6">該当する地区はありません。別の地区名・市区町村名で検索してください。</td></tr>';
- return {html,total:rows.length,shown:shown.length};
+  return `<tr>${ranked?`<td class="district-rank">${rank===null?'—':num(rank)}</td>`:''}<td class="district-name"><strong>${esc(d.name)}</strong><small>${esc(PREF[d.prefecture_code])} ${esc(d.municipality_name)}／地区 ${esc(d.source_district_id)}</small></td>${['retail_sales_million_yen','food_service_sales_million_yen','personal_service_sales_million_yen'].map(k=>`<td class="number-cell">${moneyLabel(m[k])}</td>`).join('')}<td class="number-cell"><b>${totalLabel}</b></td><td class="number-cell">${m.retail_sales_floor_sqm.status==='suppressed'?'秘匿':num(m.retail_sales_floor_sqm.value)}</td></tr>`;
+ }).join('')||`<tr><td colspan="${ranked?7:6}">該当する地区はありません。別の地区名・市区町村名で検索してください。</td></tr>`;
+ return {html,total:rows.length,shown:shown.length,ranked,eligible};
 }
 
 export function cafeView(asset,{query=''}={}){
