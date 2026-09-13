@@ -4,6 +4,17 @@
 **Dictionary version:** `0.5.0`
 **Status:** Phase 1 G3 normalization PASS; G3.1 scope-rollup contract fixed but N03 use determination pending (not publication-ready)
 
+Public station expansion (2026-09-13, DEC-0018): `dist/network.json` supplements the
+unchanged pilot package. `stations` has the same station grain and persisted `sta_` /
+`stg_` identities. `officialRoutes` uses persisted `nrt_` browse IDs for N02
+operator × formal route inventories, with `orderStatus=unconfirmed`; these are not
+ordered canonical service corridors. `stationMemberships` links station IDs to
+those inventories. `meshContexts` / `studentMeshContexts` preserve the existing
+500m prefecture-component observation contracts; old contexts win at merge.
+`network_identity.json` records all source aliases, source feature indices and
+selection reasons. `NETWORK_SCOPE.json` fixes the approximate acquisition extent,
+which is neither a municipality polygon nor a commercial-center boundary.
+
 ## 1. Canonical grain
 
 公開上の入口は駅だが、規模・類型を計算する正本単位は `center` である。

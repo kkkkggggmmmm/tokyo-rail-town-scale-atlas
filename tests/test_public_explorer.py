@@ -77,7 +77,7 @@ class PublicExplorerTests(unittest.TestCase):
         self.assertTrue(all(x['presence'] for x in edu['cramSchools']['records']))
 
     def test_static_assets_are_allowlisted_and_chart_is_real_svg(self):
-        expected={'index.html','style.css','app.mjs','data.json','context.json','route-comparison.svg',
+        expected={'index.html','style.css','app.mjs','network.json','network-model.mjs','data.json','context.json','route-comparison.svg',
                   'students.json','cafes.json','commercial-districts.json','supplements.mjs','supplement-views.mjs','explorer-model.mjs','atlas-insights.mjs','theme-view.mjs','district-areas.mjs',
                   'vendor/maplibre-gl.js','vendor/maplibre-gl.css','vendor/pmtiles.js','vendor/MAPLIBRE-LICENSE.txt','vendor/PMTILES-LICENSE.txt'}
         files={str(p.relative_to(ROOT/'dist')) for p in (ROOT/'dist').rglob('*') if p.is_file()}

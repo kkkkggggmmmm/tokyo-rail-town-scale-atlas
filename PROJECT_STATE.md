@@ -1,5 +1,14 @@
 # PROJECT_STATE
 
+## Expanded metro station coverage — 2026-09-13
+
+- Implemented for the Owner's requested Chiba/Saitama/Fujisawa reach; publication pending this source commit. Canonical branch remains `work/public-explorer-mvp`, starting from `13f6aac2475aaa69603dcdfca903151b586f6c3e`.
+- Added1,366 station records to the unchanged226-station pilot: **1,592 records / 1,271 same-name nearby groups / 118 formal routes / 1,252 station-containing statistical meshes**. All1,569 N02 records within the fixed approximate polygon are normalized;23 historical outside records retained; unresolved0. This is not a municipal boundary or a physical-station census.
+- Values eligible for comparison: commercial metrics1,572 each; population and resident university students1,493 each. S12 numeric1,356 / duplicate-on-other-record167 / source-absent69. Fixed source years2025 railway, FY2024 ridership,2021 commercial,2020 resident population/students. No missing→0, ridership sums, N03 or center estimates.
+- Restored exact24 locked archives/91members and four accepted student archives. Student11/12 had one connection timeout each, then one successful retry each. Hashes and source locks unchanged. New station aliases mint opaque IDs into a separate persistent registry; existing G2 identity and five public JSON assets remain byte-identical.
+- UI merges the additional package, searches all stations, filters118 formal routes, supports160pages, and explicitly exposes3 unclassified statistical-partition stations. Formal route→ordered profile transition explains the8 supported corridors. Station captions distinguish operator/route records.
+- Validation:58 JavaScript checks and10 public-payload Python checks PASS; required `make verify-fast` / `make verify-locked` PASS. No G3 derivatives generated. Browser/device QA not requested/performed; no compilation step for the static site. Detailed evidence and scope: `docs/NETWORK_EXPANSION_2026-09-13.md`.
+
 ## Expanded regional totals — 2026-09-13
 
 - **PUBLISHED v0.11**: https://tokyo-rail-town-atlas.dwdaai.chatgpt.site. Saved version11 `appgprj_6a9f389f781c8191b52856216aaa9b32~appgver_8111b040ef0881918d47297f513db42c`; deployment `appgdep_6aa629f35d1c8191a9cc632e28e595f7` succeeded at2026-09-13T04:43:42.593671+00:00. Exact deployed source `1643785e736971f810cf89f2fd94ed691401de9b`. Archive has21files; all20public assets match source bytes and normalized hosting configuration matches semantically. This subsequent receipt-only commit changes no public assets.

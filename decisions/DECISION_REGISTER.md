@@ -150,3 +150,12 @@
 - Decision:`selected-district-sum-v2` extends the eight existing collections to26, using200 distinct IDs from the unchanged public Table2 data. Tokyo16/Kanagawa3/Saitama3/Chiba4; exact included IDs and exclusions remain in `dist/district-areas.mjs`. Existing eight collections retain their IDs and contents. No source row is duplicated across collections.
 - Geographic limits:These names describe fixed published-district collections, not verified polygons. Keep `aggregationAllowed=false`. 横浜CIAL is not covered by the included rows; ambiguous 浦和/松戸 associations are excluded explicitly; 六栄会/川越名店街 geographic assignment is unverified. Do not present these omissions as source values of zero or a complete town inventory. No numeric-based removal of suppressed members.
 - Computation:unchanged complete-case and same-period rules from DEC-0016. Rankable counts23 retail/19 food/12 personal/11 three-sector/22 floor out of26. Unavailable sums receive no rank and stay visible. Search never clips a collection to matching source districts. No canonical center, station or municipality-total reassignment.
+
+## DEC-0018 — Cover all source stations within the requested metro reach
+
+- Date: 2026-09-13
+- Status: accepted for the Owner's explicit all-station acquisition request
+- Scope: `NETWORK_SCOPE.json` fixes an approximate polygon including Chiba/Toke, Saitama/Omiya/Urawa/Higashi-Iwatsuki and Fujisawa/Shonandai/Katase-Enoshima. This is a browse/acquisition scope, not a municipal or center boundary. All1,569 N02-25 records inside it are included;23 historical outside records are retained. No N03.
+- Identity: existing G2 aliases/opaque IDs win; new UUIDs are persisted separately. A source-key ambiguity blocks new publication. Existing8 ordered corridors remain frozen;118 formal route inventories have no inferred sequence. New `nrt_` IDs describe those browse inventories, not canonical service corridors.
+- Statistics: extend exact locked N02/S12/T001163/T001141/T001144 sources to the additional station meshes. Preserve every raw token, year, prefecture component and suppression/aggregation marker. S12 remains Access-only and un-summed. Public base JSON and all existing identity/lock files remain byte-identical.
+- Publication: authorized expanded station exploration, quantitative profiles and comparisons, with explicit missing records and the approximate scope disclosed. No new center boundaries, whole-town totals or score model.
