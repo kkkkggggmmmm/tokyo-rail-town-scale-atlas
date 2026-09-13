@@ -117,10 +117,23 @@ test('table-defined totals preserve source IDs and keep whole-center coverage un
  assert.ok(html.includes('新宿駅西口'));assert.ok(html.includes('3,753.39'));
  assert.ok(html.includes('district-rank'));assert.equal((html.match(/data-district-sort=/g)||[]).length,5);
  assert.equal(filterAreas(districts,{query:'サンシャイン'}).at(0).name,'池袋');
- assert.equal(filterAreas(districts,{prefecture:'14'}).length,0);
- assert.ok(districtAreaView(districts,{prefecture:'14'}).includes('公表地区の全データを見る'));
+ assert.equal(filterAreas(districts,{prefecture:'14'}).length,3);
+ assert.ok(districtAreaView(districts,{prefecture:'14',query:'該当しないエリア'}).includes('公表地区の全データを見る'));
  const s=parseExplorerState('#view=numbers&dmode=source&area='+shinjuku.id+'&dsort=total',data);
  assert.deepEqual(parseExplorerState(serializeExplorerState(s),data),s);
  assert.equal(parseExplorerState('#view=numbers&area=bad&dmode=bad',data).districtMode,'areas');
  assert.equal(parseExplorerState('#area=bad',data).districtArea,'');
+});
+
+
+test('area ranking UI describes26 region scope and keeps a mobile metric selector and filter reset',()=>{
+ const html=districtAreaView(districts,{prefecture:'14',sort:'total'});
+ assert.ok(html.includes('1都3県・26エリア'));
+ assert.ok(html.includes('神奈川県 3エリア'));
+ assert.ok(html.includes('26エリア中 3エリアを表示'));
+ assert.ok(html.includes('id="area-metric"'));
+ assert.ok(html.includes('data-area-reset'));
+ assert.ok(html.includes('value="total" selected'));
+ assert.equal((html.match(/aria-sort="descending"/g)||[]).length,1);
+ assert.ok(html.includes('地理的な街全域の総額ではありません'));
 });

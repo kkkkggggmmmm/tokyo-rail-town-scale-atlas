@@ -4,6 +4,7 @@ import {test} from 'node:test';
 import {DISTRICT_AREAS,aggregateArea,rankAreas} from '../dist/district-areas.mjs';
 
 const asset=JSON.parse(readFileSync(new URL('../dist/commercial-districts.json',import.meta.url)));
+const BASELINE_AREAS=DISTRICT_AREAS.slice(0,8);
 const retail='retail_sales_million_yen';
 const food='food_service_sales_million_yen';
 const personal='personal_service_sales_million_yen';
@@ -19,8 +20,8 @@ test('eight frozen area rosters reproduce published-district sums without changi
  const before=JSON.stringify(asset),rostersBefore=JSON.stringify(DISTRICT_AREAS);
  const expected={新宿:956086,銀座:882987,渋谷:614511,池袋:604339,'原宿・表参道':489112,日本橋:330422,六本木:292558,吉祥寺:160354};
  const completePersonal=new Set(['新宿','日本橋','原宿・表参道','吉祥寺']);
- assert.equal(DISTRICT_AREAS.length,8);
- for(const a of DISTRICT_AREAS){
+ assert.equal(BASELINE_AREAS.length,8);
+ for(const a of BASELINE_AREAS){
   assert.equal(a.aggregationAllowed,false,'a sum of listed districts must not approve a canonical center boundary');
   assert.equal(a.selectedDistrictSumAllowed,true);
   const result=aggregateArea(asset,a),n=a.sourceDistrictIds.length;
@@ -47,17 +48,17 @@ test('eight frozen area rosters reproduce published-district sums without changi
 });
 
 test('retail ranks cover all eight groups and incomplete three-sector sums receive no rank',()=>{
- const r=rankAreas(asset);
+ const r=rankAreas(asset,{areas:BASELINE_AREAS});
  assert.equal(r.sort,retail);assert.equal(r.eligible,8);
  assert.deepEqual(r.rows.map(r=>r.area.name),['新宿','銀座','渋谷','池袋','原宿・表参道','日本橋','六本木','吉祥寺']);
  assert.deepEqual(r.rows.map(r=>r.rank),[1,2,3,4,5,6,7,8]);
  for(const dir of ['asc','desc']){
-  const total=rankAreas(asset,{sort:'total',dir});
+  const total=rankAreas(asset,{sort:'total',dir,areas:BASELINE_AREAS});
   assert.equal(total.eligible,4);assert.equal(total.rows.length,8);
   assert.ok(total.rows.slice(0,4).every(r=>Number.isFinite(r.value)&&r.rank!==null));
   assert.ok(total.rows.slice(4).every(r=>r.value===null&&r.rank===null));
  }
- for(const sort of [food,floor])assert.equal(rankAreas(asset,{sort}).eligible,8);
+ for(const sort of [food,floor])assert.equal(rankAreas(asset,{sort,areas:BASELINE_AREAS}).eligible,8);
 });
 
 test('a child-name search selects its complete area roster rather than summing only the matched child',()=>{
@@ -65,7 +66,7 @@ test('a child-name search selects its complete area roster rather than summing o
  assert.equal(r.rows.length,1);assert.equal(r.rows[0].area.name,'池袋');
  assert.equal(r.rows[0].districts.length,7);assert.equal(r.rows[0].value,604339);
  assert.equal(r.rows[0].metrics[retail].expected,7);
- assert.equal(rankAreas(asset,{prefecture:'14'}).rows.length,0);
+ assert.equal(rankAreas(asset,{prefecture:'14',areas:BASELINE_AREAS}).rows.length,0);
  assert.equal(rankAreas(asset,{query:'該当しない街'}).rows.length,0);
 });
 
@@ -139,4 +140,32 @@ test('ties use competition ranks and unavailable groups remain last in both dire
  assert.deepEqual(asc.rows.map(r=>r.rank),[1,2,3,3,null]);
  assert.equal(desc.eligible,4);assert.equal(asc.eligible,4);
  assert.equal(JSON.stringify({source,areas}),before);
+});
+
+
+test('expanded26 area registry retains200 unique source districts across all four prefectures',()=>{
+ assert.equal(DISTRICT_AREAS.length,26);
+ const ids=DISTRICT_AREAS.flatMap(a=>a.sourceDistrictIds);
+ assert.equal(ids.length,200);assert.equal(new Set(ids).size,200);
+ const prefCounts={'11':3,'12':4,'13':16,'14':3};
+ for(const [prefecture,n] of Object.entries(prefCounts))assert.equal(rankAreas(asset,{prefecture}).rows.length,n);
+ for(const a of DISTRICT_AREAS){assert.equal(aggregateArea(asset,a).identityValid,true);assert.equal(a.aggregationAllowed,false);}
+});
+
+test('expanded area sums reproduce selected published rows and report differing completeness',()=>{
+ const expected={'横浜駅周辺':415030,'川崎駅周辺':174755,'みなとみらい・桜木町':108705,'千葉駅周辺':127912,'柏':107289,'立川':157808,'町田':143209,'浦和':91692,'川越・本川越':71540};
+ const before=JSON.stringify(asset);
+ for(const [name,total] of Object.entries(expected))assert.equal(aggregateArea(asset,DISTRICT_AREAS.find(a=>a.name===name)).metrics[retail].value,total);
+ for(const [sort,eligible] of [[retail,23],[food,19],[personal,12],['total',11],[floor,22]])for(const dir of ['asc','desc']){
+  const r=rankAreas(asset,{sort,dir});assert.equal(r.eligible,eligible);assert.equal(r.rows.length,26);
+  assert.ok(r.rows.every(row=>row.identityValid));assert.ok(r.rows.slice(eligible).every(row=>row.rank===null&&row.value===null));
+ }
+ assert.equal(JSON.stringify(asset),before);
+});
+
+test('incomplete areas stay intact and station-side queries cannot shrink their aggregation',()=>{
+ const omiya=rankAreas(asset,{query:'大宮中仙道中央',prefecture:'11'});
+ assert.equal(omiya.rows.length,1);assert.equal(omiya.rows[0].districts.length,14);assert.equal(omiya.rows[0].rank,null);
+ assert.ok(omiya.rows[0].metrics[retail].missing.some(m=>m.districtId==='11103097'&&m.status==='not_applicable'));
+ const y=rankAreas(asset,{query:'ベイクォーター'});assert.equal(y.rows.length,1);assert.equal(y.rows[0].districts.length,14);assert.equal(y.rows[0].value,415030);
 });

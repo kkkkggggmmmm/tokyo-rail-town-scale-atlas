@@ -164,6 +164,7 @@ function extraComparisonRows(chosen){const configs=[['衣服・身の回り品�
   if($('line-from'))$('line-from').onchange=e=>{forceFit=true;change({from:Number(e.target.value),to:Math.max(Number(e.target.value),Number($('line-to').value)),lineCamera:null,station:''})};
   if($('line-to'))$('line-to').onchange=e=>{forceFit=true;change({to:Number(e.target.value),lineCamera:null,station:''})};
   if($('district-query'))$('district-query').oninput=e=>{districtLimit=30;change({regionQuery:e.target.value},{replace:true})};
+  if($('area-metric'))$('area-metric').onchange=e=>change({districtSort:e.target.value,districtDir:'desc'});
   if($('district-pref'))$('district-pref').onchange=e=>{districtLimit=30;change({regionPref:e.target.value},{replace:true})};
   if($('cafe-query'))$('cafe-query').oninput=e=>{cafeLimit=30;change({regionQuery:e.target.value},{replace:true})};
   if($('district-more'))$('district-more').onclick=()=>{districtLimit+=30;renderDistrictRows()};if($('cafe-more'))$('cafe-more').onclick=()=>{cafeLimit+=30;renderCafeRows()};
@@ -187,6 +188,7 @@ function extraComparisonRows(chosen){const configs=[['衣服・身の回り品�
   if(d.favorite){setFavorite(d.favorite);return;}if(d.pin){pin(d.pin);return;}if('clearPins'in d){change({pins:[]});return;}
   if(d.profile){openProfile(d.profile);return;}if(d.station){selectStation(d.station,state.panel!=='list'||state.view==='line');return;}
   if(d.theme){change({theme:d.theme,mapMetric:d.theme==='all'?'none':THEMES[d.theme].metric,columns:THEMES[d.theme].columns,sort:d.theme==='all'?'name':THEMES[d.theme].metric,dir:d.theme==='all'?'asc':'desc',page:1});return;}
+  if('areaReset'in d){change({regionQuery:'',regionPref:'all',districtArea:''});return;}
   if(d.districtMode){change({districtMode:d.districtMode});return;}
   if(d.districtArea){focusAreaDetail=true;change({districtArea:d.districtArea});return;}
   if('areaRanking'in d){$('district-table-scroll')?.focus({preventScroll:true});$('district-table-scroll')?.scrollIntoView({block:'start'});return;}

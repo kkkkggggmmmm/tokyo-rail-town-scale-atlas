@@ -720,3 +720,5 @@ body[data-theme=food] .bubble-legend i{border-color:#d8803e;background:#f4b88666
 @media(max-width:800px){.area-ranking .district-name{min-width:126px;width:126px}.area-ranking .district-name button{font-size:.9375rem}.area-ranking .number-cell{min-width:142px;padding:12px 10px}.area-ranking thead th{padding:8px}.area-ranking .district-sort{font-size:.875rem}.area-detail h3{font-size:1.2rem}}
 
 #area-detail,#district-table-scroll{scroll-margin-top:90px}
+
+.area-ranking-controls{display:flex;align-items:flex-end;flex-wrap:wrap;gap:12px;margin:16px 0}.area-ranking-controls label{width:min(100%,420px)}.area-ranking-controls select{width:100%;min-height:44px}.area-ranking-controls button{min-height:44px}

@@ -1,5 +1,16 @@
 # PROJECT_STATE
 
+## Expanded regional totals — 2026-09-13
+
+- Owner again requests regional totals/ranking. Public v0.10 already supplied eight Tokyo collections; this change extends the same explicit table-defined method to **26 collections / 200 unique source leaf districts**, covering Tokyo16, Kanagawa3, Saitama3 and Chiba4. This remains a sum of specified published districts, not certified geography covering every establishment in a colloquial town.
+- Source restoration: workspace maintenance removed the checkout. Restored the registered Sites source at `5fcc9b5f381e21a0e5291e25a7d16b0bc3047887`; checked native public version10; fetched canonical GitHub `work/public-explorer-mvp` at `e634558d06f2252c96fd6d0ff8bac94473e3427c` (receipt-only descendant) before editing. No older assets overwrite newer source.
+- `selected-district-sum-v2` adds 上野・御徒町、浅草、中野、高円寺、荻窪、立川、八王子、町田、横浜駅周辺、みなとみらい・桜木町、川崎駅周辺、大宮、浦和、川越・本川越、千葉駅周辺、船橋駅周辺、柏、松戸駅周辺. Prior8 IDs, district assignments and metric values remain unchanged. New browse IDs are minted once. All200 district references exist and are distinct; inclusion/exclusion statements accompany every collection.
+- Complete rankings: retail sales23/26, food-service sales19/26, personal-service sales12/26, three-sector sales11/26, retail floor22/26. No suppressed/not-applicable districts were removed to complete a rank. 大宮/船橋/松戸 retail remains unavailable. Examples in millionyen: 横浜415030, 川崎174755, 立川157808, 町田143209, 千葉127912, 柏107289. All sales remain calendar2020, floor2021-06-01.
+- Explicit coverage caveats: 横浜's source west-side row excludes CIAL without an included standalone row; 浦和/松戸 have unassigned ambiguous shopping-association names; 川越's 六栄会/川越名店街 locations are not certified. The UI says **公表地区をまとめた合計** and exposes exact rosters and missing reasons. These data cannot yet fulfil a claim of geographic whole-town coverage; DEC-0016's canonical-center/geographic gate remains closed.
+- UI shows coverage by prefecture and the current26-area denominator. Adds a compact metric selector for mobile and an active-filter reset; clickable headers, directions, ties, URL state, detailed source observations and return-to-ranking remain intact.
+- Validation:31 targeted JS checks PASS and required `make verify-fast` PASS; original8 baseline checks retained, plus26/200 membership, actual added totals, per-metric completeness and full-group search checks. Read-only peer review found one overly geographic 川越 description, corrected once. All five public JSON assets stay byte-identical to canonical parent; no raw pipeline, N03, G2, CoreScale or source lock changes. Browser/device QA not requested/performed; authored static site needs no compilation.
+- Publication pending this turn's release.
+
 ## Table-defined area totals and rankings — 2026-09-12
 
 - **PUBLISHED v0.10**: https://tokyo-rail-town-atlas.dwdaai.chatgpt.site. Saved version 10 (`appgprj_6a9f389f781c8191b52856216aaa9b32~appgver_f6debb3481348191870c30791453e9a3`), deployment `appgdep_6aa5dba256948191a661b56f46bef7f9` succeeded at 2026-09-12T23:09:33.018213+00:00. Exact deployed source `5fcc9b5f381e21a0e5291e25a7d16b0bc3047887`. All 20 public assets in the 21-file archive match pushed source bytes; normalized hosting configuration matches semantically. This subsequent receipt-only commit changes no public assets.
