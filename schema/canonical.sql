@@ -220,7 +220,9 @@ CREATE TABLE feature_observation (
     UNIQUE (entity_type, entity_id, metric_code, source_release_id, source_record_key),
     CHECK (
         (observation_status = 'observed' AND numeric_value IS NOT NULL AND numeric_value > 0)
-        OR (observation_status = 'observed_zero' AND numeric_value = 0)
+        -- `NULL = 0` is UNKNOWN and a CHECK accepts UNKNOWN, so the zero branch
+        -- must reject NULL explicitly.
+        OR (observation_status = 'observed_zero' AND numeric_value IS NOT NULL AND numeric_value = 0)
         OR (observation_status IN ('imputed', 'aggregation_destination') AND numeric_value IS NOT NULL)
         OR (observation_status IN (
             'suppressed', 'not_public', 'not_surveyed', 'not_applicable',

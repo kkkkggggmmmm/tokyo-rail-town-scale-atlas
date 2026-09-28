@@ -1,0 +1,92 @@
+contract_id: mesh-native-scope-v1
+project_id: tokyo-rail-town-scale-atlas
+owner_decision: PENDING
+proposal: docs/PROPOSED_DECISIONS_2026-09-28.md
+recorded_at: "2026-09-28"
+status: PROPOSED_NOT_EXECUTABLE
+purpose: >-
+  Draft of the N03-free component-support contract that OWNER-2026-09-06-N03 asks to
+  reconcile before real-data extraction. It decides display and analysis scope for e-Stat
+  prefecture-partition mesh components without any administrative-boundary polygon. It
+  authorizes nothing. Only if the Owner accepts it in DECISION_REGISTER.md and its
+  preconditions pass does it become the "audited, authorized scope clip" named in
+  AGENTS.md, for internal, review-only analysis.
+would_supersede_for_internal_analysis: data/reference/G3_1_SCOPE_ROLLUP_CONTRACT.yml
+principle: >-
+  Scope is decided only from the e-Stat prefecture partition code attached to each
+  component, the JIS X 0410 mesh geometry computed from the mesh code itself, and the
+  locked N02-25 TX segment geometry. No polygon from N03, e-Stat boundary data, GSI
+  base-map products, OSM or any other boundary source is read, derived, buffered, stored
+  or published.
+inputs:
+  mesh_components:
+    - G3 economic components from locked e-Stat T001163 (2021 Economic Census, 500m)
+    - G3 population components from locked e-Stat T001141 (2020 Census, 500m)
+  mesh_geometry: computed_from_mesh_code_jis_x_0410
+  acquired_partitions: ["08", "09", "10", "11", "12", "13", "14", "19", "22"]
+  tx_route_geometry: N02-25 confirmed pc_tsukuba_express segment route geometry
+  prohibited_inputs:
+    - any administrative-boundary polygon
+    - station-centroid circles
+    - N03 or anything derived from N03
+definitions:
+  mesh_group: all prefecture-partition components sharing one mesh_code within one source family
+  display_component: component whose prefecture partition code is in ["11", "12", "13", "14"]
+  display_mesh_group: mesh_group with at least one display_component
+  d_max_m: >-
+    the largest diagonal among all display_mesh_group meshes, computed per run from the mesh
+    codes. Tokyo's southern islands make it about 800 m; a fixed mid-latitude constant is not
+    conservative and is prohibited.
+scope_rules:
+  display_scope:
+    members: display_components only
+    aggregate_name: display_partition_sum
+    note: A value for display is the sum of the group's display components. Adjacent-prefecture components never enter a display value.
+  analysis_scope:
+    display_mesh_group:
+      members: every component of the group
+      aggregate_name: analysis_group_sum
+      whole_mesh_label_allowed_only_when: every contributing partition is in acquired_partitions
+    adjacent_only_mesh_group:
+      include_when: the full mesh lies inside the union of display_mesh_group meshes buffered by (10000 m - d_max_m)
+      otherwise: exclude with reason outside_conservative_buffer
+    tx_exception:
+      applies_to_partition: "08"
+      include_when: the full mesh lies inside the N02-25 TX segment route geometry buffered by 5000 m
+      display: never
+      prohibition: station_centroid_circles
+  partial_component:
+    rule: never_allocate_or_fractionally_scale
+status_rules:
+  numeric_sum_allowed_only_when_all_included_component_statuses: [observed, observed_zero]
+  otherwise: >-
+    aggregate_value is null and aggregate_status names the first blocking status
+    (for example contains_suppressed or contains_source_absent); never zero.
+  missing_row: >-
+    An in-scope mesh with no row for a source family is source_absent for that family.
+    Lattice surfaces must mask it (for example normalized convolution) and never fill 0.
+assumptions:
+  - The e-Stat partition code of a component agrees with the legal prefecture boundary. This is assumed, not verified; record any reclaimed-land or 境界未定地 anomaly found in QA.
+required_output_fields:
+  - mesh_code
+  - source_family
+  - metric_code
+  - metric_definition_version
+  - scope_id
+  - aggregate_name
+  - aggregate_value
+  - aggregate_status
+  - component_ids
+  - component_statuses
+  - stat_source_release_id
+  - source_reference_period
+  - source_published_at
+  - contract_id
+preconditions_to_execute:
+  - The Owner accepts this contract in decisions/DECISION_REGISTER.md.
+  - A validator for this contract runs in verify-fast (contract structure) and verify-g3 (local derivatives).
+  - "Sensitivity report: display-domain results are unchanged when the analysis buffer is 9.5, 10 and 10.5 km."
+  - Outputs stay in gitignored review paths (data/derived/*, data/qa/*); no scope geometry is committed.
+publication:
+  authorized_by_this_contract: false
+  note: Publishing any aggregate produced under this contract needs a later decision.

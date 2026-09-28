@@ -46,7 +46,7 @@ which is neither a municipality polygon nor a commercial-center boundary.
 | Status | 意味 | `numeric_value` | Core集計 |
 |---|---|---:|---|
 | `observed` | 正の公表観測値 | required | 可 |
-| `observed_zero` | 公表された真の0 | `0` | 可 |
+| `observed_zero` | 公表された真の0 | `0`（`NULL`不可） | 可 |
 | `imputed` | 出典または明示手法による補完 | nullable | 原則別系列 |
 | `suppressed` | 秘匿 | `NULL` | 不可 |
 | `aggregation_destination` | 秘匿値の合算先 | source value | 重複制御必須 |
