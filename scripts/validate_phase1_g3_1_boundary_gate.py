@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -20,7 +21,14 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 AUDIT_STATUS = "BLOCKED_PENDING_GSI_USE_DETERMINATION"
 CONTRACT_STATUS = "NOT_EXECUTABLE_PENDING_GSI_USE_DETERMINATION"
-N03_PATTERN = re.compile(r"n03", re.IGNORECASE)
+N03_PATTERN = re.compile(r"n03|行政区域", re.IGNORECASE)
+# Only identifying fields are scanned, so protective notes such as `n03_used: false` stay legal.
+IDENTIFYING_FIELDS = (
+    "artifact_id", "source_id", "source_release_id", "family", "url", "url_template", "final_url",
+    "local_path", "local_path_template", "filename_pattern", "headers_path", "headers_path_template",
+    "table_id", "name", "path",
+)
+KSJ_FAMILIES = {"N02", "S12", "L01"}
 PUBLIC_N03_FLAGS = [
     ROOT / "data/manifests/public_supplements.yml",
     ROOT / "data/reference/quantitative/PUBLIC_MAP_SOURCES.yml",
@@ -39,14 +47,19 @@ def load_yaml(path: Path) -> dict[str, Any]:
     return value
 
 
-def strings_in(value: Any) -> list[str]:
-    if isinstance(value, str):
-        return [value]
+def identifying_strings(value: Any) -> list[str]:
+    """Identifying field values of an artifact, including nested member lists."""
+    found: list[str] = []
     if isinstance(value, dict):
-        return [text for key, item in value.items() for text in [str(key), *strings_in(item)]]
-    if isinstance(value, list):
-        return [text for item in value for text in strings_in(item)]
-    return []
+        for key, item in value.items():
+            if key in IDENTIFYING_FIELDS and isinstance(item, str):
+                found.append(unicodedata.normalize("NFKC", item))
+            elif isinstance(item, (dict, list)):
+                found.extend(identifying_strings(item))
+    elif isinstance(value, list):
+        for item in value:
+            found.extend(identifying_strings(item))
+    return found
 
 
 def walk_items(value: Any) -> list[tuple[str, Any]]:
@@ -58,20 +71,39 @@ def walk_items(value: Any) -> list[tuple[str, Any]]:
 
 
 def n03_like(artifact: Any) -> bool:
-    """True when any id, URL, path or nested value of an acquisition entry names N03."""
-    return any(N03_PATTERN.search(text) for text in strings_in(artifact))
+    """True when an id, URL, path, table or member name of an acquisition entry names N03."""
+    return any(N03_PATTERN.search(text) for text in identifying_strings(artifact))
 
 
 def validate_acquisition_sources(acquisition_scope: dict[str, Any], sources: dict[str, Any]) -> None:
-    """Every acquired artifact must belong to an audited SOURCES.yml source with resolved terms."""
-    resolved = {
-        item.get("source_id")
+    """Bind each Phase 1 acquisition artifact to an audited SOURCES.yml source, not just its label."""
+    audited = {
+        item.get("source_id"): item
         for item in sources.get("sources", [])
         if item.get("license", {}).get("resolved") is True
     }
     for artifact in acquisition_scope.get("artifacts", []):
-        require(artifact.get("source_id") in resolved,
+        source = audited.get(artifact.get("source_id"))
+        require(source is not None,
                 f"Acquisition artifact has no audited SOURCES.yml source with resolved terms: {artifact.get('source_id')}")
+        require(artifact.get("source_release_id") == source.get("release_id"),
+                f"{artifact.get('artifact_id')}: release {artifact.get('source_release_id')} is not the audited release {source.get('release_id')}")
+        url = artifact.get("url") or artifact.get("url_template") or ""
+        family = source.get("family")
+        if family in KSJ_FAMILIES:
+            require(f"/ksj/gml/data/{family}/" in url, f"{artifact.get('artifact_id')}: URL is not a {family} archive")
+        else:
+            table_id = artifact.get("table_id")
+            require(bool(table_id) and table_id in yaml.safe_dump(source, allow_unicode=True) and f"statsId={table_id}&" in url,
+                    f"{artifact.get('artifact_id')}: e-Stat table is not the audited table of {artifact.get('source_id')}")
+
+
+def validate_public_n03_flags(paths: list[Path]) -> None:
+    """Every public manifest must exist and keep every `n03_used` flag false."""
+    for path in paths:
+        require(path.exists(), f"Missing N03 flag manifest {path}")
+        flags = [value for key, value in walk_items(load_yaml(path)) if key == "n03_used"]
+        require(bool(flags) and all(value is False for value in flags), f"{path} must keep n03_used: false")
 
 
 def validate_payloads(
@@ -133,26 +165,32 @@ def validate_payloads(
 
 
 N03_FREE_STATUS = "PROPOSED_NOT_EXECUTABLE"
+ACQUIRED_PARTITIONS = ["08", "09", "10", "11", "12", "13", "14", "19", "22"]
+NEIGHBOUR_PARTITIONS = ["08", "09", "10", "19", "20", "22"]
 
 
 def validate_n03_free_contract(contract: dict[str, Any]) -> None:
-    """Pin the invariants of the proposed N03-free (mesh-native) scope contract."""
+    """Pin the invariants of the proposed N03-free (mesh-native) scope contract with exact values."""
     require(contract.get("contract_id") == "mesh-native-scope-v1", "N03-free contract id drift")
     require(contract.get("status") == N03_FREE_STATUS, "N03-free contract cannot become executable without an Owner decision, its preconditions and a validator change")
     require(contract.get("owner_decision") == "PENDING", "Owner acceptance must be recorded in DECISION_REGISTER.md, not in the contract")
+    require(any("DEC-0014" in item for item in contract.get("requires_decision_amending", [])), "Adoption must be tied to amending DEC-0014")
     inputs = contract.get("inputs", {})
     require(inputs.get("mesh_geometry") == "computed_from_mesh_code_jis_x_0410", "Mesh geometry must come from the mesh code")
-    prohibited = " ".join(inputs.get("prohibited_inputs", []))
-    for term in ["administrative-boundary polygon", "station-centroid circles", "N03"]:
-        require(term in prohibited, f"N03-free contract must prohibit {term}")
+    require(inputs.get("acquired_partitions") == ACQUIRED_PARTITIONS, "Acquired partition list drift")
+    require(inputs.get("expected_neighbour_partitions") == NEIGHBOUR_PARTITIONS, "Neighbour partition list drift")
+    require({"admin_boundary_polygon", "station_centroid_circle", "n03"} <= set(inputs.get("prohibited_input_codes", [])),
+            "N03-free contract must prohibit boundary polygons, centroid circles and N03")
     definitions = contract.get("definitions", {})
-    require("11" in definitions.get("display_component", "") and "14" in definitions.get("display_component", ""), "Display partitions must stay 11-14")
-    require("computed per run" in definitions.get("d_max_m", ""), "Mesh diagonal must be computed per run, not fixed")
+    require(definitions.get("display_partition_codes") == ["11", "12", "13", "14"], "Display partitions must stay 11-14")
+    require(definitions.get("d_max_method") == "computed_per_run", "Mesh diagonal must be computed per run, not fixed")
     rules = contract.get("scope_rules", {})
+    require(rules.get("display_scope", {}).get("members") == "display_components only", "Display values must use display components only")
     analysis = rules.get("analysis_scope", {})
-    require("10000 m - d_max_m" in analysis.get("adjacent_only_mesh_group", {}).get("include_when", ""), "Adjacent-only inner buffer test drift")
+    require(analysis.get("display_mesh_group", {}).get("whole_mesh_guard") == "expected_neighbour_partitions_acquired", "Whole-mesh label guard drift")
+    require(analysis.get("adjacent_only_mesh_group", {}).get("buffer_m") == 10000, "Adjacent-only buffer drift")
     tx = analysis.get("tx_exception", {})
-    require("5000 m" in tx.get("include_when", "") and tx.get("display") == "never", "TX exception drift")
+    require(tx.get("buffer_m") == 5000 and tx.get("applies_to_partition") == "08" and tx.get("display") == "never", "TX exception drift")
     require(tx.get("prohibition") == "station_centroid_circles", "TX centroid-proxy prohibition missing")
     require(rules.get("partial_component", {}).get("rule") == "never_allocate_or_fractionally_scale", "Partial component allocation must remain prohibited")
     status_rules = contract.get("status_rules", {})
@@ -176,12 +214,12 @@ def main() -> int:
     audit, contract, acquisition_scope, sources = (load_yaml(path) for path in resolved)
     validate_payloads(audit, contract, acquisition_scope, sources)
     validate_n03_free_contract(load_yaml(ROOT / "data/reference/N03_FREE_SCOPE_CONTRACT.yml"))
-    for path in PUBLIC_N03_FLAGS:
-        if path.exists():
-            payload = load_yaml(path)
-            flags = [value for key, value in walk_items(payload) if key == "n03_used"]
-            require(flags and all(value is False for value in flags), f"{path.relative_to(ROOT)} must keep n03_used: false")
-    print("PASS Phase 1 G3.1 boundary audit: N03 not adopted or acquired; acquired sources audited; N03-free scope contract only proposed")
+    validate_public_n03_flags(PUBLIC_N03_FLAGS)
+    print(
+        "PASS Phase 1 G3.1 boundary audit: N03 not adopted and absent from the Phase 1 acquisition scope; "
+        "acquisition-scope artifacts map to audited SOURCES.yml releases; public manifests keep n03_used false; "
+        "N03-free scope contract only proposed"
+    )
     return 0
 
 

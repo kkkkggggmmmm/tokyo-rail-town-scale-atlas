@@ -1,7 +1,14 @@
 correction_id: G2-CORR-2026-09-28
 project_id: tokyo-rail-town-scale-atlas
 record_type: canonical_source_conflict
-conflicts_with: DEC-0012 service-scope counts (JR京浜東北・根岸線 42, JR総武線各駅停車 21)
+conflicts_with:
+  - DEC-0012 service-scope counts (JR京浜東北・根岸線 42, JR総武線各駅停車 21)
+  - DEC-0018 "Existing 8 ordered corridors remain frozen" and its byte-identical identity/lock clause
+  - data/reference/PHASE1_G2_ADJUDICATIONS.yml station_count for pc_jr_keihin_tohoku_negishi and pc_jr_sobu_local
+  - data/reference/PHASE1_IDENTITY_RULES.yml adjudication note "大宮—大船の42駅を確認"
+  - SOURCES.yml phase_1_identity counts (242 stations, 233 crosswalk rows)
+  - data/manifests/identity.phase1.yml station_order_sha256 and source_keys_sha256 locks for both corridors
+  - PROJECT_STATE.md completion-ledger G2 counts
 owner_decision: PENDING
 proposal: docs/PROPOSED_DECISIONS_2026-09-28.md
 source_release_id: N02-25
@@ -10,43 +17,64 @@ status: PENDING_OWNER_DECISION
 status_meaning: >-
   AGENTS.md requires a conflict between canonical sources to be recorded before data
   changes. DEC-0012 states that a segment holds every official route node between its
-  endpoints, but its locked lists omit the six stations below. This file records the
-  conflict and the proposed correction; it does not change any G2 artifact. The
-  committed G2 artifacts, G3 Access observations and public corridor payloads keep the
-  old lists. After the Owner accepts a correction in DECISION_REGISTER.md, set
-  PENDING_REGENERATION; after one regeneration applies every insertion (locked raw
-  bundle, `make verify-locked`, first-hand official confirmation), set APPLIED.
+  endpoints, but its locked lists appear to omit the six stations below. This file records
+  the conflict and a proposed correction; it changes no G2 artifact. The committed G2
+  artifacts, G3 Access observations and public corridor payloads keep the old lists.
+  The validator enforces the transitions: PENDING_OWNER_DECISION keeps owner_decision
+  PENDING; PENDING_REGENERATION needs owner_decision set to a DEC/OWNER entry present in
+  decisions/DECISION_REGISTER.md; APPLIED additionally needs a CONFIRMED first-hand
+  official check, confirmed exclusion evidence, and regenerated segments that reuse the
+  recorded IDs.
 detection:
   method: scripts/validate_corridor_completeness.py
   rule: >-
     For each pilot corridor, every N02-25 station record with the corridor operator and
     one of its source routes that lies between two consecutive segment stations
-    (detour ratio (|AQ|+|QB|)/|AB| <= detour_ratio_max) must be a segment station, a
-    listed auxiliary context station, an accepted exclusion, or a pending insertion.
+    (detour ratio (|AQ|+|QB|)/|AB| <= detour_ratio_max) must be a segment station, an
+    auxiliary context station, a proposed exclusion, or a pending insertion.
   detour_ratio_max: 1.3
-  station_pool:
-    - data/derived/stations.parquet
-    - dist/network.json
-  note: >-
-    The pool covers every N02-25 record inside the DEC-0018 metro browse scope. It is a
-    QA completeness screen over committed derivatives of the locked source, not a
-    replacement for walking N02 route topology during regeneration.
+  ratio_window_note: >-
+    On committed data a single omitted in-scope station gives at most 1.235 (赤坂見附) and
+    the nearest unlisted non-service record gives 1.361 (北赤羽). The test suite pins that
+    the threshold stays between them.
+  independent_records: dist/network.json (N02-25 records selected by the DEC-0018 coordinate polygon)
+  under_test: data/derived/stations.parquet (G2 output; supplies segment and auxiliary rows only)
+  unscreened_sections:
+    pc_odakyu_odawara: [[東海大学前, 小田原]]
+    pc_tobu_tojo: [[北坂戸, 寄居]]
+    pc_tsukuba_express: [[流山おおたかの森, つくば]]
+  unscreened_reason: >-
+    These segment edges have an endpoint outside the DEC-0018 browse polygon, so no
+    independent N02 record exists for them in the repository. An omission there would not
+    be detected. Screening them needs the raw N02 bundle (walk N02 route order under
+    verify-locked).
+  known_limit: >-
+    Several adjacent omissions can raise the chord ratio above the threshold (for example
+    a simulated 神田+御茶ノ水 double omission on the Chuo segment), so a multi-station
+    omission may be reported only partly or missed.
 apply_preconditions:
-  - Re-read the operator's current official station list for each corrected corridor and record the URL and retrieval date under official_confirmation.
-  - Reuse the opaque IDs listed under reuse_ids; they were minted once by DEC-0018 in NETWORK_IDENTITY_REGISTRY.json. Do not mint second IDs for the same N02 keys.
+  - The Owner records a decision in decisions/DECISION_REGISTER.md that amends DEC-0012 and lifts the DEC-0018 freeze for these two corridors, and owner_decision is set to that entry id.
+  - Re-read the operator's current official station list for each corrected corridor and add url and retrieved_at records under official_confirmation.records; set its status to CONFIRMED only if the list matches.
+  - Confirm the proposed exclusions the same way and set exclusion_evidence.status to CONFIRMED.
+  - Seed data/reference/PHASE1_IDENTITY_REGISTRY.yml maps.station and maps.station_group with the reuse_ids for these N02 keys before running build_phase1_identity.py. It mints from that registry, not from NETWORK_IDENTITY_REGISTRY.json, and would otherwise mint second IDs.
   - Keep every existing station_id, station_group_id and line_id unchanged; only append aliases and crosswalk rows.
   - Regenerate G2 (build_phase1_identity.py), then G3 Access observations and the public corridor payloads, in one pass. Run verify-fast, verify-locked and verify-g3.
 official_confirmation:
   status: PENDING_FIRST_HAND_CHECK
+  records: []
   existing_evidence_to_recheck:
     - url: https://www.jreast.co.jp/map/pdf/map_tokyo.pdf
       supports: JR East route map listing Keihin-Tohoku/Negishi and Chuo-Sobu local stops.
     - url: https://timetables.jreast.co.jp/2608/train/120/120121.html
       supports: Current Keihin-Tohoku/Negishi station timetable index for 大宮—大船.
   expected_result: >-
-    JR East station numbering JK47 大宮 to JK01 大船 gives 47 stations; JB18 御茶ノ水 to
-    JB39 千葉 gives 22 stations. These counts come from reviewer knowledge because this
-    session could not reach operator sites; the regeneration run must confirm them first-hand.
+    JR East station numbering JK47 大宮 to JK01 大船 suggests 47 stations and JB18 御茶ノ水
+    to JB39 千葉 suggests 22. These counts come from reviewer knowledge and agree with the
+    N02 records found by the screen, but this session could not reach operator sites, so
+    they are unconfirmed until checked first-hand.
+exclusion_evidence:
+  status: PENDING_FIRST_HAND_CHECK
+  records: []
 corrections:
   pc_jr_keihin_tohoku_negishi:
     locked_count_before: 42
@@ -81,7 +109,7 @@ corrections:
       小岩: 東日本旅客鉄道|総武線|003360
     reuse_ids:
       小岩: {station_id: sta_e2a822a1e5c94cbfac32445224940bed, station_group_id: stg_a678d0f4d4a94b8f870356cb8165cc40}
-accepted_exclusions:
+proposed_exclusions:
   pc_jr_keihin_tohoku_negishi:
     - name: 尾久
       source_key: 東日本旅客鉄道|東北線|003278
@@ -95,4 +123,3 @@ accepted_exclusions:
     - name: 南与野
       source_key: 東日本旅客鉄道|東北線|002975
       reason: 東北本線支線（埼京線）の駅。京浜東北線は経由しない。
-  exclusion_evidence_status: PENDING_FIRST_HAND_CHECK

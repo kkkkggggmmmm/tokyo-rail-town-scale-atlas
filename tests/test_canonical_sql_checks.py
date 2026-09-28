@@ -8,7 +8,8 @@ ROOT = Path(__file__).resolve().parents[1]
 # DATA_DICTIONARY.md §2: (status, numeric_value) -> accepted?
 # Two points where the dictionary and the SQL disagree stay out of this test until the
 # Owner decides them (docs/PROPOSED_DECISIONS_2026-09-28.md): whether `imputed` may be
-# NULL, and whether an `invalid` row may be stored at all. Both agree `invalid` has NULL.
+# NULL, and whether an `invalid` row may be stored at all. Only the case both options
+# agree on is pinned: an `invalid` row never carries a number.
 CASES = [
     ("observed", 12.0, True),
     ("observed", 0.0, False),
@@ -19,11 +20,12 @@ CASES = [
     ("aggregation_destination", 7.0, True),
     ("aggregation_destination", None, False),
     ("unknown_status", None, False),
+    ("invalid", 0.0, False),
 ] + [
     (status, value, value is None)
     for status in [
         "suppressed", "not_public", "not_surveyed", "not_applicable", "source_absent",
-        "duplicate_on_other_record", "station_absent", "outside_scope", "invalid",
+        "duplicate_on_other_record", "station_absent", "outside_scope",
     ]
     for value in [None, 0.0]
 ]
