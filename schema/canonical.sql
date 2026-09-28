@@ -203,11 +203,13 @@ CREATE TABLE feature_observation (
     metric_code TEXT NOT NULL REFERENCES metric_definition(metric_code),
     numeric_value REAL,
     raw_value TEXT,
+    -- DEC-0024: `invalid` stops the pipeline. It may appear in QA/quarantine output,
+    -- but a canonical observation row never carries it.
     observation_status TEXT NOT NULL CHECK (observation_status IN (
         'observed', 'observed_zero', 'imputed', 'suppressed',
         'aggregation_destination', 'not_public', 'not_surveyed',
         'not_applicable', 'source_absent', 'duplicate_on_other_record',
-        'station_absent', 'outside_scope', 'invalid'
+        'station_absent', 'outside_scope'
     )),
     unit TEXT NOT NULL,
     source_release_id TEXT NOT NULL REFERENCES source_release(source_release_id),
@@ -220,12 +222,14 @@ CREATE TABLE feature_observation (
     UNIQUE (entity_type, entity_id, metric_code, source_release_id, source_record_key),
     CHECK (
         (observation_status = 'observed' AND numeric_value IS NOT NULL AND numeric_value > 0)
-        OR (observation_status = 'observed_zero' AND numeric_value = 0)
+        -- `NULL = 0` is UNKNOWN and a CHECK accepts UNKNOWN, so the zero branch
+        -- must reject NULL explicitly.
+        OR (observation_status = 'observed_zero' AND numeric_value IS NOT NULL AND numeric_value = 0)
         OR (observation_status IN ('imputed', 'aggregation_destination') AND numeric_value IS NOT NULL)
         OR (observation_status IN (
             'suppressed', 'not_public', 'not_surveyed', 'not_applicable',
             'source_absent', 'duplicate_on_other_record', 'station_absent',
-            'outside_scope', 'invalid'
+            'outside_scope'
         ) AND numeric_value IS NULL)
     )
 );

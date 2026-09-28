@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.9.0 — 2026-09-28
+
+- Owner adopted six review proposals (DEC-0019 to DEC-0024) and asked for the canonical working branch to be merged into `main`.
+- Added a clone-safe corridor completeness screen to `make verify-fast`. It found six stations missing from two frozen segments (与野・北浦和・西日暮里・日暮里・鶯谷 on JR京浜東北・根岸線, 小岩 on JR総武線各駅停車). DEC-0019 accepts the correction; the G2/G3/public regeneration is pending the locked raw bundle and network access. Sections outside the DEC-0018 browse scope are reported as not screened.
+- Hardened the G3.1 gate: N03 is detected in any identifying field (NFKC, N03 or 行政区域), acquisitions must match audited SOURCES.yml releases and tables, and public manifests must keep `n03_used: false`.
+- Accepted the N03-free scope contract (DEC-0020, amends DEC-0014); it stays non-executable until its preconditions pass.
+- Added the MIT `LICENSE` and `NOTICE.md` attribution (DEC-0021); recorded the open N02 third-party-rights check while publication continues.
+- Recorded the Golden reference evidence rule (DEC-0022) and decision provenance and restart point (DEC-0023).
+- `canonical.sql` now rejects `observed_zero` with NULL, `imputed` without a value, and `invalid` rows (DEC-0024), with a status × value test.
+
+## 0.8.0-explorer — 2026-09-07
+
+- Activated Owner-requested public reference explorer: 8 routes, 44 calibration candidates in 1都3県, schematic diagram, town/station search, town details, route profiles, 2–4 route comparison, and URL state/back navigation.
+- Published payload excludes 茨城 candidate GE045, all holdouts and adjudication constraints. Reference features are hypotheses; all scale values remain null.
+- No raw inputs, G2 conversion, N03, source re-acquisition or source-lock modifications. The blocked statistical workstream remains separate.
+- Validation: required verify-fast, 3 public data checks, 5 JavaScript behavior checks, JS syntax and static asset checks passed. Browser and physical-phone interaction QA not performed.
+
+
+## Unreleased — 2026-09-06
+
+- Added an independent Golden Eval calibration runner: 12 hard and 12 soft comparisons, explicit metric contracts, fixed denominators, and source/model/prediction version evidence.
+- Added a 45-case calibration export that excludes holdout cases and mixed-split assertions. Overall acceptance and unconnected structural/boundary/type checks remain unevaluated.
+- Corrected the model text that suggested naming clusters after viewing holdout confusion; the frozen calibration-only rule takes precedence.
+- Recorded Owner's N03 non-adoption and the unavailable local checkpoints. No raw-data adapter, lost extraction implementation, final score, polygon or UI is recreated or released.
+
 ## 0.7.0 — 2026-09-05
 
 - Audited the official N03 2026 administrative-boundary source for G3.1 and selected it as the technical boundary candidate for the 1都3県 union, 10km buffer, and TX corridor.

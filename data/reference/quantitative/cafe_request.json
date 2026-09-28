@@ -1,0 +1,1723 @@
+{
+  "inputNumberOfRows": 1000,
+  "inputNumberOfCols": 10,
+  "movementId": 0,
+  "annotationFlg": 1,
+  "rowNoDataDispFlg": 0,
+  "colNoDataDispFlg": 0,
+  "commaType": 0,
+  "replaceSpChars": 0,
+  "rightMoveFlg": 0,
+  "underMoveFlg": 0,
+  "leftMoveFlg": 0,
+  "upMoveFlg": 0,
+  "graphType": "barChart",
+  "graphTitle": "",
+  "graphBasis": "head",
+  "graphAxis": "horizontal",
+  "graphSort": "asc",
+  "rows": [
+    {
+      "matterId": 1,
+      "tableName": "MH_AR4AQX_0001028964",
+      "dispTableName": "S4AQX_0004005673_AREA",
+      "positionNum": 1,
+      "allSelected": 0,
+      "listData": [
+        {
+          "name": "さいたま市",
+          "code": "11100",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "さいたま市西区",
+          "code": "11101",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "さいたま市北区",
+          "code": "11102",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "さいたま市大宮区",
+          "code": "11103",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "さいたま市見沼区",
+          "code": "11104",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "さいたま市中央区",
+          "code": "11105",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "さいたま市桜区",
+          "code": "11106",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "さいたま市浦和区",
+          "code": "11107",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "さいたま市南区",
+          "code": "11108",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "さいたま市緑区",
+          "code": "11109",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "さいたま市岩槻区",
+          "code": "11110",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "川越市",
+          "code": "11201",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "熊谷市",
+          "code": "11202",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "川口市",
+          "code": "11203",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "行田市",
+          "code": "11206",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "秩父市",
+          "code": "11207",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "所沢市",
+          "code": "11208",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "飯能市",
+          "code": "11209",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "加須市",
+          "code": "11210",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "本庄市",
+          "code": "11211",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "東松山市",
+          "code": "11212",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "春日部市",
+          "code": "11214",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "狭山市",
+          "code": "11215",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "羽生市",
+          "code": "11216",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "鴻巣市",
+          "code": "11217",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "深谷市",
+          "code": "11218",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "上尾市",
+          "code": "11219",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "草加市",
+          "code": "11221",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "越谷市",
+          "code": "11222",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "蕨市",
+          "code": "11223",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "戸田市",
+          "code": "11224",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "入間市",
+          "code": "11225",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "朝霞市",
+          "code": "11227",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "志木市",
+          "code": "11228",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "和光市",
+          "code": "11229",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "新座市",
+          "code": "11230",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "桶川市",
+          "code": "11231",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "久喜市",
+          "code": "11232",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "北本市",
+          "code": "11233",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "八潮市",
+          "code": "11234",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "富士見市",
+          "code": "11235",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "三郷市",
+          "code": "11237",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "蓮田市",
+          "code": "11238",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "坂戸市",
+          "code": "11239",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "幸手市",
+          "code": "11240",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "鶴ヶ島市",
+          "code": "11241",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "日高市",
+          "code": "11242",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "吉川市",
+          "code": "11243",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "ふじみ野市",
+          "code": "11245",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "白岡市",
+          "code": "11246",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "伊奈町",
+          "code": "11301",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "三芳町",
+          "code": "11324",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "毛呂山町",
+          "code": "11326",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "越生町",
+          "code": "11327",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "滑川町",
+          "code": "11341",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "嵐山町",
+          "code": "11342",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "小川町",
+          "code": "11343",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "川島町",
+          "code": "11346",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "吉見町",
+          "code": "11347",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "鳩山町",
+          "code": "11348",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "ときがわ町",
+          "code": "11349",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横瀬町",
+          "code": "11361",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "皆野町",
+          "code": "11362",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "長瀞町",
+          "code": "11363",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "小鹿野町",
+          "code": "11365",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "東秩父村",
+          "code": "11369",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "美里町",
+          "code": "11381",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "神川町",
+          "code": "11383",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "上里町",
+          "code": "11385",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "寄居町",
+          "code": "11408",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "宮代町",
+          "code": "11442",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "杉戸町",
+          "code": "11464",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "松伏町",
+          "code": "11465",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "千葉市",
+          "code": "12100",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "千葉市中央区",
+          "code": "12101",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "千葉市花見川区",
+          "code": "12102",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "千葉市稲毛区",
+          "code": "12103",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "千葉市若葉区",
+          "code": "12104",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "千葉市緑区",
+          "code": "12105",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "千葉市美浜区",
+          "code": "12106",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "銚子市",
+          "code": "12202",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "市川市",
+          "code": "12203",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "船橋市",
+          "code": "12204",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "館山市",
+          "code": "12205",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "木更津市",
+          "code": "12206",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "松戸市",
+          "code": "12207",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "野田市",
+          "code": "12208",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "茂原市",
+          "code": "12210",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "成田市",
+          "code": "12211",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "佐倉市",
+          "code": "12212",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "東金市",
+          "code": "12213",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "旭市",
+          "code": "12215",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "習志野市",
+          "code": "12216",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "柏市",
+          "code": "12217",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "勝浦市",
+          "code": "12218",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "市原市",
+          "code": "12219",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "流山市",
+          "code": "12220",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "八千代市",
+          "code": "12221",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "我孫子市",
+          "code": "12222",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "鴨川市",
+          "code": "12223",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "鎌ケ谷市",
+          "code": "12224",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "君津市",
+          "code": "12225",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "富津市",
+          "code": "12226",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "浦安市",
+          "code": "12227",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "四街道市",
+          "code": "12228",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "袖ケ浦市",
+          "code": "12229",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "八街市",
+          "code": "12230",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "印西市",
+          "code": "12231",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "白井市",
+          "code": "12232",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "富里市",
+          "code": "12233",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "南房総市",
+          "code": "12234",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "匝瑳市",
+          "code": "12235",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "香取市",
+          "code": "12236",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "山武市",
+          "code": "12237",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "いすみ市",
+          "code": "12238",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "大網白里市",
+          "code": "12239",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "酒々井町",
+          "code": "12322",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "栄町",
+          "code": "12329",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "神崎町",
+          "code": "12342",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "多古町",
+          "code": "12347",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "東庄町",
+          "code": "12349",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "九十九里町",
+          "code": "12403",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "芝山町",
+          "code": "12409",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横芝光町",
+          "code": "12410",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "一宮町",
+          "code": "12421",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "睦沢町",
+          "code": "12422",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "長生村",
+          "code": "12423",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "白子町",
+          "code": "12424",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "長柄町",
+          "code": "12426",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "長南町",
+          "code": "12427",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "大多喜町",
+          "code": "12441",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "御宿町",
+          "code": "12443",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "鋸南町",
+          "code": "12463",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "特別区部",
+          "code": "13100",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "千代田区",
+          "code": "13101",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "中央区",
+          "code": "13102",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "港区",
+          "code": "13103",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "新宿区",
+          "code": "13104",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "文京区",
+          "code": "13105",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "台東区",
+          "code": "13106",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "墨田区",
+          "code": "13107",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "江東区",
+          "code": "13108",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "品川区",
+          "code": "13109",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "目黒区",
+          "code": "13110",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "大田区",
+          "code": "13111",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "世田谷区",
+          "code": "13112",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "渋谷区",
+          "code": "13113",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "中野区",
+          "code": "13114",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "杉並区",
+          "code": "13115",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "豊島区",
+          "code": "13116",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "北区",
+          "code": "13117",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "荒川区",
+          "code": "13118",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "板橋区",
+          "code": "13119",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "練馬区",
+          "code": "13120",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "足立区",
+          "code": "13121",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "葛飾区",
+          "code": "13122",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "江戸川区",
+          "code": "13123",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "境界未定地域",
+          "code": "13199",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "八王子市",
+          "code": "13201",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "立川市",
+          "code": "13202",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "武蔵野市",
+          "code": "13203",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "三鷹市",
+          "code": "13204",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "青梅市",
+          "code": "13205",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "府中市",
+          "code": "13206",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "昭島市",
+          "code": "13207",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "調布市",
+          "code": "13208",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "町田市",
+          "code": "13209",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "小金井市",
+          "code": "13210",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "小平市",
+          "code": "13211",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "日野市",
+          "code": "13212",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "東村山市",
+          "code": "13213",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "国分寺市",
+          "code": "13214",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "国立市",
+          "code": "13215",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "福生市",
+          "code": "13218",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "狛江市",
+          "code": "13219",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "東大和市",
+          "code": "13220",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "清瀬市",
+          "code": "13221",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "東久留米市",
+          "code": "13222",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "武蔵村山市",
+          "code": "13223",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "多摩市",
+          "code": "13224",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "稲城市",
+          "code": "13225",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "羽村市",
+          "code": "13227",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "あきる野市",
+          "code": "13228",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "西東京市",
+          "code": "13229",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "瑞穂町",
+          "code": "13303",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "日の出町",
+          "code": "13305",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "檜原村",
+          "code": "13307",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "奥多摩町",
+          "code": "13308",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "大島町",
+          "code": "13361",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "利島村",
+          "code": "13362",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "新島村",
+          "code": "13363",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "神津島村",
+          "code": "13364",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "三宅村",
+          "code": "13381",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "御蔵島村",
+          "code": "13382",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "八丈町",
+          "code": "13401",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "青ヶ島村",
+          "code": "13402",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "小笠原村",
+          "code": "13421",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市",
+          "code": "14100",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市鶴見区",
+          "code": "14101",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市神奈川区",
+          "code": "14102",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市西区",
+          "code": "14103",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市中区",
+          "code": "14104",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市南区",
+          "code": "14105",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市保土ケ谷区",
+          "code": "14106",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市磯子区",
+          "code": "14107",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市金沢区",
+          "code": "14108",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市港北区",
+          "code": "14109",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市戸塚区",
+          "code": "14110",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市港南区",
+          "code": "14111",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市旭区",
+          "code": "14112",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市緑区",
+          "code": "14113",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市瀬谷区",
+          "code": "14114",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市栄区",
+          "code": "14115",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市泉区",
+          "code": "14116",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市青葉区",
+          "code": "14117",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横浜市都筑区",
+          "code": "14118",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "川崎市",
+          "code": "14130",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "川崎市川崎区",
+          "code": "14131",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "川崎市幸区",
+          "code": "14132",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "川崎市中原区",
+          "code": "14133",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "川崎市高津区",
+          "code": "14134",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "川崎市多摩区",
+          "code": "14135",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "川崎市宮前区",
+          "code": "14136",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "川崎市麻生区",
+          "code": "14137",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "相模原市",
+          "code": "14150",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "相模原市緑区",
+          "code": "14151",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "相模原市中央区",
+          "code": "14152",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "相模原市南区",
+          "code": "14153",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "横須賀市",
+          "code": "14201",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "平塚市",
+          "code": "14203",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "鎌倉市",
+          "code": "14204",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "藤沢市",
+          "code": "14205",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "小田原市",
+          "code": "14206",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "茅ヶ崎市",
+          "code": "14207",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "逗子市",
+          "code": "14208",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "三浦市",
+          "code": "14210",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "秦野市",
+          "code": "14211",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "厚木市",
+          "code": "14212",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "大和市",
+          "code": "14213",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "伊勢原市",
+          "code": "14214",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "海老名市",
+          "code": "14215",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "座間市",
+          "code": "14216",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "南足柄市",
+          "code": "14217",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "綾瀬市",
+          "code": "14218",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "葉山町",
+          "code": "14301",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "寒川町",
+          "code": "14321",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "大磯町",
+          "code": "14341",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "二宮町",
+          "code": "14342",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "中井町",
+          "code": "14361",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "大井町",
+          "code": "14362",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "松田町",
+          "code": "14363",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "山北町",
+          "code": "14364",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "開成町",
+          "code": "14366",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "箱根町",
+          "code": "14382",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "真鶴町",
+          "code": "14383",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "湯河原町",
+          "code": "14384",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "愛川町",
+          "code": "14401",
+          "unit": "",
+          "explanation": ""
+        },
+        {
+          "name": "清川村",
+          "code": "14402",
+          "unit": "",
+          "explanation": ""
+        }
+      ]
+    }
+  ],
+  "cols": [
+    {
+      "matterId": 18,
+      "tableName": "MH_HS4AQX_0000000001",
+      "dispTableName": "S4AQX_0004005673_HS",
+      "positionNum": 1,
+      "allSelected": 0,
+      "listData": [
+        {
+          "name": "事業所数",
+          "code": "102-2021",
+          "unit": "事業所",
+          "explanation": ""
+        }
+      ]
+    }
+  ],
+  "tops": [
+    {
+      "matterId": 3,
+      "tableName": "MH_BU4AQX_0001133328",
+      "dispTableName": "S4AQX_0004005673_BUN01",
+      "positionNum": 1,
+      "allSelected": 0,
+      "listData": [
+        {
+          "name": "喫茶店",
+          "code": "767",
+          "unit": "",
+          "explanation": ""
+        }
+      ]
+    },
+    {
+      "matterId": 4,
+      "tableName": "MH_BU4AQX_0001133210",
+      "dispTableName": "S4AQX_0004005673_BUN02",
+      "positionNum": 2,
+      "allSelected": 0,
+      "listData": [
+        {
+          "name": "うち民営",
+          "code": "1",
+          "unit": "",
+          "explanation": ""
+        }
+      ]
+    },
+    {
+      "matterId": 5,
+      "tableName": "MH_BU4AQX_0001133282",
+      "dispTableName": "S4AQX_0004005673_BUN03",
+      "positionNum": 3,
+      "allSelected": 0,
+      "listData": [
+        {
+          "name": "総数",
+          "code": "00",
+          "unit": "",
+          "explanation": ""
+        }
+      ]
+    },
+    {
+      "matterId": 2,
+      "tableName": "MH_TMY4AQX_0001003469",
+      "dispTableName": "S4AQX_0004005673_TIME",
+      "positionNum": 4,
+      "allSelected": 0,
+      "listData": [
+        {
+          "name": "2021年",
+          "code": "2021000000",
+          "unit": "",
+          "explanation": ""
+        }
+      ]
+    }
+  ],
+  "apiTops": [
+    {
+      "matterId": 3,
+      "tableName": "MH_BU4AQX_0001133328",
+      "dispTableName": "S4AQX_0004005673_BUN01",
+      "positionNum": 1,
+      "allSelected": 0,
+      "listData": [
+        {
+          "name": "喫茶店",
+          "code": "767",
+          "unit": "",
+          "explanation": ""
+        }
+      ]
+    },
+    {
+      "matterId": 4,
+      "tableName": "MH_BU4AQX_0001133210",
+      "dispTableName": "S4AQX_0004005673_BUN02",
+      "positionNum": 2,
+      "allSelected": 0,
+      "listData": [
+        {
+          "name": "うち民営",
+          "code": "1",
+          "unit": "",
+          "explanation": ""
+        }
+      ]
+    },
+    {
+      "matterId": 5,
+      "tableName": "MH_BU4AQX_0001133282",
+      "dispTableName": "S4AQX_0004005673_BUN03",
+      "positionNum": 3,
+      "allSelected": 0,
+      "listData": [
+        {
+          "name": "総数",
+          "code": "00",
+          "unit": "",
+          "explanation": ""
+        }
+      ]
+    },
+    {
+      "matterId": 2,
+      "tableName": "MH_TMY4AQX_0001003469",
+      "dispTableName": "S4AQX_0004005673_TIME",
+      "positionNum": 4,
+      "allSelected": 0,
+      "listData": [
+        {
+          "name": "2021年",
+          "code": "2021000000",
+          "unit": "",
+          "explanation": ""
+        }
+      ]
+    }
+  ],
+  "currentCols": null,
+  "currentRows": null,
+  "mode": "table",
+  "layoutName": null
+}

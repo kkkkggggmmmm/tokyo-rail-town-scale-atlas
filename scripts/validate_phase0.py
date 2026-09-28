@@ -64,6 +64,12 @@ def validate_required_files() -> None:
         "scripts/record_official_recheck.py",
         "scripts/validate_phase1_lock.py",
         "scripts/validate_phase1_g3_1_boundary_gate.py",
+        "scripts/validate_corridor_completeness.py",
+        "data/reference/G2_CORRIDOR_CORRECTION_2026-09-28.yml",
+        "data/reference/N03_FREE_SCOPE_CONTRACT.yml",
+        "decisions/DECISION_REGISTER.md",
+        "LICENSE",
+        "NOTICE.md",
         "requirements-ci.txt",
         "Makefile",
         ".github/workflows/fast-validation.yml",
@@ -256,6 +262,7 @@ def validate_execution_spine() -> None:
     require("verify-g3-1:" in makefile, "Missing G3.1 boundary-gate target")
     require("scripts/validate_phase0.py" in makefile, "Fast target lost Phase 0 validation")
     require("scripts/validate_phase1_g3_1_boundary_gate.py" in makefile, "Fast target lost G3.1 stop-gate validation")
+    require("scripts/validate_corridor_completeness.py" in makefile, "Fast target lost corridor completeness screen")
     require("scripts/validate_phase1_lock.py" in makefile, "Locked target lost source lock validation")
     require("scripts/validate_phase1_identity.py" in makefile, "Locked target lost G2 validation")
     require("requirements-ci.txt" in workflow, "CI does not install pinned requirements")

@@ -4,6 +4,17 @@
 **Dictionary version:** `0.5.0`
 **Status:** Phase 1 G3 normalization PASS; G3.1 scope-rollup contract fixed but N03 use determination pending (not publication-ready)
 
+Public station expansion (2026-09-13, DEC-0018): `dist/network.json` supplements the
+unchanged pilot package. `stations` has the same station grain and persisted `sta_` /
+`stg_` identities. `officialRoutes` uses persisted `nrt_` browse IDs for N02
+operator × formal route inventories, with `orderStatus=unconfirmed`; these are not
+ordered canonical service corridors. `stationMemberships` links station IDs to
+those inventories. `meshContexts` / `studentMeshContexts` preserve the existing
+500m prefecture-component observation contracts; old contexts win at merge.
+`network_identity.json` records all source aliases, source feature indices and
+selection reasons. `NETWORK_SCOPE.json` fixes the approximate acquisition extent,
+which is neither a municipality polygon nor a commercial-center boundary.
+
 ## 1. Canonical grain
 
 公開上の入口は駅だが、規模・類型を計算する正本単位は `center` である。
@@ -35,8 +46,8 @@
 | Status | 意味 | `numeric_value` | Core集計 |
 |---|---|---:|---|
 | `observed` | 正の公表観測値 | required | 可 |
-| `observed_zero` | 公表された真の0 | `0` | 可 |
-| `imputed` | 出典または明示手法による補完 | nullable | 原則別系列 |
+| `observed_zero` | 公表された真の0 | `0`（`NULL`不可） | 可 |
+| `imputed` | 出典または明示手法による補完。補完できなければ元の欠損statusのまま（DEC-0024） | required | 原則別系列 |
 | `suppressed` | 秘匿 | `NULL` | 不可 |
 | `aggregation_destination` | 秘匿値の合算先 | source value | 重複制御必須 |
 | `not_public` | 非公表 | `NULL` | 不可 |
@@ -46,7 +57,7 @@
 | `duplicate_on_other_record` | 別レコードへ掲載 | `NULL` | 掲載先のみ利用 |
 | `station_absent` | 当該時点に駅なし | `NULL` | 不可 |
 | `outside_scope` | 対象範囲外 | `NULL` | 不可 |
-| `invalid` | 型・単位・codeが不正 | `NULL` | pipeline fail |
+| `invalid` | 型・単位・codeが不正。QA/隔離出力にのみ現れ、canonical観測行には保存しない（DEC-0024） | `NULL` | pipeline fail |
 
 未認識tokenは `invalid` として処理を停止する。空欄、`X`、`...`、`-` を
 一律に0へ変換してはならない。
@@ -172,14 +183,14 @@
 |---|---|---|---|---|
 | `retail_establishments` | establishments | 2021 Economic Census mesh | Scale/Type | 中分類を優先 |
 | `retail_employees` | persons | same | Scale | Activity Mass主成分候補 |
-| `food_establishments` | establishments | same | Scale/Type | 飲食と宿泊の分離可否を原表で確認 |
-| `food_employees` | persons | same | Scale/Type | 同上 |
+| `food_establishments` | establishments | same | Scale/Type | G3の現行値は大分類M（宿泊業，飲食サービス業）合計。DEC-0024により次回再生成で`accommodation_food_establishments`へ改名し、飲食店のみの指標は中分類76（T001163082、公開版`restaurants`と同じ）で持つ |
+| `food_employees` | persons | same | Scale/Type | 同上（`accommodation_food_employees`へ改名） |
 | `lifestyle_leisure_establishments` | establishments | same | Scale/Type | 分類定義をversion固定 |
 | `lifestyle_leisure_employees` | persons | same | Scale/Type | 分類定義をversion固定 |
 | `all_industry_employees` | persons | same | Type/context | 業務性補助。商業量へ無条件加算しない |
 | `resident_population` | persons | 2020 Census mesh, e-Stat `T001141` (JGD2011 500m) | Type/context | 商業量ではない。`T001192` age-class table is not this input |
 | `daily_ridership` | persons/day | S12 | Access | CoreScaleへ混入禁止 |
-| `commercial_land_price` | yen/m² | L01 | Validation | point sample。CoreScaleへ混入禁止 |
+| `commercial_land_price` | yen/m² | L01 | Validation | point sample。CoreScaleへ混入禁止。G3の現行値は用途を絞らない全標準地。DEC-0024により次回再生成で全点を`land_price_standard_point`、商業地用途のみを`commercial_land_price`に分け、用途区分列を保持する |
 
 ## 6. Score outputs
 
@@ -274,3 +285,67 @@ full mesh surfaceへの採用許可ではない。
 N03のカタログはCC BY 4.0を表示するが、国土地理院原典の二次利用手続が必要となる場合を
 明記している。`G3_1_BOUNDARY_SOURCE_AUDIT.yml` の`use_conditions_resolved`が`true`になるまで、
 この節はデータ処理の権限ではなく停止条件である。
+
+## 10. 公開定量地図 v0.3（2026-09-08追加）
+
+|公開フィールド|単位・範囲・意味|
+|---|---|
+|`stations[].id` / `groupId`|確定済みG2 station/station_group IDを引き継ぐ。駅名から新規生成しない。|
+|`coordinates`|N02代表座標、`coordinateCRS`を保持。図上の任意配置ではない。|
+|`officialRouteCount`|N02同一駅群内の事業者・正式路線ペアのdistinct数。運転系統数ではない。|
+|`ridership.value`|S12 FY2024人/日。単一の非重複観測が確定する場合のみ。事業者・路線間の合計禁止。|
+|`meshContexts[code].economicComponents`|都県別公表成分を個別保持。`fullMeshRollup:false`。|
+|`restaurants`|T001163082、76飲食店の事業所数。080（宿泊業・飲食サービス業全体）とは異なる。|
+|`retail`|T001163062、小売業事業所数。|
+|`employees`|T001163108、全産業従業者数。オフィス従業者・床面積ではない。|
+|`populationComponents`|2020年人口。合算元/先・処理コードを保持し、合算値を単一区画人口としない。|
+|`route_station_context_mean_rank_v1`|沿線の駅所在区画の飲食・小売・就業中央値を8沿線内で順位付けし、1/3ずつ平均。取得率90%以上。CoreScaleとは別の参考比較。|
+|`context.economy` / `educationSafety`|自治体・町・個別校舎という資料の範囲を保持。駅域に割り付けず、沿線指数へ混入しない。|
+
+全数値は値・単位・調査時点・地域範囲・出典の組で表示する。中学受験率の欠損はnull。私立国立中学への進学率と同義にしない。
+
+## 11. 公開追加指標 v0.4（2026-09-08）
+
+|公開フィールド|単位・範囲・意味|
+|---|---|
+|`economicComponents[].apparel`|T001163064、2021年6月1日・500m区画の都県公表分。産業57「織物・衣服・身の回り品小売業」の事業所数。衣服、靴、服飾品等を含み、アパレルブランド店舗だけの数ではない。|
+|`students.meshContexts[code].components[].university`|T001144046、2020年10月1日・大学大学院在学者の居住人数。大学への流入学生数や駅利用学生数ではない。|
+|`juniorCollege` / `highSchool` / `allStudents`|T001144043/040/034。同日の短大高専、高校、全在学者の居住人数。全在学者を大学生数と呼ばない。|
+|`studentShare`（画面・CSVで算出）|在学者居住人数÷同一日・同一mesh・同一都県の総人口×100。双方通常処理・公表数値・単一都県成分・分母>0のときのみ。秘匿/合算先/県境の比率はnull。|
+|`commercial-districts.districts[].source_district_id`|公式表2の8桁商業集積地区コード。原資料のIDであり canonical center IDではない。名称で駅と自動結合しない。|
+|`retail_sales_million_yen` / `food_service_sales_million_yen` / `personal_service_sales_million_yen`|2020暦年の売上（収入）、原単位百万円。画面は100で割った億円。小売I2、飲食M2（76+77）、生活関連Nの対象業種。GDPや全産業総売上ではない。|
+|`three_sector_sales_million_yen`|3業種すべての売上が数値公表される場合の和。秘匿・該当数字なしを0補完しない。沿線合計へ加算しない。|
+|`below_rounding_unit`|売上原表の0は百万円未満。「単位未満」と表示し、含まれる合計には「約」。実際の売上0と断定しない。|
+|`retail_sales_floor_sqm`|2021年6月1日の法人小売業売場面積㎡。事務所・オフィス面積ではない。|
+|`cafes.observations[].value`|2021年6月1日、産業小分類767・うち民営・全従業者規模。自治体/政令市区全体の喫茶店事業所数。駅圏の数ではない。|
+|`cafes[].symbol_unresolved`|非数値記号の6地域は原文+nullで保持、公開数値一覧から除外。親市と区の合算禁止。|
+
+出典は `data/manifests/public_supplements.yml` と各公開JSONに保持。調査時点・公表日・取得日は別項目。T001144の表固有公表日は未確認としてnull、シリーズ公表日や配布年月で代用しない。追加4指標は既存の飲食・小売・就業3指標平均順位へ混入しない。学生居住割合は教育水準や大学への通学流入を意味しない。
+
+
+## 12. エリア別公表地区合計 v0.10（2026-09-12）
+
+|フィールド・規則|意味|
+|---|---|
+|`AREA_SUM_METHOD.version`|`selected-district-sum-v1`。集計対象は原表の地区集合で、街全域の地理的網羅性は未認定。|
+|`DISTRICT_AREAS[].sourceDistrictIds`|固定8エリアの合計対象となる全44公表地区ID。元の地区名称と数値を内訳表示。自治体・都県総計は混ぜない。|
+|`selectedDistrictSumAllowed` / `aggregationAllowed`|前者trueは公表地区集合の加算、後者falseは未認定のcanonical center／地理的な街全域集計を引き続き禁止。|
+|`aggregateArea.metrics[key].value`|全対象地区の同指標が数値公表される場合だけその和。売上は百万円、画面は÷100の億円。3業種計は地区×3項目すべてが必要。|
+|`complete` / `observed` / `expected`|完全な合計か、公表値の数、必要な値の数。3業種計以外は地区数、3業種計は地区×3項目数。範囲外の店舗を含む網羅率ではない。|
+|`missing`|欠けた地区ID・地区名・指標・元のstatusを保持。原表の秘匿・該当数字なし・未取得はいずれもnull、0補完しない。|
+|`rounded`|単位未満の公表値を含む合計には「約」を付ける。すべての売上は原表の丸め精度で加算。|
+|`identityValid`|各地区IDが原表に一意にあり、リスト内重複がない。`rankAreas`は全エリアの重複所属も検知して該当エリアを集計不可にする。|
+|`rank`|選択条件内の同一指標・年度で順位（同値1,1,3）。不完全な合計はnullで常に末尾。原表の施設単位等とは混ぜない。|
+|検索・都県条件|エリアを選ぶ条件。地区名で検索してもエリア内の加算対象は削らない。|
+
+加算可能性の確認はDEC-0016の原表総計との照合に基づく。各エリア名は明示された地区集合を指す。
+地理的な街全域、地区外も含む店舗総数、全産業売上、GDPの算定を意味しない。
+
+
+### v0.11 拡張（2026-09-13）
+
+`AREA_SUM_METHOD.version = selected-district-sum-v2`。固定26エリア・200公表地区へ拡張。
+東京都16／神奈川県3／埼玉県3／千葉県4。v1の8エリアのID・対象地区・合計値を保持する。
+数値がすべてそろう合計は小売23、飲食19、生活12、3業種計11、売場22エリア。
+集計・欠損・順位規則は変更しない。各エリアの `scopeNote` に対象外の地区や未確認の帰属も明示する。
+26エリアは東京圏の全地域ではなく、公表地区集合に基づく先行比較対象である。

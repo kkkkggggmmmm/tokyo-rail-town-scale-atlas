@@ -1,0 +1,368 @@
+{
+  "schemaVersion": 1,
+  "title": "駅まちアトラス 教育・防犯の確認済みデータ",
+  "checkedAt": "2026-09-08",
+  "crime": {
+    "label": "刑法犯認知件数",
+    "scope": "自治体全域",
+    "records": [
+      {
+        "id": "crime-yokohama-2025",
+        "municipality": "横浜市",
+        "prefecture": "神奈川県",
+        "scope": "municipality",
+        "geographyLabel": "横浜市全域",
+        "metric": "刑法犯認知件数",
+        "value": 18925,
+        "unit": "件",
+        "periodStart": "2025-01-01",
+        "periodEnd": "2025-12-31",
+        "periodLabel": "2025年通年",
+        "status": "confirmed_final",
+        "statusLabel": "確定値",
+        "denominator": null,
+        "per10000Residents": null,
+        "normalization": "none",
+        "sourceId": "kanagawa-crime-2025",
+        "sourceUrl": "https://www.police.pref.kanagawa.jp/assets/entry/c0030_67.pdf",
+        "checkedAt": "2026-09-08",
+        "displayNote": "市全域の認知件数。人口補正なし。駅周辺の治安評価や住民の被害確率ではありません。"
+      },
+      {
+        "id": "crime-kawasaki-2025",
+        "municipality": "川崎市",
+        "prefecture": "神奈川県",
+        "scope": "municipality",
+        "geographyLabel": "川崎市全域",
+        "metric": "刑法犯認知件数",
+        "value": 8256,
+        "unit": "件",
+        "periodStart": "2025-01-01",
+        "periodEnd": "2025-12-31",
+        "periodLabel": "2025年通年",
+        "status": "confirmed_final",
+        "statusLabel": "確定値",
+        "denominator": null,
+        "per10000Residents": null,
+        "normalization": "none",
+        "sourceId": "kanagawa-crime-2025",
+        "sourceUrl": "https://www.police.pref.kanagawa.jp/assets/entry/c0030_67.pdf",
+        "checkedAt": "2026-09-08",
+        "displayNote": "市全域の認知件数。人口補正なし。駅周辺の治安評価や住民の被害確率ではありません。"
+      }
+    ],
+    "notes": [
+      "対象は2025年通年の確定値です。",
+      "人口補正していないため自治体の規模・来街者・商業施設の影響を受けます。",
+      "このデータから安全度の順位・スコアを作成しません。"
+    ]
+  },
+  "cramSchools": {
+    "label": "公式ページで確認した中学受験塾",
+    "scope": "確認済み校舎の所在地",
+    "coverage": "positive_only_sample",
+    "coverageLabel": "確認できた校舎のみ掲載。掲載なしは塾の不存在を意味しません。",
+    "brands": [
+      "日能研",
+      "SAPIX小学部",
+      "早稲田アカデミー",
+      "四谷大塚"
+    ],
+    "records": [
+      {
+        "id": "cram-school-1",
+        "brand": "日能研",
+        "campus": "吉祥寺校",
+        "name": "日能研 吉祥寺校",
+        "address": "東京都武蔵野市吉祥寺南町1-8-1 三井吉祥寺ビル3F",
+        "municipality": "武蔵野市",
+        "prefecture": "東京都",
+        "scope": "individual_campus",
+        "presence": true,
+        "verification": "official_campus_page",
+        "station": "吉祥寺",
+        "stations": [
+          {
+            "name": "吉祥寺",
+            "exit": "公園口",
+            "walkMinutes": 1
+          }
+        ],
+        "latitude": null,
+        "longitude": null,
+        "sourceUrl": "https://www.nichinoken.co.jp/contents/branch_detail/app/view/BranchDetailView.php?site_code=BK",
+        "locatorUrl": "https://www.nichinoken.co.jp/branch/listsearch/metropolitan.html",
+        "checkedAt": "2026-09-08",
+        "contentUse": "校舎名・所在地・最寄り駅の事実のみ。写真・ロゴ・説明文の転載なし。",
+        "notes": []
+      },
+      {
+        "id": "cram-school-2",
+        "brand": "日能研",
+        "campus": "立川校",
+        "name": "日能研 立川校",
+        "address": "東京都立川市柴崎町2-2-1 KSビル5F",
+        "municipality": "立川市",
+        "prefecture": "東京都",
+        "scope": "individual_campus",
+        "presence": true,
+        "verification": "official_campus_page",
+        "station": "立川／立川南",
+        "stations": [
+          {
+            "name": "立川",
+            "exit": "南口",
+            "walkMinutes": null
+          },
+          {
+            "name": "立川南",
+            "exit": null,
+            "walkMinutes": 3
+          }
+        ],
+        "latitude": null,
+        "longitude": null,
+        "sourceUrl": "https://www.nichinoken.co.jp/contents/branch_detail/app/view/BranchDetailView.php?site_code=BT",
+        "locatorUrl": "https://www.nichinoken.co.jp/branch/listsearch/metropolitan.html",
+        "checkedAt": "2026-09-08",
+        "contentUse": "校舎名・所在地・最寄り駅の事実のみ。写真・ロゴ・説明文の転載なし。",
+        "notes": [
+          "公式ページ内でJR立川駅の徒歩時間が3分と5分に分かれるため数値を保留。最寄り駅と所在地は確認済み。"
+        ]
+      },
+      {
+        "id": "cram-school-3",
+        "brand": "SAPIX小学部",
+        "campus": "吉祥寺校",
+        "name": "SAPIX小学部 吉祥寺校",
+        "address": "東京都武蔵野市吉祥寺本町2-1-10 受付4F",
+        "municipality": "武蔵野市",
+        "prefecture": "東京都",
+        "scope": "individual_campus",
+        "presence": true,
+        "verification": "official_campus_page",
+        "station": "吉祥寺",
+        "stations": [
+          {
+            "name": "吉祥寺",
+            "exit": "北口",
+            "walkMinutes": 3
+          }
+        ],
+        "latitude": null,
+        "longitude": null,
+        "sourceUrl": "https://www.sapientica.com/school/tokyo/kichijouji/",
+        "locatorUrl": "https://www.sapientica.com/school/",
+        "checkedAt": "2026-09-08",
+        "contentUse": "校舎名・所在地・最寄り駅の事実のみ。写真・ロゴ・説明文の転載なし。",
+        "notes": [
+          "受付所在地を表示。複数号館を別校舎として加算しない。"
+        ]
+      },
+      {
+        "id": "cram-school-4",
+        "brand": "SAPIX小学部",
+        "campus": "柏校",
+        "name": "SAPIX小学部 柏校",
+        "address": "千葉県柏市あけぼの1-8-25",
+        "municipality": "柏市",
+        "prefecture": "千葉県",
+        "scope": "individual_campus",
+        "presence": true,
+        "verification": "official_campus_page",
+        "station": "柏",
+        "stations": [
+          {
+            "name": "柏",
+            "exit": "西口",
+            "walkMinutes": 7
+          }
+        ],
+        "latitude": null,
+        "longitude": null,
+        "sourceUrl": "https://www.sapientica.com/school/chiba/kashiwa/",
+        "locatorUrl": "https://www.sapientica.com/school/",
+        "checkedAt": "2026-09-08",
+        "contentUse": "校舎名・所在地・最寄り駅の事実のみ。写真・ロゴ・説明文の転載なし。",
+        "notes": []
+      },
+      {
+        "id": "cram-school-5",
+        "brand": "早稲田アカデミー",
+        "campus": "吉祥寺校",
+        "name": "早稲田アカデミー 吉祥寺校",
+        "address": "東京都武蔵野市吉祥寺本町1-14-8",
+        "municipality": "武蔵野市",
+        "prefecture": "東京都",
+        "scope": "individual_campus",
+        "presence": true,
+        "verification": "official_campus_page",
+        "station": "吉祥寺",
+        "stations": [
+          {
+            "name": "吉祥寺",
+            "exit": "JR中央口",
+            "walkMinutes": 2
+          },
+          {
+            "name": "吉祥寺",
+            "exit": "京王",
+            "walkMinutes": 3
+          }
+        ],
+        "latitude": null,
+        "longitude": null,
+        "sourceUrl": "https://www.waseda-ac.co.jp/school/kichijouji.html",
+        "locatorUrl": "https://www.waseda-ac.co.jp/school/",
+        "checkedAt": "2026-09-08",
+        "contentUse": "校舎名・所在地・最寄り駅の事実のみ。写真・ロゴ・説明文の転載なし。",
+        "notes": []
+      },
+      {
+        "id": "cram-school-6",
+        "brand": "四谷大塚",
+        "campus": "西船橋校舎",
+        "name": "四谷大塚 西船橋校舎",
+        "address": "千葉県船橋市西船4-2-10 三星西船ビル",
+        "municipality": "船橋市",
+        "prefecture": "千葉県",
+        "scope": "individual_campus",
+        "presence": true,
+        "verification": "official_campus_page",
+        "station": "西船橋／京成西船",
+        "stations": [
+          {
+            "name": "西船橋",
+            "exit": "北口",
+            "walkMinutes": 2
+          },
+          {
+            "name": "京成西船",
+            "exit": null,
+            "walkMinutes": 5
+          }
+        ],
+        "latitude": null,
+        "longitude": null,
+        "sourceUrl": "https://www.yotsuyaotsuka.com/school_map/kousha.php?id=30",
+        "locatorUrl": "https://www.yotsuyaotsuka.com/",
+        "checkedAt": "2026-09-08",
+        "contentUse": "校舎名・所在地・最寄り駅の事実のみ。写真・ロゴ・説明文の転載なし。",
+        "notes": []
+      },
+      {
+        "id": "cram-school-7",
+        "brand": "四谷大塚",
+        "campus": "津田沼校舎",
+        "name": "四谷大塚 津田沼校舎",
+        "address": "千葉県習志野市谷津7-10-12",
+        "municipality": "習志野市",
+        "prefecture": "千葉県",
+        "scope": "individual_campus",
+        "presence": true,
+        "verification": "official_campus_page",
+        "station": "津田沼",
+        "stations": [
+          {
+            "name": "津田沼",
+            "exit": "南口",
+            "walkMinutes": 3
+          }
+        ],
+        "latitude": null,
+        "longitude": null,
+        "sourceUrl": "https://www.yotsuyaotsuka.com/school_map/kousha.php?id=24",
+        "locatorUrl": "https://www.yotsuyaotsuka.com/",
+        "checkedAt": "2026-09-08",
+        "contentUse": "校舎名・所在地・最寄り駅の事実のみ。写真・ロゴ・説明文の転載なし。",
+        "notes": [
+          "校舎所在地は習志野市。船橋市内の校舎として集計しない。"
+        ]
+      }
+    ],
+    "notes": [
+      "地域内の全塾・全校舎を網羅する調査ではありません。",
+      "校舎の存在は教育の質や中学受験率を示すものではありません。",
+      "確認済み校舎数を教育スコアに換算しません。"
+    ]
+  },
+  "middleSchoolExamRate": {
+    "label": "中学受験率",
+    "value": null,
+    "unit": "%",
+    "status": "unavailable",
+    "reason": "同じ対象・分母による市別の受験実人数を確認できていません。私立・国立中学への進学率は受験参加率とは異なります。",
+    "records": [
+      {
+        "municipality": "武蔵野市",
+        "value": null,
+        "status": "unavailable",
+        "reason": "同じ対象・分母による市別の受験実人数を確認できていません。私立・国立中学への進学率は受験参加率とは異なります。"
+      },
+      {
+        "municipality": "立川市",
+        "value": null,
+        "status": "unavailable",
+        "reason": "同じ対象・分母による市別の受験実人数を確認できていません。私立・国立中学への進学率は受験参加率とは異なります。"
+      },
+      {
+        "municipality": "八王子市",
+        "value": null,
+        "status": "unavailable",
+        "reason": "同じ対象・分母による市別の受験実人数を確認できていません。私立・国立中学への進学率は受験参加率とは異なります。"
+      },
+      {
+        "municipality": "横浜市",
+        "value": null,
+        "status": "unavailable",
+        "reason": "同じ対象・分母による市別の受験実人数を確認できていません。私立・国立中学への進学率は受験参加率とは異なります。"
+      },
+      {
+        "municipality": "川崎市",
+        "value": null,
+        "status": "unavailable",
+        "reason": "同じ対象・分母による市別の受験実人数を確認できていません。私立・国立中学への進学率は受験参加率とは異なります。"
+      },
+      {
+        "municipality": "川越市",
+        "value": null,
+        "status": "unavailable",
+        "reason": "同じ対象・分母による市別の受験実人数を確認できていません。私立・国立中学への進学率は受験参加率とは異なります。"
+      },
+      {
+        "municipality": "船橋市",
+        "value": null,
+        "status": "unavailable",
+        "reason": "同じ対象・分母による市別の受験実人数を確認できていません。私立・国立中学への進学率は受験参加率とは異なります。"
+      },
+      {
+        "municipality": "柏市",
+        "value": null,
+        "status": "unavailable",
+        "reason": "同じ対象・分母による市別の受験実人数を確認できていません。私立・国立中学への進学率は受験参加率とは異なります。"
+      }
+    ],
+    "notes": [
+      "不明値を0%として表示しません。",
+      "私立・国立中学進学率を取得しても、中学受験率に置き換えません。"
+    ]
+  },
+  "sources": [
+    {
+      "id": "kanagawa-crime-2025",
+      "publisher": "神奈川県警察",
+      "title": "刑法犯 罪名別 市区町村別 認知件数 令和7年12月末確定値",
+      "url": "https://www.police.pref.kanagawa.jp/assets/entry/c0030_67.pdf",
+      "landingUrl": "https://www.police.pref.kanagawa.jp/tokei/hanzai_tokei/mesc0030.html",
+      "period": "2025年通年",
+      "publicationPageUpdatedAt": "2026-02-13",
+      "checkedAt": "2026-09-08",
+      "termsUrl": "https://www.police.pref.kanagawa.jp/guidance.html",
+      "termsCheckedAt": "2026-09-08",
+      "termsPageUpdatedAt": "2026-05-26",
+      "reuseStatus": "confirmed",
+      "reuseNote": "利用規約に、数値データは著作権の対象外で自由に利用できる旨を確認。出典を明示し、加工した場合は加工主体・内容を明示する。",
+      "attribution": "神奈川県警察「刑法犯 罪名別 市区町村別 認知件数（令和7年12月末確定値）」を基に駅まちアトラスが作成。"
+    }
+  ]
+}

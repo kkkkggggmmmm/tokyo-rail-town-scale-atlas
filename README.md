@@ -1,3 +1,24 @@
+# 駅まちアトラス — 先行探索MVP
+
+**[公開アプリを開く](https://tokyo-rail-town-atlas.dwdaai.chatgpt.site)**
+
+代表8沿線・44の街候補を、路線概略図、沿線の並び、2〜4沿線比較から探索する先行版です。公開コードは `dist/`。統計による商業規模・順位・実距離は未算定です。
+
+- 調査用に選定した街の参考ガイドであり、全駅・全中心地の網羅ではありません。
+- 図の位置は読みやすさのための配置です。緯度経度、距離、鉄道線形を示しません。
+- 2026年8月30日固定の候補・沿線リストだけを使用。N03、G2データ、統計原本をこの公開版へ変換・混入していません。
+- GitHubが正本、`.openai/hosting.json` のSitesが配信先。公開承認は2026年9月7日のOwner指示に基づきます。
+- 原本取得・統計モデルのドラフトは別途保留。完成目標は、商業規模とタイプを統計で推定し、実地図と街の間隔を比較できるアトラスです。
+
+検証：`make verify-fast`、`node --test tests/explorer.test.mjs`、`node --check dist/app.mjs`。公開ゲートの検証と、元の統計パイプラインの原本検証は別です。
+
+- ライセンス：コードと文書は [MIT License](LICENSE)。出典から作ったデータは各出典の条件に従う（[NOTICE.md](NOTICE.md)）。
+- 既知の訂正待ち：JR京浜東北・根岸線（与野・北浦和・西日暮里・日暮里・鶯谷）とJR総武線各駅停車（小岩）の駅の抜け。記録は [G2_CORRIDOR_CORRECTION_2026-09-28.yml](data/reference/G2_CORRIDOR_CORRECTION_2026-09-28.yml)、決定はDEC-0019。
+
+準備：`python3.12 -m venv .venv && .venv/bin/pip install -r requirements-ci.txt` のあと `make verify-fast PYTHON=.venv/bin/python`。JavaScriptのテストは `node --test tests/*.test.mjs`。
+
+---
+
 # 東京圏 駅まちスケール・アトラス
 
 東京圏の駅を入口に、駅へ接続する **commercial center（商業中心地）** の規模・タイプ・交通力・推定信頼度を分離して推定するプロジェクトです。

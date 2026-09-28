@@ -1,0 +1,28 @@
+{
+  "id": "estat2021_ricchi_table2",
+  "title": "総務省・経済産業省 令和3年経済センサス-活動調査 立地環境特性編 第2表",
+  "table_id": "0004015880",
+  "file_stat_infid": "000040186981",
+  "url": "https://www.e-stat.go.jp/stat-search/files?layout=dataset&stat_infid=000040186981",
+  "download_url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040186981&fileKind=0",
+  "definition_url": "https://www.stat.go.jp/data/e-census/2021/kekka/pdf/ricchi_riyou.pdf",
+  "terms_url": "https://www.e-stat.go.jp/terms-of-use",
+  "license": "CC BY 4.0 compatible e-Stat terms; numerical data freely reusable; source and processing attribution required",
+  "published_date": "2024-06-25",
+  "retrieved_date": "2026-09-08",
+  "sales_reference_period": "2020-01-01/2020-12-31",
+  "establishments_reference_date": "2021-06-01",
+  "sales_unit": "百万円",
+  "scope": "公式商業集積地区（概ね商店街、ショッピングセンター、駅ビル等）。駅圏・市区町村全体・独自centerではない。",
+  "sales_definition": "小売・飲食サービス・生活関連サービスの売上（収入）金額。GDP（付加価値）や全産業売上ではなく、小売の年間商品販売額とも集計項目が異なる。",
+  "coverage_notes": [
+    "1都3県の地区明細のみ。都道府県・市区町村小計を重複加算しない。",
+    "飲食サービスは中分類76+77。生活関連サービスは78+79からリネンサプライと火葬・墓地管理を除く。娯楽業80や宿泊業75は含まない。",
+    "売場面積は法人小売業のみ。事務所床面積ではない。",
+    "2020年のコロナ期売上であり、現在の規模を表す値に換算しない。",
+    "地区の地理的範囲はこのExcelにない。名称一致だけで駅／centerの境界一致と認定しない。",
+    "2026-09-08に統計局正誤情報を確認。立地環境特性編第2表を対象とする訂正告知は見当たらず。"
+  ],
+  "corrections_url": "https://www.stat.go.jp/data/seigo/e-census/2021/index.html",
+  "sha256": "44d36113accd458cc8c9c4d5538a187fe72903beaa75002fc705e9f300cc9bb8"
+}

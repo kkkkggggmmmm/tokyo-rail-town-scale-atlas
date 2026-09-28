@@ -1,0 +1,41 @@
+version: '0.4'
+checked_at: '2026-09-08'
+map:
+  publisher: 国土地理院
+  product: 最適化ベクトルタイル・試験公開 PMTiles
+  data_reference_date: '2026-04-01'
+  update_notice_date: '2026-06-05'
+  specification_url: https://github.com/gsi-cyberjapan/optimal_bvmap
+  tile_url: https://cyberjapandata.gsi.go.jp/xyz/optimal_bvmap-v1/optimal_bvmap-v1.pmtiles
+  terms_url: https://www.gsi.go.jp/kikakuchousei/kikakuchousei40182.html
+  terms_revision: '2025-11-20'
+  tile_use_url: https://maps.gsi.go.jp/development/ichiran.html
+  reuse_status: confirmed_attributed_realtime_tiles
+  application_required_for_this_use: false
+  attribution: 地理院タイル（加工）
+  layers: [AdmArea, WA, Cstline, AdmBdry, RailCL, Anno]
+  label_codes: [110, 120, 140, 422]
+  n03_used: false
+  component_rollup_authorized: false
+  note: 土地・水域を背景に自治体界、自治体名、鉄道線形、駅を表示。地図は統計成分のclipには使用しない。
+public_statistics:
+  generator: scripts/build_public_quantitative.py
+  source_lock: data/manifests/source_lock.phase1.yml
+  restaurant_column: T001163082
+  components_aggregated: false
+  s12_cross_operator_or_route_sum: false
+  economic_context: data/reference/quantitative/municipal_economy.json
+  education_safety_context: data/reference/quantitative/education_safety.json
+  original_bundle_checkpoint: libfile_167b01d57458819180d11aafb5569995
+  apparel_column: T001163064
+  supplemental_manifest: data/manifests/public_supplements.yml
+  supplemental_generator: scripts/build_public_supplements.py
+  supplemental_originals_checkpoint: libfile_05297e1693f88191b06a782927344ce6
+  student_metric: T001144046; residents enrolled in university or graduate school
+  student_reference_date: '2020-10-01'
+  commercial_district_table: '0004015880'
+  commercial_sales_reference_period: '2020-01-01/2020-12-31'
+  cafes_table: '0004005673'
+  cafes_industry: '767'
+  cafes_scope: municipality_or_designated_city_ward
+  additions_change_core_or_route_mean_rank: false

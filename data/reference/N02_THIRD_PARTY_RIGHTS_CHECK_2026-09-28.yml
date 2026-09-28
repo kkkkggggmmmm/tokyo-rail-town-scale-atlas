@@ -1,0 +1,30 @@
+record_id: N02-3P-2026-09-28
+project_id: tokyo-rail-town-scale-atlas
+record_type: open_review_item
+recorded_at: "2026-09-28"
+status: OPEN_PUBLICATION_CONTINUES
+owner_decision: DEC-0021
+source_id: ksj_n02_2025
+observation: >-
+  SOURCES.yml sets license_contract.third_party_rights_review_required: true and records
+  ksj_n02_2025 license.resolved: true with third_party_rights_caveat: true. No file in the
+  repository records the outcome of the third-party-rights review or a first-hand check of
+  the N02-25 source materials (原典資料). The public explorer and committed G2 artifacts
+  already carry N02-derived station coordinates and route order.
+related_canonical_sources:
+  - SOURCES.yml license_contract.third_party_rights_review_required
+  - SOURCES.yml sources[ksj_n02_2025].license
+  - AGENTS.md STOP condition "source usage terms are unresolved"
+  - CENTER_MODEL.md STOP condition "third-party rights are unresolved"
+evidence_missing:
+  - A first-hand reading of the N02-25 catalog page and product specification for its source materials and any secondary-use note, with URL and retrieval date.
+  - The review outcome (no third-party restriction found, or the restriction and its conditions).
+not_evidence: >-
+  A review in this session found no GSI-specific secondary-use notice for N02 comparable to
+  N03's, but only through search summaries; operator and MLIT sites were not reachable, so
+  that is not a first-hand check.
+owner_answer: >-
+  DEC-0021: no concrete problem was found, so the public explorer stays published while the
+  first-hand review is completed. A restriction found by that review becomes a STOP for
+  N02-derived public payloads.
+close_when: the evidence_missing items are recorded with URLs and retrieval dates.

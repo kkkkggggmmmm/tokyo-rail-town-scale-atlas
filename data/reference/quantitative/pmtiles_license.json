@@ -1,0 +1,14 @@
+{
+  "package": "pmtiles",
+  "version": "4.3.0",
+  "declared_license": "BSD-3-Clause",
+  "package_license_present": false,
+  "package_license_presence_source": "https://unpkg.com/pmtiles@4.3.0/?meta",
+  "package_json_source": "https://unpkg.com/pmtiles@4.3.0/package.json",
+  "npm_registry_source": "https://registry.npmjs.org/pmtiles/4.3.0",
+  "git_head": "5b5e6f33ca974731b01a5e09dcdeda410314efbe",
+  "license_source": "https://raw.githubusercontent.com/protomaps/PMTiles/5b5e6f33ca974731b01a5e09dcdeda410314efbe/LICENSE",
+  "local_file": "/workspace/scratch/b6592a236571/research/pmtiles-4.3.0-LICENSE.txt",
+  "sha256": "0371c38f338835f7fc13ed71176f3d92144e22c8b736a31cced57adbbeb647b3",
+  "note": "npm配布にLICENSEファイルがないため、npmバージョンメタデータのgitHeadに固定した公式リポジトリのLICENSEを取得。"
+}

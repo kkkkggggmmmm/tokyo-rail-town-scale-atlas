@@ -5,6 +5,7 @@ PYTHON ?= python3
 verify-fast:
 	$(PYTHON) scripts/validate_phase0.py
 	$(PYTHON) scripts/validate_phase1_g3_1_boundary_gate.py
+	$(PYTHON) scripts/validate_corridor_completeness.py
 
 verify-locked:
 	$(PYTHON) scripts/validate_phase1_lock.py

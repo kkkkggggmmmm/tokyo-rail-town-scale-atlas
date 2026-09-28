@@ -1,5 +1,28 @@
 # Decision Register
 
+## OWNER-2026-09-28-PROPOSALS — adopt proposals 1–6, keep publishing, merge into main
+
+- Accepted instruction (Owner, 2026-09-28), replying to `docs/PROPOSED_DECISIONS_2026-09-28.md`: 「1採用する。後者」「2採用する。作業やって」「3なんかまずそうなのある？なければ公開でいいよ」「mainに取り込んで」.
+- Meaning: the Owner adopts proposals 1–6 and asks the agent to record them (DEC-0019 to DEC-0024), to carry out the station correction, to keep the public explorer published unless a concrete problem is found in the N02 rights review, and to merge the canonical working branch into `main`.
+- Recorded by Claude at the Owner's request. Decision authority: Owner.
+
+## OWNER-2026-09-07-MVP — publish a bounded reference explorer
+
+- Accepted instruction: 「全体の構成を見直して目標や完成品を思い出して、一旦MVP公開までやってほしい」.
+- Publish the connected reference-catalog experience now: schematic route map → town guide → route profile → comparison. Existing pilot and calibration-only registries supply the reference content.
+- Keep numerical commercial scale, L0–L6 classes, actual center boundaries, traffic power and confidence uncomputed. Do not substitute evaluation tags or candidate coverage for these measurements.
+- Publish only 1都3県 calibration candidates (44). No holdout labels, comparative constraints, or expected model outputs enter the bundle. Reference membership is an evaluation selection, not a complete rail-service/center membership.
+- The public bundle contains no locked raw inputs, no G2 output conversion, and no statistical derivation. Existing mandatory raw checks are unchanged and remain blocking for source work.
+- This is an early explorer MVP, not completion of the original statistical atlas.
+
+
+## OWNER-2026-09-06-N03 — N03 not adopted
+
+- Status: accepted Owner instruction, 「N03使わない確定でいいよ」.
+- Decision: N03 is excluded. The application-next-step and candidate-selection portions of DEC-0015 are superseded. Its prohibition on unaudited N03 processing remains protective historical evidence.
+- Scope: no replacement boundary source or whole-mesh rollup is automatically approved by this decision. Reconcile an N03-free component-support contract before real-data extraction.
+- Recovery: local unpushed checkpoints are unavailable after workspace maintenance. This branch adds an independent Golden Eval runner to recovered GitHub code without claiming restoration of those checkpoints.
+
 ## DEC-0001 — Computational unit
 
 - Date: 2026-08-30
@@ -115,3 +138,80 @@
 - Decision: Select the 2026 National Land Numerical Information administrative-area dataset (`N03-20260101`) as the candidate authoritative boundary source for the 1都3県 display union, 10km analysis buffer, and TX 5km geometry corridor. Do not acquire or process it until the Owner records the result of the applicable GSI procedure/confirmation for the planned derived geometry and public-map use.
 - Rationale: The official N03 catalog identifies national polygon coverage, a 2026-01-01 reference date, JGD2011 geometry, and CC BY 4.0. It also states that its GSI-derived source may require a secondary-use application. The planned dissolve/buffer/intersection and potential vector/map publication is too specific to self-classify reliably as application-free.
 - Consequence: The repository contains only the source audit and a non-executable scope-rollup contract. No N03 archive, polygon, component classification, or scope aggregate is in the source lock. When the decision is resolved, retain the official determination, attribution/modification wording, any approval number and distribution conditions before adding N03 to the locked raw scope. Partial `mesh ∩ prefecture` components are never area-weighted or fractionally allocated.
+
+
+## DEC-0016 — Table-defined area sums, with geographic coverage still unverified
+
+- Date: 2026-09-12
+- Status: accepted for the Owner's explicit area-total/ranking request
+- Decision: Publish the sum of all explicitly assigned Table 2 leaf districts in each fixed browse collection as **エリア合計（公表地区合算）**. Keep `aggregationAllowed=false` for whole-center geography; add `selectedDistrictSumAllowed=true` for this narrower mathematical scope. Do not label this the entire economy of an intuitive town. The eight rosters and scope notes live in `dist/district-areas.mjs`, version `selected-district-sum-v1`; no source ID is shared between collections. Changes to the roster require a versioned decision and reranking.
+- Evidence: The [official workbook](https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040186981&fileKind=0), SHA256 `44d36113accd458cc8c9c4d5538a187fe72903beaa75002fc705e9f300cc9bb8`, was inspected directly in memory. 12,535 unique leaf IDs sum exactly to six national establishment/employee measures; those six also reconcile in each of four prefectures and in 215 target municipality groups (1,290 exact comparisons). Higher-level totals leave the leaf-ID column blank. This numerical accounting supports use as additive table components, while no explicit establishment-exclusivity statement or town boundary was verified. [Official usage notes](https://www.stat.go.jp/data/e-census/2021/kekka/pdf/ricchi_riyou.pdf) retain cross-municipality districts and rounded/suppressed observation semantics.
+- Consequences: Only complete per-metric sums rank; suppressed or not-applicable cells prevent a complete total. Preserve all constituent observations, years, units, IDs and missing reasons; expose the full selected roster. No subtraction to recover suppressed figures. Same-value ranks are 1,1,3 and filters only select groups, never change their membership. No area-allocation, N03, canonical center merge, full-town coverage certification or raw source reprocessing is authorized.
+
+
+## DEC-0017 — Extend explicit district collections to all four prefectures
+
+- Date:2026-09-13
+- Status:accepted for continued regional-total/ranking implementation
+- Decision:`selected-district-sum-v2` extends the eight existing collections to26, using200 distinct IDs from the unchanged public Table2 data. Tokyo16/Kanagawa3/Saitama3/Chiba4; exact included IDs and exclusions remain in `dist/district-areas.mjs`. Existing eight collections retain their IDs and contents. No source row is duplicated across collections.
+- Geographic limits:These names describe fixed published-district collections, not verified polygons. Keep `aggregationAllowed=false`. 横浜CIAL is not covered by the included rows; ambiguous 浦和/松戸 associations are excluded explicitly; 六栄会/川越名店街 geographic assignment is unverified. Do not present these omissions as source values of zero or a complete town inventory. No numeric-based removal of suppressed members.
+- Computation:unchanged complete-case and same-period rules from DEC-0016. Rankable counts23 retail/19 food/12 personal/11 three-sector/22 floor out of26. Unavailable sums receive no rank and stay visible. Search never clips a collection to matching source districts. No canonical center, station or municipality-total reassignment.
+
+## DEC-0018 — Cover all source stations within the requested metro reach
+
+- Date: 2026-09-13
+- Status: accepted for the Owner's explicit all-station acquisition request
+- Scope: `NETWORK_SCOPE.json` fixes an approximate polygon including Chiba/Toke, Saitama/Omiya/Urawa/Higashi-Iwatsuki and Fujisawa/Shonandai/Katase-Enoshima. This is a browse/acquisition scope, not a municipal or center boundary. All1,569 N02-25 records inside it are included;23 historical outside records are retained. No N03.
+- Identity: existing G2 aliases/opaque IDs win; new UUIDs are persisted separately. A source-key ambiguity blocks new publication. Existing8 ordered corridors remain frozen;118 formal route inventories have no inferred sequence. New `nrt_` IDs describe those browse inventories, not canonical service corridors.
+- Statistics: extend exact locked N02/S12/T001163/T001141/T001144 sources to the additional station meshes. Preserve every raw token, year, prefecture component and suppression/aggregation marker. S12 remains Access-only and un-summed. Public base JSON and all existing identity/lock files remain byte-identical.
+- Publication: authorized expanded station exploration, quantitative profiles and comparisons, with explicit missing records and the approximate scope disclosed. No new center boundaries, whole-town totals or score model.
+
+## DEC-0019 — Correct the Keihin-Tohoku/Negishi and Sobu-local segments
+
+- Date: 2026-09-28
+- Status: accepted; correction pending regeneration
+- Decided by: Owner (OWNER-2026-09-28-PROPOSALS, proposal 1)
+- Decision: Amend DEC-0012's service-scope counts for JR京浜東北・根岸線 and JR総武線各駅停車, and lift DEC-0018's "existing 8 ordered corridors remain frozen" clause for these two corridors only. Insert 与野・北浦和 between さいたま新都心 and 浦和, 西日暮里・日暮里・鶯谷 between 田端 and 上野, and 小岩 between 新小岩 and 市川. The expected counts are 47 and 22; they stay estimates until the operator's official station list is checked first-hand. Reuse the opaque IDs DEC-0018 minted for these N02 keys, keep every existing ID, and re-lock both segment hashes.
+- Rationale: DEC-0012 locks every official named route node between the endpoints, and the corridor completeness screen finds these six N02 stations between locked neighbours. The public explorer currently draws 田端 directly followed by 上野.
+- Consequence: `data/reference/G2_CORRIDOR_CORRECTION_2026-09-28.yml` moves to PENDING_REGENERATION with this entry as its decision. One regeneration applies all insertions: first-hand official check, registry seeding with the reuse IDs, G2, G3 Access observations and public corridor payloads, then `verify-fast`, `verify-locked` and `verify-g3`, then status APPLIED. It needs the locked raw bundle and network access to the official sites.
+
+## DEC-0020 — N03-free scope contract replaces the administrative-boundary clip
+
+- Date: 2026-09-28
+- Status: accepted; contract not executable until its preconditions pass
+- Decided by: Owner (OWNER-2026-09-28-PROPOSALS, proposal 2)
+- Decision: Accept `data/reference/N03_FREE_SCOPE_CONTRACT.yml` as the N03-free component-support contract that OWNER-2026-09-06-N03 requested. Amend DEC-0014: its "audited administrative-boundary scope clip" becomes this partition-code and mesh-grid rule, and G3.1 no longer needs an administrative-boundary source.
+- Consequence: The contract becomes executable only after a validator runs on local G3 derivatives, a 9.5/10/10.5 km sensitivity report shows unchanged display-domain results, and its outputs stay in gitignored review paths. It never allocates components fractionally or fills a missing row with 0. It authorizes internal analysis only; publishing its aggregates needs a later decision. Partition 20 (長野県) remains a known gap.
+
+## DEC-0021 — Licensing, attribution and continued publication
+
+- Date: 2026-09-28
+- Status: accepted
+- Decided by: Owner (OWNER-2026-09-28-PROPOSALS, proposals 3 and 「なければ公開でいいよ」)
+- Decision: Release the project's own code and documents under the MIT License (`LICENSE`). Data derived from statistical and map sources keeps its source terms, and `NOTICE.md` carries the attribution and "加工して作成" wording. The public explorer stays published while the N02 third-party-rights review is completed.
+- Rationale: The review found no concrete problem. N02-25 is declared CC BY 4.0 under the KSJ terms recorded in `SOURCES.yml`, and the site already credits N02 and the other sources. No GSI-specific secondary-use notice like N03's was found for N02, but that finding came from search summaries, not a first-hand reading.
+- Consequence: `data/reference/N02_THIRD_PARTY_RIGHTS_CHECK_2026-09-28.yml` stays open until a first-hand check of the N02-25 catalog and product specification is recorded. If that check finds a restriction, it becomes a STOP for N02-derived public payloads.
+
+## DEC-0022 — Evidence and basemap rule for Golden reference judgments
+
+- Date: 2026-09-28
+- Status: accepted
+- Decided by: Owner (OWNER-2026-09-28-PROPOSALS, proposal 4)
+- Decision: Record G5 reference judgments as labels on 500 m mesh codes (core / fringe / outside) and as relation judgments, not as freehand polygons. Permitted evidence: field knowledge, official statistics and plans with citations, 地理院タイル viewed with attribution, and OSM consulted visually only. Prohibited: tracing or extracting data from Google Maps, Street View, Tabelog or other commercial maps, and digitizing geometry from any basemap into the reference set. Label calibration cases first, and label holdout cases before viewing any G4 candidate output.
+- Consequence: `GOLDEN_EVALS.yml` stays frozen under DEC-0006. Labels go in a separate, hash-pinned supplementary file.
+
+## DEC-0023 — Decision provenance, restart point and main
+
+- Date: 2026-09-28
+- Status: accepted
+- Decided by: Owner (OWNER-2026-09-28-PROPOSALS, proposal 5 and 「mainに取り込んで」)
+- Decision: From DEC-0019 onward every entry names who decided it; DEC-0001 to DEC-0018 remain accepted as written, with approval provenance not recorded unless an OWNER entry quotes the instruction. DEC-0013's fixed restart commit (`main@5c886415`) and the historical `main@8cd4ce0` are superseded: the restart point is the head of `main` after the canonical working branch is merged into it. Each accepted gate records its own commit.
+- Consequence: `work/public-explorer-mvp`, with the 2026-09-28 changes, is merged into `main` through a pull request. After the merge, `main` is the canonical branch again.
+
+## DEC-0024 — Observation semantics clarifications
+
+- Date: 2026-09-28
+- Status: accepted
+- Decided by: Owner (OWNER-2026-09-28-PROPOSALS, proposal 6)
+- Decision: (1) `observed_zero` requires a non-null 0. (2) `imputed` requires a value; if imputation fails, the row keeps its original missing status. (3) `invalid` stops the pipeline: it may appear in QA or quarantine output but never in a canonical `feature_observation` row. The Python parser keeps recognizing the token. (4) At the next G3 regeneration, L01 is split into `land_price_standard_point` (all points) and `commercial_land_price` (commercial-use points only), keeping the use class. (5) G3's `food_*` columns, which hold Economic Census major group M (accommodation plus food service), are renamed `accommodation_food_*`; the restaurants-only metric is middle group 76 (`T001163082`), as the public explorer already uses.
+- Consequence: `schema/canonical.sql` and `DATA_DICTIONARY.md` now agree on (1)–(3), and `tests/test_canonical_sql_checks.py` pins every status/value pair. Items (4) and (5) change derived columns and are applied in the same regeneration as DEC-0019, with `verify-locked` and `verify-g3`.
