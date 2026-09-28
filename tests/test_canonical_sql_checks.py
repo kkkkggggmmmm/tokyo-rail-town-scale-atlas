@@ -5,11 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# DATA_DICTIONARY.md §2: (status, numeric_value) -> accepted?
-# Two points where the dictionary and the SQL disagree stay out of this test until the
-# Owner decides them (docs/PROPOSED_DECISIONS_2026-09-28.md): whether `imputed` may be
-# NULL, and whether an `invalid` row may be stored at all. Only the case both options
-# agree on is pinned: an `invalid` row never carries a number.
+# DATA_DICTIONARY.md §2 as settled by DEC-0024: (status, numeric_value) -> accepted?
 CASES = [
     ("observed", 12.0, True),
     ("observed", 0.0, False),
@@ -17,9 +13,12 @@ CASES = [
     ("observed_zero", 0.0, True),
     ("observed_zero", 1.0, False),
     ("observed_zero", None, False),
+    ("imputed", 3.0, True),
+    ("imputed", None, False),
     ("aggregation_destination", 7.0, True),
     ("aggregation_destination", None, False),
     ("unknown_status", None, False),
+    ("invalid", None, False),
     ("invalid", 0.0, False),
 ] + [
     (status, value, value is None)

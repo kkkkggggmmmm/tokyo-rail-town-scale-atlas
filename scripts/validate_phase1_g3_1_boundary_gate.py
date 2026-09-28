@@ -164,7 +164,7 @@ def validate_payloads(
     require("CoreScale" in promotion.get("prohibited_until_all_hold", []), "CoreScale must remain blocked")
 
 
-N03_FREE_STATUS = "PROPOSED_NOT_EXECUTABLE"
+N03_FREE_STATUS = "ACCEPTED_NOT_EXECUTABLE"
 ACQUIRED_PARTITIONS = ["08", "09", "10", "11", "12", "13", "14", "19", "22"]
 NEIGHBOUR_PARTITIONS = ["08", "09", "10", "19", "20", "22"]
 
@@ -172,8 +172,8 @@ NEIGHBOUR_PARTITIONS = ["08", "09", "10", "19", "20", "22"]
 def validate_n03_free_contract(contract: dict[str, Any]) -> None:
     """Pin the invariants of the proposed N03-free (mesh-native) scope contract with exact values."""
     require(contract.get("contract_id") == "mesh-native-scope-v1", "N03-free contract id drift")
-    require(contract.get("status") == N03_FREE_STATUS, "N03-free contract cannot become executable without an Owner decision, its preconditions and a validator change")
-    require(contract.get("owner_decision") == "PENDING", "Owner acceptance must be recorded in DECISION_REGISTER.md, not in the contract")
+    require(contract.get("status") == N03_FREE_STATUS, "N03-free contract cannot become executable before its preconditions pass and this validator changes")
+    require(contract.get("owner_decision") == "DEC-0020", "The contract must cite its accepting decision DEC-0020")
     require(any("DEC-0014" in item for item in contract.get("requires_decision_amending", [])), "Adoption must be tied to amending DEC-0014")
     inputs = contract.get("inputs", {})
     require(inputs.get("mesh_geometry") == "computed_from_mesh_code_jis_x_0410", "Mesh geometry must come from the mesh code")
@@ -218,7 +218,7 @@ def main() -> int:
     print(
         "PASS Phase 1 G3.1 boundary audit: N03 not adopted and absent from the Phase 1 acquisition scope; "
         "acquisition-scope artifacts map to audited SOURCES.yml releases; public manifests keep n03_used false; "
-        "N03-free scope contract only proposed"
+        "N03-free scope contract accepted but not executable yet"
     )
     return 0
 

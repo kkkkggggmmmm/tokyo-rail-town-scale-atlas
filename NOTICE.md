@@ -2,8 +2,7 @@
 
 統計・地図の出典から作ったデータは、各出典の利用条件に従う。
 このファイルは、リポジトリと公開サイトが従う出典表示をまとめたものである。
-リポジトリ自身のコードと文書のライセンスは未選択で、Ownerの判断待ちである
-（提案は `docs/PROPOSED_DECISIONS_2026-09-28.md`）。
+リポジトリ自身のコードと文書は [MIT License](LICENSE) で公開する（DEC-0021）。
 各データの正確な版・時点・取得日・SHA-256は `SOURCES.yml`、
 `data/manifests/source_lock.phase1.yml`、`data/manifests/public_supplements.yml`、
 `data/reference/quantitative/` に記録している。
@@ -44,7 +43,7 @@
 ## 使っていないもの
 
 - 国土数値情報「行政区域データ」（N03）は使わない（OWNER-2026-09-06-N03）。N03由来の境界・分類・集計はリポジトリにも公開サイトにも含めない。
-- Google マップ、食べログなどの無許可スクレイピングは行わない（PROJECT_STATE の Canonical decisions 7）。
+- Google マップ、食べログなどの無許可スクレイピングは行わない（PROJECT_STATE の Canonical decisions 7）。商用地図からのトレースも行わない（DEC-0022）。
 
 ## 同梱ライブラリ
 
@@ -55,4 +54,5 @@
 
 国土数値情報は、原典資料に第三者の権利が含まれる場合がある（`SOURCES.yml` の
 `third_party_rights_caveat`）。N02 についての確認状況は
-`data/reference/N02_THIRD_PARTY_RIGHTS_CHECK_2026-09-28.yml` に記録している。
+`data/reference/N02_THIRD_PARTY_RIGHTS_CHECK_2026-09-28.yml` に記録している。具体的な問題は
+見つかっていないため公開を続け、一次確認を済ませる（DEC-0021）。

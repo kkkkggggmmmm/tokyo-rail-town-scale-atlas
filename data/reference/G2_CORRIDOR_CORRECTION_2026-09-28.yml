@@ -9,11 +9,11 @@ conflicts_with:
   - SOURCES.yml phase_1_identity counts (242 stations, 233 crosswalk rows)
   - data/manifests/identity.phase1.yml station_order_sha256 and source_keys_sha256 locks for both corridors
   - PROJECT_STATE.md completion-ledger G2 counts
-owner_decision: PENDING
+owner_decision: DEC-0019
 proposal: docs/PROPOSED_DECISIONS_2026-09-28.md
 source_release_id: N02-25
 recorded_at: "2026-09-28"
-status: PENDING_OWNER_DECISION
+status: PENDING_REGENERATION
 status_meaning: >-
   AGENTS.md requires a conflict between canonical sources to be recorded before data
   changes. DEC-0012 states that a segment holds every official route node between its
@@ -53,7 +53,7 @@ detection:
     a simulated 神田+御茶ノ水 double omission on the Chuo segment), so a multi-station
     omission may be reported only partly or missed.
 apply_preconditions:
-  - The Owner records a decision in decisions/DECISION_REGISTER.md that amends DEC-0012 and lifts the DEC-0018 freeze for these two corridors, and owner_decision is set to that entry id.
+  - Done 2026-09-28: DEC-0019 amends DEC-0012 and lifts the DEC-0018 freeze for these two corridors.
   - Re-read the operator's current official station list for each corrected corridor and add url and retrieved_at records under official_confirmation.records; set its status to CONFIRMED only if the list matches.
   - Confirm the proposed exclusions the same way and set exclusion_evidence.status to CONFIRMED.
   - Seed data/reference/PHASE1_IDENTITY_REGISTRY.yml maps.station and maps.station_group with the reuse_ids for these N02 keys before running build_phase1_identity.py. It mints from that registry, not from NETWORK_IDENTITY_REGISTRY.json, and would otherwise mint second IDs.

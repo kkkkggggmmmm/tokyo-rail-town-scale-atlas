@@ -1,5 +1,15 @@
 # PROJECT_STATE
 
+## Review follow-up and Owner decisions — 2026-09-28
+
+- Owner adopted the six review proposals (OWNER-2026-09-28-PROPOSALS, DEC-0019 to DEC-0024) and asked for the canonical working branch to be merged into `main`. After that merge, `main` is the canonical branch again and its head is the restart point (DEC-0023); the "canonical branch remains `work/public-explorer-mvp`" lines below are historical.
+- **G2 identity: PASS with a correction pending regeneration (DEC-0019).** A new clone-safe corridor completeness screen found six stations missing from two frozen segments: 与野・北浦和・西日暮里・日暮里・鶯谷 (JR京浜東北・根岸線, 42 → expected 47) and 小岩 (JR総武線各駅停車, 21 → expected 22). The published corridor views still show the old lists. The correction is recorded in `data/reference/G2_CORRIDOR_CORRECTION_2026-09-28.yml` and needs one regeneration with the locked raw bundle, a first-hand check of JR East's station list, `verify-locked` and `verify-g3`. This session could not run it because the environment's network policy blocks nlftp.mlit.go.jp, www.e-stat.go.jp and www.jreast.co.jp.
+- The screen covers only the DEC-0018 browse scope; 東海大学前–小田原, 北坂戸–寄居 and 流山おおたかの森–つくば are not screened.
+- N03 stays excluded, and the G3.1 gate now detects N03 in any identifying field and binds acquisitions to audited SOURCES.yml releases. DEC-0020 accepts the N03-free scope contract and amends DEC-0014; the contract is not executable until its validator, sensitivity report and gitignored-output preconditions pass.
+- Code and documents are MIT-licensed (DEC-0021, `LICENSE`); source attribution is in `NOTICE.md`. The public explorer stays published; the first-hand N02 third-party-rights check remains open (`data/reference/N02_THIRD_PARTY_RIGHTS_CHECK_2026-09-28.yml`).
+- Golden reference judgments use mesh-cell labels and a basemap rule (DEC-0022). `canonical.sql` now rejects `observed_zero` with NULL, `imputed` without a value and any `invalid` row (DEC-0024); the L01 and accommodation-food renames wait for the same regeneration as DEC-0019.
+- Validation: `make verify-fast` PASS (including the new corridor screen and SQL status tests) and 58 JavaScript checks PASS. `verify-locked` and `verify-g3` were not run: raw inputs are absent and the official sites are unreachable from this environment.
+
 ## Expanded metro station coverage — 2026-09-13
 
 - Implemented for the Owner's requested Chiba/Saitama/Fujisawa reach; publication pending this source commit. Canonical branch remains `work/public-explorer-mvp`, starting from `13f6aac2475aaa69603dcdfca903151b586f6c3e`.

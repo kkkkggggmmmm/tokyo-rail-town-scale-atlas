@@ -47,7 +47,7 @@ which is neither a municipality polygon nor a commercial-center boundary.
 |---|---|---:|---|
 | `observed` | 正の公表観測値 | required | 可 |
 | `observed_zero` | 公表された真の0 | `0`（`NULL`不可） | 可 |
-| `imputed` | 出典または明示手法による補完 | nullable | 原則別系列 |
+| `imputed` | 出典または明示手法による補完。補完できなければ元の欠損statusのまま（DEC-0024） | required | 原則別系列 |
 | `suppressed` | 秘匿 | `NULL` | 不可 |
 | `aggregation_destination` | 秘匿値の合算先 | source value | 重複制御必須 |
 | `not_public` | 非公表 | `NULL` | 不可 |
@@ -57,7 +57,7 @@ which is neither a municipality polygon nor a commercial-center boundary.
 | `duplicate_on_other_record` | 別レコードへ掲載 | `NULL` | 掲載先のみ利用 |
 | `station_absent` | 当該時点に駅なし | `NULL` | 不可 |
 | `outside_scope` | 対象範囲外 | `NULL` | 不可 |
-| `invalid` | 型・単位・codeが不正 | `NULL` | pipeline fail |
+| `invalid` | 型・単位・codeが不正。QA/隔離出力にのみ現れ、canonical観測行には保存しない（DEC-0024） | `NULL` | pipeline fail |
 
 未認識tokenは `invalid` として処理を停止する。空欄、`X`、`...`、`-` を
 一律に0へ変換してはならない。
@@ -183,14 +183,14 @@ which is neither a municipality polygon nor a commercial-center boundary.
 |---|---|---|---|---|
 | `retail_establishments` | establishments | 2021 Economic Census mesh | Scale/Type | 中分類を優先 |
 | `retail_employees` | persons | same | Scale | Activity Mass主成分候補 |
-| `food_establishments` | establishments | same | Scale/Type | 飲食と宿泊の分離可否を原表で確認 |
-| `food_employees` | persons | same | Scale/Type | 同上 |
+| `food_establishments` | establishments | same | Scale/Type | G3の現行値は大分類M（宿泊業，飲食サービス業）合計。DEC-0024により次回再生成で`accommodation_food_establishments`へ改名し、飲食店のみの指標は中分類76（T001163082、公開版`restaurants`と同じ）で持つ |
+| `food_employees` | persons | same | Scale/Type | 同上（`accommodation_food_employees`へ改名） |
 | `lifestyle_leisure_establishments` | establishments | same | Scale/Type | 分類定義をversion固定 |
 | `lifestyle_leisure_employees` | persons | same | Scale/Type | 分類定義をversion固定 |
 | `all_industry_employees` | persons | same | Type/context | 業務性補助。商業量へ無条件加算しない |
 | `resident_population` | persons | 2020 Census mesh, e-Stat `T001141` (JGD2011 500m) | Type/context | 商業量ではない。`T001192` age-class table is not this input |
 | `daily_ridership` | persons/day | S12 | Access | CoreScaleへ混入禁止 |
-| `commercial_land_price` | yen/m² | L01 | Validation | point sample。CoreScaleへ混入禁止 |
+| `commercial_land_price` | yen/m² | L01 | Validation | point sample。CoreScaleへ混入禁止。G3の現行値は用途を絞らない全標準地。DEC-0024により次回再生成で全点を`land_price_standard_point`、商業地用途のみを`commercial_land_price`に分け、用途区分列を保持する |
 
 ## 6. Score outputs
 

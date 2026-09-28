@@ -12,6 +12,11 @@
 
 検証：`make verify-fast`、`node --test tests/explorer.test.mjs`、`node --check dist/app.mjs`。公開ゲートの検証と、元の統計パイプラインの原本検証は別です。
 
+- ライセンス：コードと文書は [MIT License](LICENSE)。出典から作ったデータは各出典の条件に従う（[NOTICE.md](NOTICE.md)）。
+- 既知の訂正待ち：JR京浜東北・根岸線（与野・北浦和・西日暮里・日暮里・鶯谷）とJR総武線各駅停車（小岩）の駅の抜け。記録は [G2_CORRIDOR_CORRECTION_2026-09-28.yml](data/reference/G2_CORRIDOR_CORRECTION_2026-09-28.yml)、決定はDEC-0019。
+
+準備：`python3.12 -m venv .venv && .venv/bin/pip install -r requirements-ci.txt` のあと `make verify-fast PYTHON=.venv/bin/python`。JavaScriptのテストは `node --test tests/*.test.mjs`。
+
 ---
 
 # 東京圏 駅まちスケール・アトラス

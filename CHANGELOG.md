@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.9.0 — 2026-09-28
+
+- Owner adopted six review proposals (DEC-0019 to DEC-0024) and asked for the canonical working branch to be merged into `main`.
+- Added a clone-safe corridor completeness screen to `make verify-fast`. It found six stations missing from two frozen segments (与野・北浦和・西日暮里・日暮里・鶯谷 on JR京浜東北・根岸線, 小岩 on JR総武線各駅停車). DEC-0019 accepts the correction; the G2/G3/public regeneration is pending the locked raw bundle and network access. Sections outside the DEC-0018 browse scope are reported as not screened.
+- Hardened the G3.1 gate: N03 is detected in any identifying field (NFKC, N03 or 行政区域), acquisitions must match audited SOURCES.yml releases and tables, and public manifests must keep `n03_used: false`.
+- Accepted the N03-free scope contract (DEC-0020, amends DEC-0014); it stays non-executable until its preconditions pass.
+- Added the MIT `LICENSE` and `NOTICE.md` attribution (DEC-0021); recorded the open N02 third-party-rights check while publication continues.
+- Recorded the Golden reference evidence rule (DEC-0022) and decision provenance and restart point (DEC-0023).
+- `canonical.sql` now rejects `observed_zero` with NULL, `imputed` without a value, and `invalid` rows (DEC-0024), with a status × value test.
+
 ## 0.8.0-explorer — 2026-09-07
 
 - Activated Owner-requested public reference explorer: 8 routes, 44 calibration candidates in 1都3県, schematic diagram, town/station search, town details, route profiles, 2–4 route comparison, and URL state/back navigation.

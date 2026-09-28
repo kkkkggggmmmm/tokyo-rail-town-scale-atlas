@@ -1,16 +1,15 @@
 contract_id: mesh-native-scope-v1
 project_id: tokyo-rail-town-scale-atlas
-owner_decision: PENDING
+owner_decision: DEC-0020
 proposal: docs/PROPOSED_DECISIONS_2026-09-28.md
 recorded_at: "2026-09-28"
-status: PROPOSED_NOT_EXECUTABLE
+status: ACCEPTED_NOT_EXECUTABLE
 purpose: >-
-  Draft of the N03-free component-support contract that OWNER-2026-09-06-N03 asks to
-  reconcile before real-data extraction. It decides display and analysis scope for e-Stat
-  prefecture-partition mesh components without any administrative-boundary polygon. It
-  authorizes nothing. It can become an authorized scope rule only if the Owner records a
-  decision that amends DEC-0014 (which requires an audited administrative-boundary clip
-  before any whole-mesh sum) and every precondition below passes.
+  The N03-free component-support contract that OWNER-2026-09-06-N03 asked to reconcile
+  before real-data extraction, accepted by DEC-0020. It decides display and analysis scope
+  for e-Stat prefecture-partition mesh components without any administrative-boundary
+  polygon. DEC-0020 amends DEC-0014 so that this rule replaces the administrative-boundary
+  clip, but it runs only after every remaining precondition below passes.
 requires_decision_amending:
   - DEC-0014 "audited administrative-boundary scope clip" condition and its "G3.1 must audit an official administrative-boundary source" consequence
   - data/reference/PHASE1_ACQUISITION_SCOPE.yml partition_note (clip wording)
@@ -101,7 +100,7 @@ required_output_fields:
   - source_published_at
   - contract_id
 preconditions_to_execute:
-  - The Owner records a decision in decisions/DECISION_REGISTER.md that accepts this contract and amends DEC-0014.
+  - Done 2026-09-28: DEC-0020 accepts this contract and amends DEC-0014.
   - A validator for this contract runs in verify-fast (contract structure) and verify-g3 (local derivatives).
   - "Sensitivity report: display-domain results are unchanged when the analysis buffer is 9.5, 10 and 10.5 km."
   - Outputs stay in gitignored review paths (data/derived/*, data/qa/*); no scope geometry is committed.

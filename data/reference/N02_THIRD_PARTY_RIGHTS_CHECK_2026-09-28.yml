@@ -2,8 +2,8 @@ record_id: N02-3P-2026-09-28
 project_id: tokyo-rail-town-scale-atlas
 record_type: open_review_item
 recorded_at: "2026-09-28"
-status: PENDING_OWNER_DECISION
-owner_decision: PENDING
+status: OPEN_PUBLICATION_CONTINUES
+owner_decision: DEC-0021
 source_id: ksj_n02_2025
 observation: >-
   SOURCES.yml sets license_contract.third_party_rights_review_required: true and records
@@ -23,6 +23,8 @@ not_evidence: >-
   A review in this session found no GSI-specific secondary-use notice for N02 comparable to
   N03's, but only through search summaries; operator and MLIT sites were not reachable, so
   that is not a first-hand check.
-question_for_owner: >-
-  Whether the missing review record only needs to be completed, or whether the published
-  N02-derived payloads should be treated under the STOP condition until it is completed.
+owner_answer: >-
+  DEC-0021: no concrete problem was found, so the public explorer stays published while the
+  first-hand review is completed. A restriction found by that review becomes a STOP for
+  N02-derived public payloads.
+close_when: the evidence_missing items are recorded with URLs and retrieval dates.

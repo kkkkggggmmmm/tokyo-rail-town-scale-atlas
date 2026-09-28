@@ -108,7 +108,7 @@ class N03FreeContractTest(unittest.TestCase):
         edits = [
             lambda c: c.__setitem__("contract_id", "other"),
             lambda c: c.__setitem__("status", "EXECUTABLE"),
-            lambda c: c.__setitem__("owner_decision", "ACCEPTED"),
+            lambda c: c.__setitem__("owner_decision", "PENDING"),
             lambda c: c.__setitem__("requires_decision_amending", []),
             lambda c: c["inputs"].__setitem__("mesh_geometry", "n03_polygon_intersection"),
             lambda c: c["inputs"].__setitem__("prohibited_input_codes", ["n03"]),
